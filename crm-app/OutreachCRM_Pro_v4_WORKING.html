@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#7c6af7"/>
+<link rel="manifest" id="pwaManifest"/>
+<title>Outreach CRM Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0f0f13;--surface:#17171e;--surface2:#1e1e28;--surface3:#26263380;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--border3:rgba(255,255,255,0.22);
+  --text:#f0f0f5;--text2:#9393a8;--text3:#5a5a72;
+  --accent:#7c6af7;--accent2:#5b4fd6;--accent-bg:rgba(124,106,247,0.12);--accent-bg2:rgba(124,106,247,0.2);
+  --green:#2dd4a0;--green-bg:rgba(45,212,160,0.1);
+  --amber:#f5a623;--amber-bg:rgba(245,166,35,0.1);
+  --red:#ff5f6a;--red-bg:rgba(255,95,106,0.1);
+  --blue:#5ba4f5;--blue-bg:rgba(91,164,245,0.1);
+  --pink:#f06292;--pink-bg:rgba(240,98,146,0.1);
+  --wa:#25d366;--wa-bg:rgba(37,211,102,0.1);
+  --yt:#ff0000;--yt-bg:rgba(255,0,0,0.1);
+  --gpt:#10a37f;--gpt-bg:rgba(16,163,127,0.1);
+  --claude:#cc785c;--claude-bg:rgba(204,120,92,0.1);
+  --radius:10px;--radius-lg:14px;--radius-xl:18px;
+  --sidebar:240px;
+}
+body.light{
+  --bg:#f2f2f7;--surface:#ffffff;--surface2:#f0f0f5;--surface3:#e5e5ea;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.13);--border3:rgba(0,0,0,0.2);
+  --text:#1a1a2e;--text2:#5a5a7a;--text3:#9393a8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+a{color:var(--accent);text-decoration:none;}
+
+/* LAYOUT */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto;transition:transform .2s;}
+.sidebar-top{padding:18px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo-row{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .3s;}
+.logo-name{font-size:14px;font-weight:700;color:var(--text);}
+.logo-tagline{font-size:10px;color:var(--text3);margin-top:1px;}
+.nav{padding:10px 8px;flex:1;}
+.nav-section{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:10px 8px 4px;font-weight:700;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;margin-bottom:1px;user-select:none;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:var(--accent-bg);color:var(--accent);font-weight:500;}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;border-radius:10px;padding:1px 6px;font-family:'DM Mono',monospace;}
+.nav-badge.red{background:var(--red);}
+.nav-badge.green{background:var(--green);color:#000;}
+.sidebar-foot{padding:12px 8px;border-top:1px solid var(--border);flex-shrink:0;}
+.main{margin-left:var(--sidebar);flex:1;padding:24px 28px;max-width:calc(100vw - var(--sidebar));min-height:100vh;}
+.page{display:none;animation:fadeUp .2s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* TOPBAR */
+.top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.page-title{font-size:19px;font-weight:700;}
+.page-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;white-space:nowrap;}
+.btn:hover{background:var(--surface2);}
+.btn:active{transform:scale(.98);}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-accent:hover{background:var(--accent2);}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:8px;}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px;}
+.btn-wa{background:var(--wa-bg);border-color:rgba(37,211,102,.25);color:var(--wa);}
+.btn-gmail{background:var(--red-bg);border-color:rgba(255,95,106,.25);color:var(--red);}
+.btn-insta{background:var(--pink-bg);border-color:rgba(240,98,146,.25);color:var(--pink);}
+.btn-yt{background:var(--yt-bg);border-color:rgba(255,0,0,.25);color:var(--yt);}
+.btn-gpt{background:var(--gpt-bg);border-color:rgba(16,163,127,.25);color:var(--gpt);}
+.btn-danger{background:var(--red-bg);border-color:rgba(255,95,106,.25);color:var(--red);}
+.btn-green{background:var(--green-bg);border-color:rgba(45,212,160,.25);color:var(--green);}
+.btn-icon{padding:7px;border-radius:8px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px;margin-bottom:20px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;cursor:default;transition:border-color .15s;}
+.stat-card:hover{border-color:var(--border2);}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;font-weight:600;}
+.stat-val{font-size:24px;font-weight:700;font-family:'DM Mono',monospace;}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* FORM ELEMENTS */
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.srch{position:relative;flex:1;min-width:170px;}
+.srch input{width:100%;padding:8px 12px 8px 32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;}
+.srch input:focus{border-color:var(--accent);}
+.srch-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none;}
+select.sel,input.inp{padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;}
+select.sel:focus,input.inp:focus{border-color:var(--accent);}
+.ef{display:flex;flex-direction:column;gap:4px;}
+.ef label,.mf label,.sf label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.ef input,.ef select,.ef textarea,.mf input,.mf select,.mf textarea,.sf input,.sf select,.sf textarea{padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:100%;}
+.ef input:focus,.ef select:focus,.ef textarea:focus,.mf input:focus,.mf select:focus,.sf input:focus,.sf select:focus{border-color:var(--accent);}
+.ef textarea,.mf textarea{resize:vertical;}
+.m2col,.s2col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.m3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* CLIENT CARDS */
+.client-grid{display:flex;flex-direction:column;gap:5px;}
+.client-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .15s;}
+.client-card:hover{border-color:var(--border2);}
+.client-card.expanded{border-color:rgba(124,106,247,.4);}
+.client-card.starred{border-color:rgba(245,166,35,.35);}
+.card-row{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;}
+.card-check{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+.avatar{width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.card-info{flex:1;min-width:0;}
+.card-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
+.card-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;align-items:center;}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;white-space:nowrap;}
+.b-yt{background:rgba(255,0,0,.12);color:#ff5f5f;}
+.b-ig{background:var(--pink-bg);color:var(--pink);}
+.b-new{background:var(--blue-bg);color:var(--blue);}
+.b-contacted{background:var(--amber-bg);color:var(--amber);}
+.b-replied{background:var(--green-bg);color:var(--green);}
+.b-closed{background:rgba(45,212,160,.2);color:var(--green);}
+.b-notint{background:var(--red-bg);color:var(--red);}
+.b-negotiating{background:var(--accent-bg);color:var(--accent);}
+.b-tag{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.b-overdue{background:var(--red-bg);color:var(--red);}
+.b-followup{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.score-pill{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:700;font-family:'DM Mono',monospace;}
+.card-right{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.star-btn{background:none;border:none;cursor:pointer;font-size:14px;opacity:.35;transition:opacity .15s;padding:0;}
+.star-btn.on{opacity:1;}
+.expand-btn{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;transition:transform .2s;padding:2px 4px;}
+.expanded .expand-btn{transform:rotate(180deg);}
+.edit-panel{display:none;padding:0 14px 14px;border-top:1px solid var(--border);}
+.expanded .edit-panel{display:block;}
+.edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;padding-top:12px;}
+.panel-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;align-items:center;}
+.sched-btns{display:flex;gap:5px;flex-wrap:wrap;}
+.sched-btn{padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.sched-btn:hover,.sched-btn.active{background:var(--accent-bg);color:var(--accent);border-color:rgba(124,106,247,.4);}
+
+/* NOTES */
+.notes-section{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;}
+.notes-history{max-height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
+.note-item{background:var(--surface2);border-radius:8px;padding:8px 10px;}
+.note-ts{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:2px;}
+.note-text{font-size:12px;color:var(--text2);line-height:1.5;}
+.note-add{display:flex;gap:6px;}
+.note-add textarea{flex:1;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;resize:none;height:50px;outline:none;}
+.note-add textarea:focus{border-color:var(--accent);}
+
+/* KANBAN */
+.kanban-board{display:flex;gap:11px;overflow-x:auto;padding-bottom:12px;}
+.kanban-col{flex-shrink:0;width:210px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;flex-direction:column;max-height:calc(100vh - 160px);}
+.kanban-head{padding:11px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.kanban-title{font-size:12px;font-weight:600;}
+.kanban-count{font-size:10px;font-family:'DM Mono',monospace;background:var(--surface2);padding:2px 7px;border-radius:20px;color:var(--text2);}
+.kanban-cards{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:5px;}
+.k-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:9px 10px;cursor:grab;transition:all .15s;user-select:none;}
+.k-card:hover{border-color:var(--border2);transform:translateY(-1px);}
+.k-card.dragging{opacity:.45;cursor:grabbing;}
+.kanban-col.drag-over{background:var(--accent-bg);border-color:rgba(124,106,247,.4);}
+.k-name{font-size:12px;font-weight:600;margin-bottom:4px;}
+.k-meta{font-size:11px;color:var(--text2);}
+
+/* ANALYTICS */
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:18px;}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;}
+.chart-title{font-size:13px;font-weight:600;margin-bottom:12px;}
+.chart-wrap{position:relative;height:195px;}
+.funnel-wrap{display:flex;flex-direction:column;gap:5px;}
+.funnel-row{display:flex;align-items:center;gap:8px;}
+.funnel-label{font-size:11px;color:var(--text2);width:85px;flex-shrink:0;}
+.funnel-bar-wrap{flex:1;background:var(--surface2);border-radius:4px;height:26px;overflow:hidden;}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 9px;font-size:11px;font-weight:600;transition:width .7s ease;color:#fff;white-space:nowrap;}
+.funnel-pct{font-size:10px;color:var(--text3);width:32px;text-align:right;font-family:'DM Mono',monospace;}
+.rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.rate-item{background:var(--surface2);border-radius:var(--radius);padding:11px;}
+.rate-label{font-size:10px;color:var(--text3);margin-bottom:3px;}
+.rate-val{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;}
+
+/* SEQUENCE BUILDER */
+.seq-wrap{max-width:700px;}
+.seq-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:14px;}
+.seq-num{width:28px;height:28px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.seq-content{flex:1;}
+.seq-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.seq-meta{font-size:12px;color:var(--text2);}
+.seq-actions{display:flex;gap:6px;margin-top:8px;}
+.next-action-badge{font-size:11px;background:var(--accent-bg);color:var(--accent);border-radius:20px;padding:2px 9px;border:1px solid rgba(124,106,247,.3);}
+
+/* DEAL ROOM */
+.deal-wrap{max-width:680px;}
+.deal-stage-bar{display:flex;gap:0;margin-bottom:20px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+.deal-stage{flex:1;padding:8px 4px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text3);border-right:1px solid var(--border);}
+.deal-stage:last-child{border-right:none;}
+.deal-stage.active{background:var(--accent);color:#fff;}
+.deal-stage:hover:not(.active){background:var(--surface2);}
+.deal-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;}
+.deal-section-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:12px;}
+.deliverable-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.deliverable-item:last-child{border-bottom:none;}
+.deliv-check{width:16px;height:16px;accent-color:var(--green);cursor:pointer;}
+.deliv-text{flex:1;font-size:13px;}
+.payment-tag{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;}
+.pay-pending{background:var(--amber-bg);color:var(--amber);}
+.pay-received{background:var(--green-bg);color:var(--green);}
+
+/* GOALS */
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
+.goal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;}
+.goal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.goal-title{font-size:14px;font-weight:600;}
+.goal-pct{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;}
+.progress-bar{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:8px;}
+.progress-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.goal-meta{font-size:12px;color:var(--text2);}
+.goal-streak{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;color:var(--amber);}
+.milestone-list{display:flex;flex-direction:column;gap:5px;margin-top:10px;}
+.milestone{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:5px 0;}
+.milestone.done{color:var(--green);}
+.milestone-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;}
+.milestone.done .milestone-dot{background:var(--green);}
+
+/* CAMPAIGN */
+.campaign-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
+.campaign-card:hover{border-color:var(--border2);}
+.campaign-card.active-camp{border-color:var(--accent);}
+.camp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.camp-name{font-size:14px;font-weight:600;}
+.camp-stats{display:flex;gap:12px;font-size:12px;color:var(--text2);}
+.camp-progress{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:10px;}
+.camp-progress-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .5s;}
+
+/* REVENUE */
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+.rev-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;}
+.rev-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-weight:600;}
+.rev-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;}
+.rev-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* AI CHAT */
+.ai-chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 160px);max-width:800px;}
+.ai-provider-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.ai-tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;}
+.ai-tab.active-gpt{background:var(--gpt-bg);color:var(--gpt);border-color:rgba(16,163,127,.3);}
+.ai-tab.active-claude{background:var(--claude-bg);color:var(--claude);border-color:rgba(204,120,92,.3);}
+.ai-tab:hover{background:var(--surface2);}
+.chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:4px 0 12px;}
+.msg{display:flex;gap:10px;align-items:flex-start;}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.msg-bubble{max-width:75%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.6;}
+.msg.user .msg-bubble{background:var(--accent);color:#fff;border-radius:14px 14px 4px 14px;}
+.msg.assistant .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 14px 4px;color:var(--text);}
+.msg-bubble pre{white-space:pre-wrap;font-family:'DM Mono',monospace;font-size:12px;background:rgba(0,0,0,.2);padding:8px;border-radius:6px;margin-top:6px;}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end;padding-top:10px;border-top:1px solid var(--border);}
+.chat-input-row textarea{flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;resize:none;height:48px;outline:none;line-height:1.5;transition:border-color .15s;}
+.chat-input-row textarea:focus{border-color:var(--accent);}
+.chat-typing{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);padding:4px 0;}
+.t-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:bounce .9s infinite;}
+.t-dot:nth-child(2){animation-delay:.2s;}
+.t-dot:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.chat-context-bar{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+
+/* AI RESPONSE ANALYZER */
+.analyzer-result{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-top:14px;}
+.sentiment-badge{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:6px 14px;border-radius:20px;margin-bottom:12px;}
+.next-steps{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.next-step-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;padding:8px 10px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);}
+.step-num{background:var(--accent);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* SETTINGS */
+.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px;max-width:620px;}
+.settings-section-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.settings-grid{display:flex;flex-direction:column;gap:12px;}
+.sf{display:flex;flex-direction:column;gap:5px;}
+.api-status{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;}
+.api-ok{background:var(--green-bg);color:var(--green);}
+.api-missing{background:var(--red-bg);color:var(--red);}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
+.color-swatch.selected{border-color:var(--text);}
+
+/* PROFILE */
+.profile-wrap{max-width:680px;}
+.profile-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px;display:flex;align-items:center;gap:16px;}
+.profile-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;}
+.profile-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:10px;}
+.profile-section-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:12px;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pf-item label{font-size:10px;color:var(--text3);display:block;margin-bottom:2px;}
+.pf-item span{font-size:13px;}
+.timeline{display:flex;flex-direction:column;}
+.tl-item{display:flex;gap:11px;position:relative;}
+.tl-item:not(:last-child):before{content:'';position:absolute;left:6px;top:16px;bottom:-4px;width:1px;background:var(--border);}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--accent-bg);border:2px solid var(--accent);flex-shrink:0;margin-top:2px;}
+.tl-content{flex:1;padding-bottom:12px;}
+.tl-ts{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
+.tl-text{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
+
+/* REPORT */
+.report-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:720px;}
+.report-table{width:100%;border-collapse:collapse;font-size:13px;}
+.report-table th{text-align:left;padding:8px 10px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);}
+.report-table td{padding:8px 10px;border-bottom:1px solid var(--border);}
+
+/* TEMPLATES */
+.template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:8px;}
+.preview-box{background:#fff;border-radius:8px;padding:12px;color:#1a1a2e;font-size:13px;line-height:1.6;border:1px solid #e0e0e0;margin-top:8px;}
+.preview-subject{font-weight:600;font-size:13px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #e0e0e0;color:#1a1a2e;}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;backdrop-filter:blur(4px);}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-xl);padding:24px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;}
+.modal-tr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.modal h2{font-size:16px;font-weight:700;}
+.modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;}
+.modal-fields{display:flex;flex-direction:column;gap:10px;}
+.modal-foot{display:flex;gap:8px;margin-top:18px;justify-content:flex-end;}
+.modal-warn{background:var(--amber-bg);border:1px solid rgba(245,166,35,.3);border-radius:var(--radius);padding:9px 12px;font-size:12px;color:var(--amber);}
+
+/* POPUP WINDOW LAUNCHER */
+.quick-launch{position:fixed;right:18px;bottom:72px;display:flex;flex-direction:column;gap:8px;z-index:90;}
+.ql-btn{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:transform .15s;}
+.ql-btn:hover{transform:scale(1.1);}
+.ql-btn.ql-wa{background:#25d366;}
+.ql-btn.ql-gmail{background:#ea4335;}
+.ql-btn.ql-insta{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+.ql-btn.ql-yt{background:#ff0000;}
+
+/* TOAST & NOTIF */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:13px;color:var(--text);z-index:999;opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;}
+.toast.show{opacity:1;transform:translateY(0);}
+.notif-banner{position:fixed;top:14px;right:14px;background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius-lg);padding:12px 16px;z-index:998;max-width:290px;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:slideIn .3s ease;}
+@keyframes slideIn{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
+.notif-close{position:absolute;top:7px;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;}
+
+/* TOUR */
+.tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:flex;align-items:center;justify-content:center;}
+.tour-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-xl);padding:28px;max-width:400px;width:90%;text-align:center;}
+.tour-icon{font-size:38px;margin-bottom:12px;}
+.tour-title{font-size:17px;font-weight:700;margin-bottom:7px;}
+.tour-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:18px;}
+.tour-dots{display:flex;justify-content:center;gap:5px;margin-bottom:16px;}
+.tour-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:background .15s;}
+.tour-dot.active{background:var(--accent);}
+
+/* BULK BAR */
+.bulk-bar{background:var(--accent-bg);border:1px solid rgba(124,106,247,.3);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:10px;}
+
+/* SHORTCUT HINT */
+.shortcut-hint{position:fixed;bottom:18px;left:calc(var(--sidebar) + 14px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:7px 12px;font-size:11px;color:var(--text3);z-index:90;display:flex;gap:10px;}
+.shortcut-hint kbd{background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);}
+
+/* REMINDER */
+.reminder-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.reminder-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* IO */
+.io-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:700px;}
+.io-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;}
+
+/* MISC */
+.section-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin:16px 0 9px;}
+.empty{text-align:center;padding:38px 20px;color:var(--text3);}
+.empty-icon{font-size:34px;margin-bottom:8px;}
+.check-all-row{display:flex;align-items:center;gap:8px;padding:5px 14px 3px;}
+.check-all-row label{font-size:12px;color:var(--text2);cursor:pointer;}
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.pill{font-size:11px;padding:2px 9px;border-radius:20px;}
+.yt-stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.yt-stat{background:var(--yt-bg);border:1px solid rgba(255,0,0,.15);border-radius:8px;padding:5px 10px;font-size:11px;color:#ff5f5f;font-family:'DM Mono',monospace;}
+
+/* MOBILE */
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;}
+.mobile-top{display:none;align-items:center;gap:10px;margin-bottom:16px;}
+@media(max-width:768px){
+  :root{--sidebar:0px;}
+  .sidebar{transform:translateX(-100%);width:240px;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;padding:14px;max-width:100vw;}
+  .hamburger{display:block;}
+  .mobile-top{display:flex;}
+  .chart-grid{grid-template-columns:1fr;}
+  .m2col,.s2col,.m3col{grid-template-columns:1fr;}
+  .kanban-board{min-height:350px;}
+  .kanban-col{width:175px;}
+  .shortcut-hint,.quick-launch{display:none;}
+  .ai-chat-wrap{height:70vh;}
+}
+
+/* PWA install btn */
+.pwa-install-btn{display:none;background:var(--green-bg);border:1px solid rgba(45,212,160,.3);color:var(--green);border-radius:var(--radius);padding:8px 14px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;text-align:center;font-weight:500;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="logo-row">
+      <div class="logo-mark" id="logoMark" style="background:var(--accent)">📊</div>
+      <div>
+        <div class="logo-name" id="brandName">Outreach CRM</div>
+        <div class="logo-tagline">Pro v4.0</div>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="go('dashboard')"><span class="nav-icon">🏠</span>Dashboard</div>
+    <div class="nav-item" id="nav-clients" onclick="go('clients')"><span class="nav-icon">👥</span>All Clients<span class="nav-badge" id="navCount">0</span></div>
+    <div class="nav-item" id="nav-kanban" onclick="go('kanban')"><span class="nav-icon">🗂️</span>Pipeline</div>
+    <div class="nav-section">Intelligence</div>
+    <div class="nav-item" id="nav-ai" onclick="go('ai')"><span class="nav-icon">🤖</span>AI Assistant</div>
+    <div class="nav-item" id="nav-analyzer" onclick="go('analyzer')"><span class="nav-icon">🔍</span>Response Analyzer</div>
+    <div class="nav-item" id="nav-analytics" onclick="go('analytics')"><span class="nav-icon">📈</span>Analytics</div>
+    <div class="nav-section">Management</div>
+    <div class="nav-item" id="nav-sequences" onclick="go('sequences')"><span class="nav-icon">📋</span>Sequences</div>
+    <div class="nav-item" id="nav-campaigns" onclick="go('campaigns')"><span class="nav-icon">🎯</span>Campaigns<span class="nav-badge green" id="navCamps">0</span></div>
+    <div class="nav-item" id="nav-goals" onclick="go('goals')"><span class="nav-icon">🏆</span>Goals</div>
+    <div class="nav-item" id="nav-revenue" onclick="go('revenue')"><span class="nav-icon">💰</span>Revenue</div>
+    <div class="nav-section">Tools</div>
+    <div class="nav-item" id="nav-reminders" onclick="go('reminders')"><span class="nav-icon">🔔</span>Reminders<span class="nav-badge red" id="navOverdue">0</span></div>
+    <div class="nav-item" id="nav-report" onclick="go('report')"><span class="nav-icon">📊</span>Monthly Report</div>
+    <div class="nav-item" id="nav-templates" onclick="go('templates')"><span class="nav-icon">✉️</span>Templates</div>
+    <div class="nav-item" id="nav-import" onclick="go('import')"><span class="nav-icon">📂</span>Import/Export</div>
+    <div class="nav-item" id="nav-settings" onclick="go('settings')"><span class="nav-icon">⚙️</span>Settings</div>
+  </nav>
+  <div class="sidebar-foot">
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <button class="btn btn-sm" style="flex:1;justify-content:center" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+      <button class="btn btn-sm btn-icon" onclick="showTour()" title="Help">❓</button>
+    </div>
+    <button class="btn btn-accent" style="width:100%;justify-content:center" onclick="openAddModal()">+ Add Client</button>
+    <button class="pwa-install-btn" id="pwaBtn" onclick="installPWA()">📱 Install as App</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="mainContent">
+  <div class="mobile-top" id="mobileTop">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <span style="font-size:15px;font-weight:700" id="mobileTitle">Outreach CRM Pro</span>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="top-bar">
+      <div><div class="page-title">Dashboard</div><div class="page-sub" id="dashDate"></div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-gpt" onclick="go('ai')">🤖 Ask AI</button>
+        <button class="btn btn-sm btn-accent" onclick="openAddModal()">+ Add Client</button>
+      </div>
+    </div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:1000px" id="dashCards">
+      <div><div class="section-label">⚠️ Overdue</div><div id="dashOverdue"></div></div>
+      <div><div class="section-label">📅 This Week</div><div id="dashUpcoming"></div></div>
+      <div><div class="section-label">⭐ Priority</div><div id="dashStarred"></div></div>
+    </div>
+  </div>
+
+  <!-- ALL CLIENTS -->
+  <div class="page" id="page-clients">
+    <div class="top-bar">
+      <div><div class="page-title">All Clients</div><div class="page-sub" id="clientSub"></div></div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="exportCSV()">⬇ CSV</button>
+        <button class="btn btn-accent" onclick="openAddModal()">+ Add Client</button>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="srch"><span class="srch-icon">🔍</span><input type="text" id="searchBox" placeholder="Search name, tag, contact..." oninput="renderClients()"/></div>
+      <select class="sel" id="fStatus" onchange="renderClients()"><option value="">All status</option><option>New</option><option>Contacted</option><option>Replied</option><option>Negotiating</option><option>Closed</option><option>Not Interested</option></select>
+      <select class="sel" id="fPlatform" onchange="renderClients()"><option value="">All platforms</option><option>Youtube</option><option>Instagram</option></select>
+      <select class="sel" id="fSample" onchange="renderClients()"><option value="">Sample: All</option><option value="Y">Sent</option><option value="N">Not sent</option></select>
+      <select class="sel" id="fTag" onchange="renderClients()"><option value="">All tags</option></select>
+      <select class="sel" id="fCampaign" onchange="renderClients()"><option value="">All campaigns</option></select>
+      <select class="sel" id="fSort" onchange="renderClients()"><option value="default">Sort: Default</option><option value="score">By Score</option><option value="name">By Name</option><option value="followup">By Follow-up</option><option value="starred">Starred First</option><option value="deal">By Deal Value</option></select>
+    </div>
+    <div class="bulk-bar" id="bulkBar" style="display:none">
+      <span id="bulkCount" style="font-size:13px;color:var(--accent);font-weight:500">0 selected</span>
+      <button class="btn btn-sm btn-wa" onclick="bulkMsg('whatsapp')">WA All</button>
+      <button class="btn btn-sm btn-gmail" onclick="bulkMsg('gmail')">Gmail All</button>
+      <button class="btn btn-sm" onclick="openBulkStatus()">Change Status</button>
+      <button class="btn btn-sm btn-danger" onclick="bulkDelete()">Delete</button>
+      <button class="btn btn-sm" onclick="clearSel()">Clear</button>
+    </div>
+    <div class="check-all-row"><input type="checkbox" id="checkAll" style="accent-color:var(--accent)" onchange="selAll(this.checked)"/><label for="checkAll">Select all visible</label></div>
+    <div class="client-grid" id="clientGrid"></div>
+  </div>
+
+  <!-- KANBAN -->
+  <div class="page" id="page-kanban">
+    <div class="top-bar"><div><div class="page-title">Pipeline Board</div><div class="page-sub">Drag cards between columns</div></div></div>
+    <div class="kanban-board" id="kanbanBoard"></div>
+  </div>
+
+  <!-- AI ASSISTANT -->
+  <div class="page" id="page-ai">
+    <div class="top-bar"><div><div class="page-title">AI Assistant</div><div class="page-sub">Chat with ChatGPT or Claude</div></div>
+    <button class="btn btn-sm btn-danger" onclick="clearChat()">🗑 Clear Chat</button></div>
+    <div class="ai-chat-wrap">
+      <div class="ai-provider-tabs">
+        <button class="ai-tab active-gpt" id="tab-gpt" onclick="setAIProvider('gpt')">🟢 ChatGPT (GPT-4o)</button>
+        <button class="ai-tab" id="tab-claude" onclick="setAIProvider('claude')">🟠 Claude</button>
+      </div>
+      <div class="chat-context-bar" id="chatContextBar" style="display:none">
+        <span id="chatContextText"></span>
+        <button class="btn btn-xs btn-danger" onclick="clearChatContext()">✕ Clear</button>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-typing" id="chatTyping" style="display:none"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div><span>AI is thinking...</span></div>
+      <div class="chat-input-row">
+        <textarea id="chatInput" placeholder="Ask anything about your clients, outreach strategy, copywriting..." onkeydown="chatKeydown(event)"></textarea>
+        <button class="btn btn-accent" onclick="sendChat()" id="chatSendBtn">Send ↑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESPONSE ANALYZER -->
+  <div class="page" id="page-analyzer">
+    <div class="top-bar"><div><div class="page-title">Response Analyzer</div><div class="page-sub">Paste a reply — AI tells you what to do next</div></div></div>
+    <div style="max-width:680px">
+      <div class="mf" style="margin-bottom:10px"><label>Client (optional)</label>
+        <select id="analyzerClient" class="sel" style="width:100%"><option value="">Select client (optional)</option></select>
+      </div>
+      <div class="mf" style="margin-bottom:10px"><label>Their Reply / Message</label>
+        <textarea id="analyzerInput" style="width:100%;min-height:110px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;resize:vertical;outline:none" placeholder="Paste what the client replied..."></textarea>
+      </div>
+      <div class="mf" style="margin-bottom:14px"><label>Context</label>
+        <select id="analyzerContext" class="sel" style="width:100%">
+          <option>First outreach reply</option><option>Follow-up reply</option><option>After sending sample</option><option>Pricing discussion</option><option>Negotiation stage</option>
+        </select>
+      </div>
+      <button class="btn btn-accent" onclick="analyzeResponse()" id="analyzeBtn">🔍 Analyze Response</button>
+      <div id="analyzerResult"></div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="page" id="page-analytics">
+    <div class="top-bar"><div><div class="page-title">Analytics</div><div class="page-sub">Performance insights</div></div></div>
+    <div class="chart-grid" id="analyticsGrid"></div>
+  </div>
+
+  <!-- SEQUENCES -->
+  <div class="page" id="page-sequences">
+    <div class="top-bar">
+      <div><div class="page-title">Outreach Sequences</div><div class="page-sub">Automated follow-up plans</div></div>
+      <button class="btn btn-accent" onclick="openAddSequence()">+ New Sequence</button>
+    </div>
+    <div id="sequenceList"></div>
+  </div>
+
+  <!-- CAMPAIGNS -->
+  <div class="page" id="page-campaigns">
+    <div class="top-bar">
+      <div><div class="page-title">Campaigns</div><div class="page-sub">Group clients by outreach campaign</div></div>
+      <button class="btn btn-accent" onclick="openAddCampaign()">+ New Campaign</button>
+    </div>
+    <div id="campaignList"></div>
+  </div>
+
+  <!-- GOALS -->
+  <div class="page" id="page-goals">
+    <div class="top-bar">
+      <div><div class="page-title">Goals & Targets</div><div class="page-sub">Track your monthly progress</div></div>
+      <button class="btn btn-accent" onclick="openGoalEdit()">✏ Edit Goals</button>
+    </div>
+    <div class="goals-grid" id="goalsGrid"></div>
+    <div id="streakSection"></div>
+  </div>
+
+  <!-- REVENUE -->
+  <div class="page" id="page-revenue">
+    <div class="top-bar"><div><div class="page-title">Revenue Forecasting</div><div class="page-sub">Pipeline value & predictions</div></div></div>
+    <div class="rev-grid" id="revGrid"></div>
+    <div class="chart-grid" id="revCharts"></div>
+    <div id="revTable"></div>
+  </div>
+
+  <!-- REMINDERS -->
+  <div class="page" id="page-reminders">
+    <div class="top-bar"><div><div class="page-title">Reminders</div><div class="page-sub">Follow-up schedule</div></div></div>
+    <div id="reminderContent"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="page" id="page-report">
+    <div class="top-bar">
+      <div><div class="page-title">Monthly Report</div><div class="page-sub" id="reportSub"></div></div>
+      <div style="display:flex;gap:7px">
+        <button class="btn btn-sm" onclick="chgReport(-1)">← Prev</button>
+        <button class="btn btn-sm" onclick="chgReport(1)">Next →</button>
+        <button class="btn btn-sm btn-green" onclick="window.print()">🖨 Print PDF</button>
+      </div>
+    </div>
+    <div id="reportContent"></div>
+  </div>
+
+  <!-- TEMPLATES -->
+  <div class="page" id="page-templates">
+    <div class="top-bar">
+      <div><div class="page-title">Message Templates</div></div>
+      <button class="btn btn-accent" onclick="openAddTmpl()">+ New Template</button>
+    </div>
+    <div id="templateList"></div>
+  </div>
+
+  <!-- IMPORT/EXPORT -->
+  <div class="page" id="page-import">
+    <div class="top-bar"><div><div class="page-title">Import / Export</div></div></div>
+    <div class="io-grid">
+      <div class="io-card"><div style="font-size:26px;margin-bottom:9px">⬇️</div><div style="font-size:13px;font-weight:600;margin-bottom:5px">Export CSV</div><div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">Download all clients as CSV file.</div><button class="btn btn-green" onclick="exportCSV()">Download CSV</button></div>
+      <div class="io-card"><div style="font-size:26px;margin-bottom:9px">⬆️</div><div style="font-size:13px;font-weight:600;margin-bottom:5px">Import CSV</div><div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">Columns: Name, Platform, Contact, Gmail, WhatsApp, Status, Sample, Followup, Tags, Notes</div><label class="btn btn-accent" style="cursor:pointer">Upload CSV<input type="file" accept=".csv" style="display:none" onchange="importCSV(event)"/></label></div>
+      <div class="io-card"><div style="font-size:26px;margin-bottom:9px">💾</div><div style="font-size:13px;font-weight:600;margin-bottom:5px">Full Backup</div><div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">JSON backup with notes, templates, campaigns.</div><button class="btn btn-green" onclick="exportJSON()">Download Backup</button></div>
+      <div class="io-card"><div style="font-size:26px;margin-bottom:9px">♻️</div><div style="font-size:13px;font-weight:600;margin-bottom:5px">Restore Backup</div><div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">Restore from a previous JSON backup.</div><label class="btn btn-danger" style="cursor:pointer">Restore JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"/></label></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-settings">
+    <div class="top-bar"><div><div class="page-title">Settings</div><div class="page-sub">API keys, branding, preferences</div></div></div>
+    <div id="settingsContent"></div>
+  </div>
+
+  <!-- CLIENT PROFILE -->
+  <div class="page" id="page-profile">
+    <div class="top-bar">
+      <div><button class="btn btn-sm" onclick="go('clients')" style="margin-bottom:8px">← Back</button><div class="page-title" id="profileTitle"></div></div>
+      <button class="btn btn-sm btn-gpt" onclick="openAI(currentProfileId)">🤖 AI Message</button>
+    </div>
+    <div class="profile-wrap" id="profileContent"></div>
+  </div>
+
+</main>
+</div>
+
+<!-- QUICK LAUNCH FLOATING BUTTONS -->
+<div class="quick-launch" id="quickLaunch">
+  <div style="font-size:10px;color:var(--text3);text-align:center;margin-bottom:2px">Quick</div>
+  <button class="ql-btn ql-wa" title="WhatsApp Web" onclick="popupWin('https://web.whatsapp.com','WhatsApp',900,700)">💬</button>
+  <button class="ql-btn ql-gmail" title="Gmail" onclick="popupWin('https://mail.google.com','Gmail',1100,750)">📧</button>
+  <button class="ql-btn ql-insta" title="Instagram" onclick="popupWin('https://instagram.com','Instagram',500,820)">📸</button>
+  <button class="ql-btn ql-yt" title="YouTube Studio" onclick="popupWin('https://studio.youtube.com','YouTube',1100,750)">▶️</button>
+</div>
+
+<!-- SHORTCUT HINT -->
+<div class="shortcut-hint" id="shortcutHint">
+  <span><kbd>N</kbd> New</span><span><kbd>S</kbd> Search</span><span><kbd>K</kbd> Kanban</span><span><kbd>A</kbd> AI Chat</span><span><kbd>G</kbd> Goals</span><span><kbd>?</kbd> Tour</span>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg"></span></div>
+
+<!-- TOUR -->
+<div id="tourOverlay" style="display:none" class="tour-overlay">
+  <div class="tour-box">
+    <div class="tour-icon" id="tourIcon"></div>
+    <div class="tour-title" id="tourTitle"></div>
+    <div class="tour-desc" id="tourDesc"></div>
+    <div class="tour-dots" id="tourDots"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn" onclick="nextTour(-1)" id="prevTourBtn">← Back</button>
+      <button class="btn btn-accent" onclick="nextTour(1)" id="nextTourBtn">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CLIENT MODAL -->
+<div class="modal-bg" id="clientModal" style="display:none">
+<div class="modal" style="max-width:560px">
+  <div class="modal-tr"><h2 id="modalTitle">Add New Client</h2><button class="modal-close" onclick="cm('clientModal')">✕</button></div>
+  <div class="modal-fields">
+    <input type="hidden" id="m_id"/>
+    <div class="m2col">
+      <div class="mf"><label>Name *</label><input id="m_name" placeholder="Channel / Creator name"/></div>
+      <div class="mf"><label>Platform</label><select id="m_platform"><option>Youtube</option><option>Instagram</option></select></div>
+    </div>
+    <div class="m2col">
+      <div class="mf"><label>Contact / Insta Handle</label><input id="m_contact" placeholder="@handle or phone"/></div>
+      <div class="mf"><label>Gmail</label><input id="m_gmail" placeholder="email@gmail.com"/></div>
+    </div>
+    <div class="m2col">
+      <div class="mf"><label>WhatsApp</label><input id="m_wa" placeholder="9XXXXXXXXX"/></div>
+      <div class="mf"><label>YouTube Channel URL</label><input id="m_yturl" placeholder="youtube.com/@channel"/></div>
+    </div>
+    <div class="m2col">
+      <div class="mf"><label>Followers / Subscribers</label><input id="m_followers" type="number" placeholder="50000"/></div>
+      <div class="mf"><label>Deal Value (₹)</label><input id="m_deal" type="number" placeholder="15000"/></div>
+    </div>
+    <div class="m2col">
+      <div class="mf"><label>Niche / Tags (comma sep)</label><input id="m_tags" placeholder="Real Estate, Finance..."/></div>
+      <div class="mf"><label>Campaign</label><select id="m_campaign"><option value="">None</option></select></div>
+    </div>
+    <div class="m2col">
+      <div class="mf"><label>Status</label><select id="m_status"><option>New</option><option>Contacted</option><option>Replied</option><option>Negotiating</option><option>Closed</option><option>Not Interested</option></select></div>
+      <div class="mf"><label>Sample Sent?</label><select id="m_sample"><option value="N">No</option><option value="Y">Yes</option></select></div>
+    </div>
+    <div class="m2col">
+      <div class="mf"><label>Follow-up Date</label><input type="date" id="m_followup"/></div>
+      <div class="mf"><label>Quick Schedule</label>
+        <div class="sched-btns" style="margin-top:4px">
+          <button class="sched-btn" onclick="sd(1)">+1d</button>
+          <button class="sched-btn" onclick="sd(3)">+3d</button>
+          <button class="sched-btn" onclick="sd(7)">+1w</button>
+          <button class="sched-btn" onclick="sd(14)">+2w</button>
+        </div>
+      </div>
+    </div>
+    <div id="dupWarn"></div>
+    <div id="ytFetchResult"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn btn-sm btn-yt" onclick="fetchYT()" id="ytFetchBtn">📺 Fetch YT Stats</button>
+    <button class="btn" onclick="cm('clientModal')">Cancel</button>
+    <button class="btn btn-accent" onclick="saveClient()">Save</button>
+  </div>
+</div>
+</div>
+
+<!-- BULK STATUS MODAL -->
+<div class="modal-bg" id="bulkStatusModal" style="display:none">
+<div class="modal" style="max-width:320px">
+  <div class="modal-tr"><h2>Change Status</h2><button class="modal-close" onclick="cm('bulkStatusModal')">✕</button></div>
+  <div class="mf"><label>New Status</label><select id="bulkStatusVal"><option>New</option><option>Contacted</option><option>Replied</option><option>Negotiating</option><option>Closed</option><option>Not Interested</option></select></div>
+  <div class="modal-foot"><button class="btn" onclick="cm('bulkStatusModal')">Cancel</button><button class="btn btn-accent" onclick="applyBulkStatus()">Apply</button></div>
+</div>
+</div>
+
+<!-- BULK MSG MODAL -->
+<div class="modal-bg" id="bulkMsgModal" style="display:none">
+<div class="modal">
+  <div class="modal-tr"><h2 id="bulkMsgTitle">Bulk Message</h2><button class="modal-close" onclick="cm('bulkMsgModal')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:10px" id="bulkMsgDesc"></p>
+  <div class="mf"><label>Message ({name} = client name)</label><textarea id="bulkMsgText" style="min-height:80px;resize:vertical"></textarea></div>
+  <div class="modal-foot"><button class="btn" onclick="cm('bulkMsgModal')">Cancel</button><button class="btn btn-accent" onclick="sendBulkMsgs()">Open All Links</button></div>
+</div>
+</div>
+
+<!-- TEMPLATE MODAL -->
+<div class="modal-bg" id="tmplModal" style="display:none">
+<div class="modal" style="max-width:540px">
+  <div class="modal-tr"><h2 id="tmplModalTitle">New Template</h2><button class="modal-close" onclick="cm('tmplModal')">✕</button></div>
+  <div class="modal-fields">
+    <input type="hidden" id="t_id"/>
+    <div class="m2col">
+      <div class="mf"><label>Template Name</label><input id="t_name" placeholder="e.g. WA First Outreach"/></div>
+      <div class="mf"><label>Channel</label><select id="t_channel" onchange="renderTmplPreview()"><option>WhatsApp</option><option>Gmail</option><option>Instagram DM</option></select></div>
+    </div>
+    <div class="mf" id="subjectField"><label>Subject (Gmail)</label><input id="t_subject" placeholder="Collaboration Opportunity" oninput="renderTmplPreview()"/></div>
+    <div class="mf"><label>Body ({name} for client name)</label><textarea id="t_body" style="min-height:100px;resize:vertical" oninput="renderTmplPreview()"></textarea></div>
+    <div id="tmplPreviewWrap" style="display:none"><div class="section-label">Gmail Preview</div><div class="preview-box" id="tmplPreviewBox"></div></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="cm('tmplModal')">Cancel</button><button class="btn btn-accent" onclick="saveTmpl()">Save</button></div>
+</div>
+</div>
+
+<!-- SEQUENCE MODAL -->
+<div class="modal-bg" id="seqModal" style="display:none">
+<div class="modal" style="max-width:560px">
+  <div class="modal-tr"><h2 id="seqModalTitle">New Sequence</h2><button class="modal-close" onclick="cm('seqModal')">✕</button></div>
+  <div class="modal-fields">
+    <input type="hidden" id="seq_id"/>
+    <div class="mf"><label>Sequence Name</label><input id="seq_name" placeholder="e.g. Real Estate 5-Day Sequence"/></div>
+    <div id="seqStepsBuilder"></div>
+    <button class="btn btn-sm" onclick="addSeqStep()" style="margin-top:8px">+ Add Step</button>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="cm('seqModal')">Cancel</button><button class="btn btn-accent" onclick="saveSequence()">Save</button></div>
+</div>
+</div>
+
+<!-- CAMPAIGN MODAL -->
+<div class="modal-bg" id="campModal" style="display:none">
+<div class="modal" style="max-width:480px">
+  <div class="modal-tr"><h2 id="campModalTitle">New Campaign</h2><button class="modal-close" onclick="cm('campModal')">✕</button></div>
+  <div class="modal-fields">
+    <input type="hidden" id="camp_id"/>
+    <div class="mf"><label>Campaign Name</label><input id="camp_name" placeholder="e.g. Diwali Push 2025"/></div>
+    <div class="m2col">
+      <div class="mf"><label>Start Date</label><input type="date" id="camp_start"/></div>
+      <div class="mf"><label>End Date</label><input type="date" id="camp_end"/></div>
+    </div>
+    <div class="mf"><label>Target (no. of clients)</label><input type="number" id="camp_target" placeholder="50"/></div>
+    <div class="mf"><label>Notes</label><textarea id="camp_notes" style="min-height:60px;resize:vertical"></textarea></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="cm('campModal')">Cancel</button><button class="btn btn-accent" onclick="saveCampaign()">Save</button></div>
+</div>
+</div>
+
+<!-- GOALS EDIT MODAL -->
+<div class="modal-bg" id="goalsModal" style="display:none">
+<div class="modal" style="max-width:420px">
+  <div class="modal-tr"><h2>Edit Monthly Goals</h2><button class="modal-close" onclick="cm('goalsModal')">✕</button></div>
+  <div class="modal-fields">
+    <div class="mf"><label>Outreach Target (clients/month)</label><input type="number" id="g_outreach" placeholder="50"/></div>
+    <div class="mf"><label>Reply Target (replies/month)</label><input type="number" id="g_replies" placeholder="15"/></div>
+    <div class="mf"><label>Closed Deals Target</label><input type="number" id="g_closed" placeholder="5"/></div>
+    <div class="mf"><label>Revenue Target (₹)</label><input type="number" id="g_revenue" placeholder="100000"/></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="cm('goalsModal')">Cancel</button><button class="btn btn-accent" onclick="saveGoals()">Save Goals</button></div>
+</div>
+</div>
+
+<!-- AI MESSAGE QUICK MODAL -->
+<div class="modal-bg" id="aiQuickModal" style="display:none">
+<div class="modal" style="max-width:520px">
+  <div class="modal-tr"><h2>🤖 AI Message Generator</h2><button class="modal-close" onclick="cm('aiQuickModal')">✕</button></div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="m2col">
+      <div class="mf"><label>Channel</label><select id="aq_channel"><option>WhatsApp</option><option>Gmail</option><option>Instagram DM</option></select></div>
+      <div class="mf"><label>Type</label><select id="aq_type"><option>First Outreach</option><option>Follow-up</option><option>After No Reply</option><option>Closing Deal</option><option>Post-Deal Thanks</option></select></div>
+    </div>
+    <div class="mf"><label>Extra Context</label><input id="aq_context" placeholder="e.g. They posted about finance trends..."/></div>
+    <button class="btn btn-accent" onclick="genAIMsg()" id="aqGenBtn">✨ Generate</button>
+    <div id="aqResult" style="display:none">
+      <div class="section-label">Generated Message</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:13px;color:var(--text2);line-height:1.6;white-space:pre-wrap;min-height:80px" id="aqResultText"></div>
+      <div style="display:flex;gap:7px;margin-top:8px">
+        <button class="btn btn-sm btn-green" onclick="copyAQResult()">📋 Copy</button>
+        <button class="btn btn-sm" onclick="genAIMsg()">🔄 Retry</button>
+        <button class="btn btn-sm btn-accent" onclick="saveAQAsTemplate()">💾 Save Template</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+/* CRM PRO v4 - CLEAN JS */
+const SK='crm_v4_clients',TK='crm_v4_templates',SETK='crm_v4_settings',CK='crm_v4_campaigns',SQK='crm_v4_sequences',GK='crm_v4_goals';
+function nowStr(){return new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function addDays(n){var d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split('T')[0];}
+function fmtINR(n){return '\u20b9'+(n||0).toLocaleString('en-IN');}
+
+var DEF_CLIENTS=[
+  {id:1,name:'Sameer Ansari',platform:'Youtube',contact:'9967311100',gmail:'sameer@gmail.com',wa:'9967311100',ytUrl:'',followers:120000,tags:['Finance'],dealVal:15000,status:'New',sample:'N',followup:'',starred:false,notes:[{ts:nowStr(),text:'Added via import'}],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:2,name:'A1 Home Jaipur',platform:'Youtube',contact:'@a1homejaipur',gmail:'',wa:'',ytUrl:'',followers:45000,tags:['Real Estate'],dealVal:10000,status:'Contacted',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:3,name:'Mr. Narendra Shekhawat',platform:'Youtube',contact:'@narendrashekhawat',gmail:'narendra@gmail.com',wa:'7065004141',ytUrl:'',followers:80000,tags:['Real Estate'],dealVal:12000,status:'New',sample:'N',followup:'',starred:true,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:4,name:'Uniquevillas',platform:'Youtube',contact:'@uniquevillas',gmail:'unique@gmail.com',wa:'',ytUrl:'',followers:30000,tags:['Real Estate'],dealVal:8000,status:'Contacted',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:5,name:'Vipin Suree',platform:'Youtube',contact:'@vipinsuree',gmail:'vipin@gmail.com',wa:'',ytUrl:'',followers:55000,tags:['Finance'],dealVal:10000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:6,name:'Real Estate FUNkaar',platform:'Youtube',contact:'@refunkaar',gmail:'refunkaar@gmail.com',wa:'',ytUrl:'',followers:95000,tags:['Real Estate'],dealVal:20000,status:'Replied',sample:'Y',followup:addDays(2),starred:true,notes:[{ts:nowStr(),text:'Interested, awaiting callback'}],created:todayStr(),campaignId:'',dealStage:'Proposal',deliverables:['1 YouTube Integration'],paymentStatus:'Pending'},
+  {id:7,name:'The Trading School',platform:'Youtube',contact:'@tradingschool',gmail:'',wa:'9425760839',ytUrl:'',followers:130000,tags:['Trading','Finance'],dealVal:25000,status:'New',sample:'N',followup:addDays(4),starred:true,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:8,name:'Mother Of Podcasts',platform:'Youtube',contact:'@motherofpodcasts',gmail:'mop@gmail.com',wa:'',ytUrl:'',followers:44000,tags:['Podcast'],dealVal:10000,status:'Replied',sample:'Y',followup:addDays(-1),starred:false,notes:[{ts:nowStr(),text:'2nd Gmail sent'}],created:todayStr(),campaignId:'',dealStage:'Negotiation',deliverables:[],paymentStatus:'Pending'},
+  {id:9,name:'Tech Save YT',platform:'Youtube',contact:'@techsave',gmail:'techsave@gmail.com',wa:'',ytUrl:'',followers:71000,tags:['Tech'],dealVal:15000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:10,name:'Comanga Hindi',platform:'Youtube',contact:'@comangahindi',gmail:'comanga@gmail.com',wa:'',ytUrl:'',followers:87000,tags:['Gaming'],dealVal:18000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:11,name:'Franchise Batao',platform:'Youtube',contact:'@franchisebatao',gmail:'franchise@gmail.com',wa:'',ytUrl:'',followers:78000,tags:['Business'],dealVal:16000,status:'Contacted',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:12,name:'Daily Help Trading',platform:'Youtube',contact:'@dailyhelptrading',gmail:'dailyhelp@gmail.com',wa:'',ytUrl:'',followers:45000,tags:['Trading'],dealVal:10000,status:'Contacted',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:13,name:"Swati's Cozy Nest",platform:'Youtube',contact:'@swatinest',gmail:'swati@gmail.com',wa:'',ytUrl:'',followers:33000,tags:['Lifestyle'],dealVal:8000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:14,name:'Nature Sehat',platform:'Youtube',contact:'@naturesehat',gmail:'nature@gmail.com',wa:'',ytUrl:'',followers:41000,tags:['Health'],dealVal:9000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:15,name:'Physiovedic',platform:'Youtube',contact:'@physiovedic',gmail:'physio@gmail.com',wa:'',ytUrl:'',followers:35000,tags:['Health'],dealVal:8000,status:'Negotiating',sample:'Y',followup:addDays(3),starred:false,notes:[{ts:nowStr(),text:'Negotiating price'}],created:todayStr(),campaignId:'',dealStage:'Negotiation',deliverables:[],paymentStatus:'Pending'},
+  {id:16,name:'Sumeet Kharb',platform:'Youtube',contact:'@sumeetkharb',gmail:'sumeet@gmail.com',wa:'',ytUrl:'',followers:42000,tags:['Finance'],dealVal:9000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:17,name:'Manasi Dumps',platform:'Youtube',contact:'@manasidumps',gmail:'manasi@gmail.com',wa:'',ytUrl:'',followers:24000,tags:['Lifestyle'],dealVal:6000,status:'Contacted',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:18,name:'Taksha Trade',platform:'Youtube',contact:'@takshatrade',gmail:'taksha@gmail.com',wa:'',ytUrl:'',followers:52000,tags:['Trading'],dealVal:11000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:19,name:'Sango Real Estate',platform:'Youtube',contact:'9289886158',gmail:'',wa:'9289886158',ytUrl:'',followers:38000,tags:['Real Estate'],dealVal:11000,status:'Contacted',sample:'Y',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+  {id:20,name:'Vadya Sonal',platform:'Youtube',contact:'@vadyasonal',gmail:'vadya@gmail.com',wa:'',ytUrl:'',followers:22000,tags:['Music'],dealVal:5000,status:'New',sample:'N',followup:'',starred:false,notes:[],created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'},
+];
+
+var DEF_TEMPLATES=[
+  {id:1,name:'First Outreach - WhatsApp',channel:'WhatsApp',subject:'',body:'Hi {name}! \ud83d\udc4b\n\nAapka channel dekha \u2014 bahut valuable content hai! \ud83d\udd25\n\nMere paas ek collaboration opportunity hai jo aapke audience ke liye genuinely useful hogi.\n\nKya is hafte 10 min baat kar sakte hain?\n\nWarm regards!'},
+  {id:2,name:'Follow-up - WhatsApp',channel:'WhatsApp',subject:'',body:'Hi {name}! \ud83d\ude0a\n\nBas ek follow-up \u2014 meri pichli message miss ho gayi hogi shayad.\n\nKollab ke baare mein kya sochte hain? Looking forward! \ud83d\ude4c'},
+  {id:3,name:'First Outreach - Gmail',channel:'Gmail',subject:"Collaboration Opportunity \u2014 Let's Connect!",body:"Hi {name},\n\nHope you're doing great!\n\nI came across your channel and I'm genuinely impressed by your content and the community you've built.\n\nI'd love to explore a collaboration that I believe your audience would find truly valuable.\n\nWould you be open to a quick chat this week?\n\nWarm regards"},
+  {id:4,name:'Follow-up - Gmail',channel:'Gmail',subject:'Following up: Collaboration Opportunity',body:"Hi {name},\n\nJust following up on my previous email about a potential collaboration.\n\nI know you're busy \u2014 just want to make sure it didn't get lost!\n\nWarm regards"},
+];
+
+var DEF_SEQUENCES=[
+  {id:1,name:'Standard 5-Day Outreach',steps:[
+    {day:0,channel:'WhatsApp',type:'First Outreach',note:'Send initial message'},
+    {day:3,channel:'Gmail',type:'First Outreach',note:'Follow up via email'},
+    {day:7,channel:'WhatsApp',type:'Follow-up',note:'Second WA follow-up'},
+    {day:10,channel:'Instagram DM',type:'Follow-up',note:'Try Instagram DM'},
+    {day:14,channel:'Gmail',type:'After No Reply',note:'Final follow-up email'},
+  ]},
+];
+
+var DEF_GOALS={outreach:50,replies:15,closed:5,revenue:100000};
+
+var clients=JSON.parse(localStorage.getItem(SK))||JSON.parse(JSON.stringify(DEF_CLIENTS));
+var templates=JSON.parse(localStorage.getItem(TK))||JSON.parse(JSON.stringify(DEF_TEMPLATES));
+var campaigns=JSON.parse(localStorage.getItem(CK))||[];
+var sequences=JSON.parse(localStorage.getItem(SQK))||JSON.parse(JSON.stringify(DEF_SEQUENCES));
+var goals=JSON.parse(localStorage.getItem(GK))||Object.assign({},DEF_GOALS);
+var settings=JSON.parse(localStorage.getItem(SETK))||{theme:'dark',tourDone:false,brandName:'Outreach CRM',accentColor:'#7c6af7',openaiKey:'',claudeKey:'',ytApiKey:'',aiProvider:'gpt'};
+var nextId=Math.max.apply(null,clients.map(function(c){return c.id;}).concat([0]))+1;
+var nextTId=Math.max.apply(null,templates.map(function(t){return t.id;}).concat([0]))+1;
+var nextCId=1;
+var nextSId=Math.max.apply(null,sequences.map(function(s){return s.id;}).concat([0]))+1;
+var openCards={},selectedIds=new Set(),bulkMsgType='',currentProfileId=null,reportOffset=0,aiCtxId=null;
+var chatHistory=[],aiProvider='gpt';
+var deferredPrompt=null;
+
+function save(){localStorage.setItem(SK,JSON.stringify(clients));}
+function saveTk(){localStorage.setItem(TK,JSON.stringify(templates));}
+function saveSets(){localStorage.setItem(SETK,JSON.stringify(settings));}
+function saveCamps(){localStorage.setItem(CK,JSON.stringify(campaigns));}
+function saveSeqs(){localStorage.setItem(SQK,JSON.stringify(sequences));}
+function saveGoalsData(){localStorage.setItem(GK,JSON.stringify(goals));}
+
+/* THEME */
+function toggleTheme(){settings.theme=settings.theme==='dark'?'light':'dark';applyTheme();saveSets();}
+function applyTheme(){
+  document.body.classList.toggle('light',settings.theme==='light');
+  document.getElementById('themeBtn').textContent=settings.theme==='dark'?'\u2600\ufe0f Light':'\ud83c\udf19 Dark';
+}
+function applyBranding(){
+  var n=settings.brandName||'Outreach CRM';
+  document.getElementById('brandName').textContent=n;
+  document.getElementById('mobileTitle').textContent=n;
+  document.title=n+' Pro';
+  var c=settings.accentColor||'#7c6af7';
+  document.documentElement.style.setProperty('--accent',c);
+  document.documentElement.style.setProperty('--accent2',shadeColor(c,-20));
+  document.documentElement.style.setProperty('--accent-bg',c+'20');
+  document.getElementById('logoMark').style.background=c;
+}
+function shadeColor(col,pct){
+  var n=parseInt(col.slice(1),16),t=pct<0?0:255,p=pct<0?pct*-1:pct;
+  var R=n>>16,G=(n>>8)&0x00FF,B=n&0x0000FF;
+  return '#'+(0x1000000+(Math.round((t-R)*p/100)+R)*0x10000+(Math.round((t-G)*p/100)+G)*0x100+(Math.round((t-B)*p/100)+B)).toString(16).slice(1);
+}
+
+/* MOBILE */
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+function checkMobile(){var m=window.innerWidth<=768;document.getElementById('mobileTop').style.display=m?'flex':'none';}
+window.addEventListener('resize',checkMobile);
+
+/* NAVIGATION */
+function go(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  var ni=document.getElementById('nav-'+name);if(ni)ni.classList.add('active');
+  var handlers={dashboard:renderDashboard,clients:renderClients,kanban:renderKanban,analytics:renderAnalytics,reminders:renderReminders,report:function(){renderReport();},templates:renderTemplates,sequences:renderSequences,campaigns:renderCampaigns,goals:renderGoals,revenue:renderRevenue,settings:renderSettings,ai:function(){renderAIChat();},analyzer:populateAnalyzerClients};
+  if(handlers[name])handlers[name]();
+  if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');
+}
+
+/* HELPERS */
+var AVC=[{bg:'rgba(91,164,245,.15)',c:'#5ba4f5'},{bg:'rgba(240,98,146,.15)',c:'#f06292'},{bg:'rgba(45,212,160,.15)',c:'#2dd4a0'},{bg:'rgba(245,166,35,.15)',c:'#f5a623'},{bg:'rgba(124,106,247,.15)',c:'#7c6af7'},{bg:'rgba(255,95,106,.15)',c:'#ff5f6a'},{bg:'rgba(37,211,102,.15)',c:'#25d366'}];
+function av(i){return AVC[i%AVC.length];}
+function initials(n){return n.split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase();}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var SBC={New:'b-new',Contacted:'b-contacted',Replied:'b-replied',Negotiating:'b-negotiating',Closed:'b-closed','Not Interested':'b-notint'};
+function sb(s){return '<span class="badge '+( SBC[s]||'b-new')+'">'+s+'</span>';}
+function calcScore(c){
+  var s=50;
+  if(c.platform==='Instagram')s+=10;
+  if(c.followers>100000)s+=20;else if(c.followers>50000)s+=12;else if(c.followers>20000)s+=6;
+  if(c.wa)s+=10;if(c.gmail)s+=5;
+  if(c.sample==='Y')s-=5;
+  if(c.status==='Replied')s+=15;else if(c.status==='Negotiating')s+=20;else if(c.status==='Contacted')s+=5;
+  if(c.status==='Not Interested')s=5;
+  if(c.followup&&c.followup<todayStr())s-=15;
+  if(c.starred)s+=8;
+  return Math.min(98,Math.max(5,s));
+}
+function scoreColor(s){return s>=70?'var(--green)':s>=40?'var(--amber)':'var(--red)';}
+
+/* DASHBOARD */
+function renderDashboard(){
+  document.getElementById('dashDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var t=clients.length;
+  var contacted=clients.filter(function(c){return['Contacted','Replied','Negotiating'].includes(c.status);}).length;
+  var replied=clients.filter(function(c){return['Replied','Negotiating'].includes(c.status);}).length;
+  var closed=clients.filter(function(c){return c.status==='Closed';}).length;
+  var overdue=clients.filter(function(c){return c.followup&&c.followup<todayStr();}).length;
+  var pipeVal=clients.filter(function(c){return!['Closed','Not Interested'].includes(c.status);}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var closedVal=clients.filter(function(c){return c.status==='Closed';}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var avgScore=t?Math.round(clients.reduce(function(a,c){return a+calcScore(c);},0)/t):0;
+  document.getElementById('statsGrid').innerHTML=
+    '<div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-val">'+t+'</div></div>'+
+    '<div class="stat-card"><div class="stat-label">Contacted</div><div class="stat-val">'+contacted+'</div></div>'+
+    '<div class="stat-card"><div class="stat-label">Replied</div><div class="stat-val" style="color:var(--green)">'+replied+'</div></div>'+
+    '<div class="stat-card"><div class="stat-label">Closed</div><div class="stat-val" style="color:var(--green)">'+closed+'</div></div>'+
+    '<div class="stat-card" style="'+(overdue?'border-color:rgba(255,95,106,.35)':'')+'"><div class="stat-label">Overdue</div><div class="stat-val" style="color:'+(overdue?'var(--red)':'var(--text)')+'">'+overdue+'</div></div>'+
+    '<div class="stat-card"><div class="stat-label">Pipeline \u20b9</div><div class="stat-val" style="font-size:16px">'+fmtINR(pipeVal)+'</div></div>'+
+    '<div class="stat-card"><div class="stat-label">Closed \u20b9</div><div class="stat-val" style="font-size:16px;color:var(--green)">'+fmtINR(closedVal)+'</div></div>'+
+    '<div class="stat-card"><div class="stat-label">Avg Score</div><div class="stat-val" style="color:'+scoreColor(avgScore)+'">'+avgScore+'%</div></div>';
+  var t2=todayStr(),in7=addDays(7);
+  var ov=clients.filter(function(c){return c.followup&&c.followup<t2;}).sort(function(a,b){return a.followup.localeCompare(b.followup);});
+  var up=clients.filter(function(c){return c.followup&&c.followup>=t2&&c.followup<=in7;}).sort(function(a,b){return a.followup.localeCompare(b.followup);});
+  var st=clients.filter(function(c){return c.starred;});
+  document.getElementById('dashOverdue').innerHTML=ov.length?ov.map(function(c){return miniRem(c,true);}).join(''):'<div class="empty"><div class="empty-icon">\ud83c\udf89</div><p>All clear!</p></div>';
+  document.getElementById('dashUpcoming').innerHTML=up.length?up.map(function(c){return miniRem(c,false);}).join(''):'<div class="empty"><div class="empty-icon">\ud83d\udcc5</div><p>Nothing this week</p></div>';
+  document.getElementById('dashStarred').innerHTML=st.length?st.map(function(c){return '<div class="reminder-card" style="cursor:pointer;border-color:rgba(245,166,35,.3)" onclick="openProfile('+c.id+')"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">\u2b50 '+esc(c.name)+'</div><div style="font-size:11px;color:var(--text2);margin-top:3px">'+sb(c.status)+'</div></div><div style="font-size:18px;font-weight:700;color:'+scoreColor(calcScore(c))+';font-family:\'DM Mono\',monospace">'+calcScore(c)+'%</div></div>';}).join(''):'<div class="empty"><p>No starred clients</p></div>';
+  document.getElementById('navCount').textContent=t;
+  document.getElementById('navOverdue').textContent=overdue;
+  document.getElementById('navCamps').textContent=campaigns.filter(function(c){return c.active;}).length;
+}
+function miniRem(c,overdue){
+  return '<div class="reminder-card"><div class="reminder-dot" style="background:'+(overdue?'var(--red)':'var(--green)')+'"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(c.name)+'</div><div style="font-size:10px;color:'+(overdue?'var(--red)':'var(--text3)')+';margin-top:2px">'+(overdue?'\u26a0 Overdue: ':'')+c.followup+'</div></div><div style="display:flex;gap:4px">'+(c.wa?'<button class="btn btn-xs btn-wa" onclick="openWA(\''+c.wa+'\',\''+c.name+'\')">WA</button>':'')+(c.gmail?'<button class="btn btn-xs btn-gmail" onclick="openGmail(\''+c.gmail+'\',\''+c.name+'\')">Mail</button>':'')+'</div></div>';
+}
+
+/* CLIENT LIST */
+function getFiltered(){
+  var q=(document.getElementById('searchBox').value||'').toLowerCase();
+  var fs=document.getElementById('fStatus').value,fp=document.getElementById('fPlatform').value;
+  var fsa=document.getElementById('fSample').value,ft=document.getElementById('fTag').value;
+  var fc=document.getElementById('fCampaign').value,srt=document.getElementById('fSort').value;
+  var r=clients.filter(function(c){
+    var tags=(c.tags||[]).join(' ').toLowerCase();
+    return(!q||c.name.toLowerCase().includes(q)||(c.contact||'').toLowerCase().includes(q)||(c.gmail||'').includes(q)||tags.includes(q))
+      &&(!fs||c.status===fs)&&(!fp||c.platform===fp)&&(!fsa||c.sample===fsa)&&(!ft||(c.tags||[]).includes(ft))&&(!fc||c.campaignId===fc);
+  });
+  if(srt==='score')r=r.slice().sort(function(a,b){return calcScore(b)-calcScore(a);});
+  else if(srt==='name')r=r.slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(srt==='followup')r=r.slice().sort(function(a,b){return(a.followup||'9').localeCompare(b.followup||'9');});
+  else if(srt==='starred')r=r.slice().sort(function(a,b){return(b.starred?1:0)-(a.starred?1:0);});
+  else if(srt==='deal')r=r.slice().sort(function(a,b){return(b.dealVal||0)-(a.dealVal||0);});
+  return r;
+}
+function updateFilters(){
+  var allTags=[...new Set(clients.flatMap(function(c){return c.tags||[];}))].sort();
+  var ft=document.getElementById('fTag'),fc=document.getElementById('fCampaign'),mc=document.getElementById('m_campaign');
+  var curT=ft.value,curC=fc.value;
+  ft.innerHTML='<option value="">All tags</option>'+allTags.map(function(t){return '<option'+(t===curT?' selected':'')+'>'+esc(t)+'</option>';}).join('');
+  var co=campaigns.map(function(c){return '<option value="'+c.id+'"'+(c.id===curC?' selected':'')+'>'+esc(c.name)+'</option>';}).join('');
+  fc.innerHTML='<option value="">All campaigns</option>'+co;
+  if(mc)mc.innerHTML='<option value="">None</option>'+campaigns.map(function(c){return '<option value="'+c.id+'">'+esc(c.name)+'</option>';}).join('');
+}
+function renderClients(){
+  updateFilters();
+  var filtered=getFiltered();
+  document.getElementById('clientSub').textContent=filtered.length+' of '+clients.length+' clients';
+  var grid=document.getElementById('clientGrid');
+  if(!filtered.length){grid.innerHTML='<div class="empty"><div class="empty-icon">\ud83d\udd0d</div><p>No clients match filters</p></div>';return;}
+  grid.innerHTML=filtered.map(function(c,i){
+    var a=av(i),isOpen=openCards[c.id],isSel=selectedIds.has(c.id),score=calcScore(c),overdue=c.followup&&c.followup<todayStr();
+    var camp=campaigns.find(function(x){return x.id===c.campaignId;});
+    return '<div class="client-card'+(isOpen?' expanded':'')+(c.starred?' starred':'')+'" id="card_'+c.id+'">'
+      +'<div class="card-row">'
+      +'<input type="checkbox" class="card-check" '+(isSel?'checked':'')+' onchange="toggleSel('+c.id+',this.checked)" onclick="event.stopPropagation()"/>'
+      +'<div class="avatar" style="background:'+a.bg+';color:'+a.c+'">'+initials(c.name)+'</div>'
+      +'<div class="card-info" onclick="toggleCard('+c.id+')">'
+      +'<div class="card-name"><button class="star-btn '+(c.starred?'on':'')+'" onclick="toggleStar('+c.id+');event.stopPropagation()" title="Star">'+(c.starred?'\u2b50':'\u2606')+'</button> '+esc(c.name)+'</div>'
+      +'<div class="card-tags">'
+      +'<span class="badge '+(c.platform==='Youtube'?'b-yt':'b-ig')+'">'+c.platform+'</span>'
+      +sb(c.status)
+      +(c.tags||[]).slice(0,2).map(function(t){return '<span class="badge b-tag">'+esc(t)+'</span>';}).join('')
+      +(camp?'<span class="badge" style="background:var(--accent-bg);color:var(--accent)">\ud83c\udfaf '+esc(camp.name)+'</span>':'')
+      +(c.followup?'<span class="badge '+(overdue?'b-overdue':'b-followup')+'">'+(overdue?'\u26a0 ':'')+c.followup+'</span>':'')
+      +'<span class="score-pill" style="background:'+scoreColor(score)+'20;color:'+scoreColor(score)+'">'+score+'%</span>'
+      +(c.dealVal?'<span class="badge" style="background:var(--green-bg);color:var(--green)">'+fmtINR(c.dealVal)+'</span>':'')
+      +'</div></div>'
+      +'<div class="card-right">'
+      +(c.wa?'<button class="btn btn-xs btn-wa" onclick="openWA(\''+c.wa+'\',\''+esc(c.name)+'\');event.stopPropagation()">WA</button>':'')
+      +(c.gmail?'<button class="btn btn-xs btn-gmail" onclick="openGmail(\''+c.gmail+'\',\''+esc(c.name)+'\');event.stopPropagation()">Mail</button>':'')
+      +((c.contact||'').startsWith('@')?'<button class="btn btn-xs btn-insta" onclick="openInsta(\''+c.contact+'\');event.stopPropagation()">Insta</button>':'')
+      +'<button class="btn btn-xs" onclick="openProfile('+c.id+');event.stopPropagation()" title="Profile">\ud83d\udc64</button>'
+      +'<button class="btn btn-xs" style="background:var(--accent-bg);color:var(--accent);border-color:rgba(124,106,247,.3)" onclick="openAIQuick('+c.id+');event.stopPropagation()" title="AI">\ud83e\udd16</button>'
+      +'<button class="expand-btn" onclick="toggleCard('+c.id+');event.stopPropagation()">\u25be</button>'
+      +'</div></div>'
+      +'<div class="edit-panel">'
+      +'<div class="edit-grid">'
+      +'<div class="ef"><label>Name</label><input value="'+esc(c.name)+'" onchange="upd('+c.id+',\'name\',this.value)"/></div>'
+      +'<div class="ef"><label>Platform</label><select onchange="upd('+c.id+',\'platform\',this.value)"><option'+(c.platform==='Youtube'?' selected':'')+'>Youtube</option><option'+(c.platform==='Instagram'?' selected':'')+'>Instagram</option></select></div>'
+      +'<div class="ef"><label>Contact / Insta</label><input value="'+esc(c.contact||'')+'" onchange="upd('+c.id+',\'contact\',this.value)"/></div>'
+      +'<div class="ef"><label>Gmail</label><input value="'+esc(c.gmail||'')+'" onchange="upd('+c.id+',\'gmail\',this.value)"/></div>'
+      +'<div class="ef"><label>WhatsApp</label><input value="'+esc(c.wa||'')+'" onchange="upd('+c.id+',\'wa\',this.value)"/></div>'
+      +'<div class="ef"><label>Followers</label><input type="number" value="'+(c.followers||'')+'" onchange="upd('+c.id+',\'followers\',+this.value)"/></div>'
+      +'<div class="ef"><label>Deal Value (\u20b9)</label><input type="number" value="'+(c.dealVal||'')+'" onchange="upd('+c.id+',\'dealVal\',+this.value)"/></div>'
+      +'<div class="ef"><label>Status</label><select onchange="upd('+c.id+',\'status\',this.value)">'+['New','Contacted','Replied','Negotiating','Closed','Not Interested'].map(function(s){return '<option'+(c.status===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'
+      +'<div class="ef"><label>Sample Sent?</label><select onchange="upd('+c.id+',\'sample\',this.value)"><option value="Y"'+(c.sample==='Y'?' selected':'')+'>Yes</option><option value="N"'+(c.sample==='N'?' selected':'')+'>No</option></select></div>'
+      +'<div class="ef"><label>Follow-up Date</label><input type="date" value="'+(c.followup||'')+'" onchange="upd('+c.id+',\'followup\',this.value)"/></div>'
+      +'<div class="ef"><label>Tags (comma sep)</label><input value="'+(c.tags||[]).join(', ')+'" onchange="upd('+c.id+',\'tags\',this.value.split(\',\').map(function(t){return t.trim();}).filter(Boolean))"/></div>'
+      +'<div class="ef"><label>YT URL</label><input value="'+esc(c.ytUrl||'')+'" onchange="upd('+c.id+',\'ytUrl\',this.value)" placeholder="youtube.com/@channel"/></div>'
+      +'</div>'
+      +'<div class="panel-actions"><span style="font-size:11px;color:var(--text3)">Quick follow-up:</span>'
+      +'<div class="sched-btns"><button class="sched-btn" onclick="schedFor('+c.id+',1)">+1d</button><button class="sched-btn" onclick="schedFor('+c.id+',3)">+3d</button><button class="sched-btn" onclick="schedFor('+c.id+',7)">+1w</button><button class="sched-btn" onclick="schedFor('+c.id+',14)">+2w</button></div>'
+      +'<button class="btn btn-xs btn-danger" onclick="delClient('+c.id+')" style="margin-left:auto">\ud83d\uddd1 Delete</button></div>'
+      +'<div class="notes-section"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:7px">Notes History</div>'
+      +'<div class="notes-history" id="notes_'+c.id+'">'+renderNotes(c)+'</div>'
+      +'<div class="note-add"><textarea id="noteIn_'+c.id+'" placeholder="Add a note..."></textarea><button class="btn btn-sm btn-accent" style="align-self:flex-end" onclick="addNote('+c.id+')">Add</button></div>'
+      +'</div></div></div>';
+  }).join('');
+  updateBulkBar();
+  renderDashboard();
+}
+function renderNotes(c){
+  if(!c.notes||!c.notes.length)return '<div style="font-size:12px;color:var(--text3);padding:5px 0">No notes yet</div>';
+  return c.notes.slice().reverse().map(function(n){return '<div class="note-item"><div class="note-ts">'+n.ts+'</div><div class="note-text">'+esc(n.text)+'</div></div>';}).join('');
+}
+function addNote(id){
+  var inp=document.getElementById('noteIn_'+id),text=(inp.value||'').trim();if(!text)return;
+  var c=clients.find(function(x){return x.id===id;});if(!c.notes)c.notes=[];
+  c.notes.push({ts:nowStr(),text:text});inp.value='';save();
+  document.getElementById('notes_'+id).innerHTML=renderNotes(c);toast('Note saved','\u2713');
+}
+function toggleCard(id){openCards[id]=!openCards[id];var el=document.getElementById('card_'+id);if(el)el.classList.toggle('expanded',!!openCards[id]);}
+function toggleStar(id){var c=clients.find(function(x){return x.id===id;});if(c){c.starred=!c.starred;save();renderClients();toast(c.starred?'Starred \u2b50':'Unstarred','\u2605');}}
+function upd(id,field,val){var c=clients.find(function(x){return x.id===id;});if(c){c[field]=val;save();renderDashboard();toast('Saved','\u2713');}}
+function schedFor(id,days){var c=clients.find(function(x){return x.id===id;});if(c){c.followup=addDays(days);save();renderClients();toast('Follow-up: '+c.followup,'\ud83d\udcc5');}}
+function delClient(id){if(!confirm('Delete this client?'))return;clients=clients.filter(function(x){return x.id!==id;});selectedIds.delete(id);delete openCards[id];save();renderClients();toast('Deleted','\ud83d\uddd1');}
+
+/* SELECTION */
+function toggleSel(id,val){val?selectedIds.add(id):selectedIds.delete(id);updateBulkBar();}
+function selAll(val){getFiltered().forEach(function(c){val?selectedIds.add(c.id):selectedIds.delete(c.id);});renderClients();}
+function clearSel(){selectedIds.clear();document.getElementById('checkAll').checked=false;renderClients();}
+function updateBulkBar(){var bar=document.getElementById('bulkBar');bar.style.display=selectedIds.size?'flex':'none';document.getElementById('bulkCount').textContent=selectedIds.size+' selected';}
+function openBulkStatus(){document.getElementById('bulkStatusModal').style.display='flex';}
+function applyBulkStatus(){var v=document.getElementById('bulkStatusVal').value;clients.filter(function(c){return selectedIds.has(c.id);}).forEach(function(c){c.status=v;});save();cm('bulkStatusModal');clearSel();renderClients();toast('Status updated','\u2713');}
+function bulkDelete(){if(!confirm('Delete '+selectedIds.size+' clients?'))return;clients=clients.filter(function(c){return!selectedIds.has(c.id);});selectedIds.clear();save();renderClients();toast('Deleted','\ud83d\uddd1');}
+function bulkMsg(type){
+  bulkMsgType=type;
+  var sel=clients.filter(function(c){return selectedIds.has(c.id);});
+  var n=sel.filter(function(c){return type==='whatsapp'?c.wa:c.gmail;}).length;
+  document.getElementById('bulkMsgTitle').textContent=type==='whatsapp'?'Bulk WhatsApp':'Bulk Gmail';
+  document.getElementById('bulkMsgDesc').textContent=n+'/'+sel.length+' clients have '+(type==='whatsapp'?'WhatsApp':'Gmail')+'.';
+  var tmpl=templates.find(function(t){return t.channel===(type==='whatsapp'?'WhatsApp':'Gmail');});
+  document.getElementById('bulkMsgText').value=tmpl?tmpl.body:'Hi {name}, just following up!';
+  document.getElementById('bulkMsgModal').style.display='flex';
+}
+function sendBulkMsgs(){
+  var msg=document.getElementById('bulkMsgText').value;
+  clients.filter(function(c){return selectedIds.has(c.id);}).forEach(function(c,i){
+    setTimeout(function(){
+      var text=msg.replace(/{name}/g,c.name);
+      if(bulkMsgType==='whatsapp'&&c.wa)openWA(c.wa,c.name,text);
+      else if(bulkMsgType==='gmail'&&c.gmail)openGmail(c.gmail,c.name,'','',text);
+      if(!c.notes)c.notes=[];
+      c.notes.push({ts:nowStr(),text:(bulkMsgType==='whatsapp'?'WhatsApp':'Gmail')+' sent (bulk)'});
+      save();
+    },i*700);
+  });
+  cm('bulkMsgModal');toast('Sending...','\ud83d\udce8');
+}
+
+/* OUTREACH */
+function openWA(num,name,msg){
+  var tmpl=templates.find(function(t){return t.channel==='WhatsApp';});
+  var text=msg||(tmpl?tmpl.body.replace(/{name}/g,name):'Hi '+name+'! Following up \u2014 would love to connect!');
+  var clean=(num||'').replace(/\D/g,'');
+  var n=clean.length<=10?'91'+clean:clean;
+  window.open('https://wa.me/'+n+'?text='+encodeURIComponent(text),'_blank');
+}
+function openGmail(email,name,sub,body,msg){
+  var tmpl=templates.find(function(t){return t.channel==='Gmail';});
+  var subject=sub||(tmpl?tmpl.subject:'Follow-up: Collaboration');
+  var b=body||msg||(tmpl?tmpl.body.replace(/{name}/g,name):'Hi '+name+',\n\nFollowing up on my earlier message.\n\nBest regards');
+  window.open('https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(email)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(b),'_blank');
+}
+function openInsta(handle){window.open('https://instagram.com/'+(handle||'').replace('@',''),'_blank');}
+function popupWin(url,name,w,h){
+  var left=(screen.width-w)/2,top=(screen.height-h)/2;
+  window.open(url,name,'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+}
+
+/* ADD/SAVE CLIENT */
+function openAddModal(id){
+  document.getElementById('modalTitle').textContent=id?'Edit Client':'Add New Client';
+  document.getElementById('dupWarn').innerHTML='';
+  document.getElementById('ytFetchResult').innerHTML='';
+  updateFilters();
+  if(id){
+    var c=clients.find(function(x){return x.id===id;});
+    document.getElementById('m_id').value=id;
+    ['name','contact','gmail','wa','ytUrl'].forEach(function(f){document.getElementById('m_'+f).value=c[f]||'';});
+    document.getElementById('m_followers').value=c.followers||'';
+    document.getElementById('m_deal').value=c.dealVal||'';
+    document.getElementById('m_tags').value=(c.tags||[]).join(', ');
+    document.getElementById('m_platform').value=c.platform;
+    document.getElementById('m_status').value=c.status;
+    document.getElementById('m_sample').value=c.sample;
+    document.getElementById('m_followup').value=c.followup||'';
+    document.getElementById('m_campaign').value=c.campaignId||'';
+  }else{
+    document.getElementById('m_id').value='';
+    ['m_name','m_contact','m_gmail','m_wa','m_ytUrl','m_followers','m_deal','m_tags','m_followup'].forEach(function(fid){document.getElementById(fid).value='';});
+    document.getElementById('m_platform').value='Youtube';
+    document.getElementById('m_status').value='New';
+    document.getElementById('m_sample').value='N';
+    document.getElementById('m_campaign').value='';
+  }
+  document.getElementById('clientModal').style.display='flex';
+  setTimeout(function(){['m_gmail','m_wa'].forEach(function(fid){document.getElementById(fid).oninput=checkDup;});},100);
+}
+function checkDup(){
+  var gmail=document.getElementById('m_gmail').value.trim().toLowerCase();
+  var wa=document.getElementById('m_wa').value.trim().replace(/\D/g,'');
+  var curId=parseInt(document.getElementById('m_id').value)||0;
+  var dup=clients.find(function(c){return c.id!==curId&&((gmail&&(c.gmail||'').toLowerCase()===gmail)||(wa&&(c.wa||'').replace(/\D/g,'')===wa));});
+  document.getElementById('dupWarn').innerHTML=dup?'<div class="modal-warn">\u26a0 Possible duplicate: <strong>'+esc(dup.name)+'</strong> has this contact.</div>':'';
+}
+function sd(n){document.getElementById('m_followup').value=addDays(n);}
+function saveClient(){
+  var name=(document.getElementById('m_name').value||'').trim();if(!name){toast('Name required','\u26a0');return;}
+  var id=parseInt(document.getElementById('m_id').value)||0;
+  var data={name:name,platform:document.getElementById('m_platform').value,contact:document.getElementById('m_contact').value,gmail:document.getElementById('m_gmail').value,wa:document.getElementById('m_wa').value,ytUrl:document.getElementById('m_ytUrl').value,followers:parseInt(document.getElementById('m_followers').value)||0,dealVal:parseInt(document.getElementById('m_deal').value)||0,tags:document.getElementById('m_tags').value.split(',').map(function(t){return t.trim();}).filter(Boolean),campaignId:document.getElementById('m_campaign').value,status:document.getElementById('m_status').value,sample:document.getElementById('m_sample').value,followup:document.getElementById('m_followup').value};
+  if(id){var c=clients.find(function(x){return x.id===id;});Object.assign(c,data);toast('Updated','\u2713');}
+  else{clients.unshift(Object.assign({id:nextId++,notes:[],starred:false,created:todayStr(),dealStage:'Lead',deliverables:[],paymentStatus:'Pending',seqStep:0},data));toast('Client added','\u2713');}
+  save();cm('clientModal');renderClients();
+}
+
+/* YOUTUBE FETCH */
+async function fetchYT(){
+  var url=document.getElementById('m_ytUrl').value.trim();
+  if(!url){toast('Enter YouTube channel URL first','\u26a0');return;}
+  document.getElementById('ytFetchBtn').textContent='Fetching...';
+  document.getElementById('ytFetchBtn').disabled=true;
+  if(settings.ytApiKey){
+    try{
+      var handle=url.replace(/https?:\/\/(www\.)?youtube\.com\//,'').replace('@','').split('/')[0];
+      var r=await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle='+handle+'&key='+settings.ytApiKey);
+      var d=await r.json();
+      if(d.items&&d.items.length){
+        var ch=d.items[0];
+        var subs=parseInt(ch.statistics.subscriberCount)||0;
+        document.getElementById('m_followers').value=subs;
+        if(!document.getElementById('m_name').value)document.getElementById('m_name').value=ch.snippet.title;
+        document.getElementById('ytFetchResult').innerHTML='<div style="background:var(--yt-bg);border:1px solid rgba(255,0,0,.2);border-radius:var(--radius);padding:10px;margin-top:8px"><div style="font-size:12px;font-weight:600;color:var(--yt)">\ud83d\udcfa '+esc(ch.snippet.title)+'</div><div style="font-size:11px;color:var(--text2);margin-top:4px">\ud83d\udc65 '+(subs/1000).toFixed(0)+'K subscribers</div></div>';
+        toast('YT stats fetched!','\ud83d\udcfa');
+        document.getElementById('ytFetchBtn').textContent='\ud83d\udcfa Fetch YT Stats';
+        document.getElementById('ytFetchBtn').disabled=false;
+        return;
+      }
+    }catch(e){}
+  }
+  var ds=Math.floor(25000+Math.random()*150000);
+  var h=(url.split('@')[1]||'channel').split('/')[0].split('?')[0];
+  document.getElementById('m_followers').value=ds;
+  if(!document.getElementById('m_name').value)document.getElementById('m_name').value=h;
+  document.getElementById('ytFetchResult').innerHTML='<div style="background:var(--amber-bg);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--amber);margin-top:8px">\ud83c\udfa7 Demo: '+(ds/1000).toFixed(0)+'K subs \u2014 Add YouTube API key in Settings for real data</div>';
+  toast('Demo stats loaded','demo');
+  document.getElementById('ytFetchBtn').textContent='\ud83d\udcfa Fetch YT Stats';
+  document.getElementById('ytFetchBtn').disabled=false;
+}
+
+/* KANBAN */
+var KCOLS=['New','Contacted','Replied','Negotiating','Closed','Not Interested'];
+var KCOL_COLOR={New:'var(--blue)',Contacted:'var(--amber)',Replied:'var(--green)',Negotiating:'var(--accent)',Closed:'#2dd4a0','Not Interested':'var(--red)'};
+var dragId=null;
+function renderKanban(){
+  document.getElementById('kanbanBoard').innerHTML=KCOLS.map(function(status){
+    var cc=clients.filter(function(c){return c.status===status;});
+    return '<div class="kanban-col" id="kcol_'+status.replace(/\s/g,'_')+'" ondragover="kDragOver(event,\''+status+'\')" ondrop="kDrop(event,\''+status+'\')" ondragleave="event.currentTarget.classList.remove(\'drag-over\')">'
+      +'<div class="kanban-head"><span class="kanban-title" style="color:'+KCOL_COLOR[status]+'">'+status+'</span><span class="kanban-count">'+cc.length+'</span></div>'
+      +'<div class="kanban-cards">'+cc.map(function(c){
+        return '<div class="k-card" draggable="true" id="kcard_'+c.id+'" ondragstart="kDragStart(event,'+c.id+')">'
+          +'<div class="k-name">'+(c.starred?'\u2b50 ':'')+esc(c.name)+'</div>'
+          +'<div class="k-meta">'+c.platform+(c.followers?' \u00b7 '+(c.followers/1000).toFixed(0)+'K':'')+'</div>'
+          +'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">'+(c.tags||[]).slice(0,2).map(function(t){return '<span class="badge b-tag" style="font-size:10px">'+esc(t)+'</span>';}).join('')+'<span class="score-pill" style="background:'+scoreColor(calcScore(c))+'20;color:'+scoreColor(calcScore(c))+';font-size:10px">'+calcScore(c)+'%</span></div>'
+          +(c.dealVal?'<div style="font-size:11px;color:var(--green);margin-top:3px">'+fmtINR(c.dealVal)+'</div>':'')
+          +(c.followup?'<div style="font-size:10px;color:'+(c.followup<todayStr()?'var(--red)':'var(--text3)')+';margin-top:2px">'+(c.followup<todayStr()?'\u26a0 ':'')+c.followup+'</div>':'')
+          +'</div>';
+      }).join('')+'</div></div>';
+  }).join('');
+}
+function kDragStart(e,id){dragId=id;setTimeout(function(){var el=document.getElementById('kcard_'+id);if(el)el.classList.add('dragging');},0);}
+function kDragOver(e,s){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function kDrop(e,status){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  if(!dragId)return;
+  var c=clients.find(function(x){return x.id===dragId;});
+  if(c&&c.status!==status){c.status=status;save();renderKanban();renderDashboard();toast('\u2192 '+status,'\ud83d\uddc2');}
+  dragId=null;
+}
+
+/* AI CHAT */
+function setAIProvider(p){
+  aiProvider=p;settings.aiProvider=p;saveSets();
+  document.getElementById('tab-gpt').className='ai-tab'+(p==='gpt'?' active-gpt':'');
+  document.getElementById('tab-claude').className='ai-tab'+(p==='claude'?' active-claude':'');
+}
+function renderAIChat(){setAIProvider(settings.aiProvider||'gpt');if(!chatHistory.length)addWelcomeMsg();}
+function addWelcomeMsg(){
+  chatHistory=[{role:'assistant',content:'Namaste! \ud83d\udc4b Main tumhara **Outreach CRM AI Assistant** hun.\n\nMain yeh sab kar sakta hun:\n\u2022 Outreach messages likhna\n\u2022 Strategy suggest karna\n\u2022 Templates banana\n\u2022 Data analyze karna\n\nKya puchna hai? \ud83d\ude0a'}];
+  renderChatMessages();
+}
+function clearChat(){chatHistory=[];addWelcomeMsg();aiCtxId=null;document.getElementById('chatContextBar').style.display='none';}
+function openAI(id){
+  aiCtxId=id;
+  var c=clients.find(function(x){return x.id===id;});
+  go('ai');
+  if(c){
+    document.getElementById('chatContextBar').style.display='flex';
+    document.getElementById('chatContextText').textContent='\ud83d\udccc Context: '+c.name+' \u00b7 '+c.platform+' \u00b7 '+c.status+' \u00b7 Score '+calcScore(c)+'%';
+  }
+}
+function clearChatContext(){aiCtxId=null;document.getElementById('chatContextBar').style.display='none';}
+function chatKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+async function sendChat(){
+  var inp=document.getElementById('chatInput'),text=(inp.value||'').trim();
+  if(!text)return;
+  inp.value='';
+  var key=aiProvider==='gpt'?settings.openaiKey:settings.claudeKey;
+  var ctx=aiCtxId?clients.find(function(x){return x.id===aiCtxId;}):null;
+  chatHistory.push({role:'user',content:text});
+  renderChatMessages();
+  document.getElementById('chatTyping').style.display='flex';
+  document.getElementById('chatSendBtn').disabled=true;
+  await new Promise(function(r){setTimeout(r,700);});
+  if(!key){
+    chatHistory.push({role:'assistant',content:demoChat(text,ctx)});
+  } else {
+    try{
+      var sysP='You are an expert outreach CRM assistant for an Indian creator outreach business. Be concise, practical, use Hinglish naturally.'+(ctx?'\n\nClient context: '+JSON.stringify({name:ctx.name,platform:ctx.platform,followers:ctx.followers,tags:ctx.tags,status:ctx.status}):'');
+      var res,data;
+      if(aiProvider==='gpt'){
+        res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'gpt-4o',messages:[{role:'system',content:sysP}].concat(chatHistory.map(function(m){return{role:m.role,content:m.content};})),max_tokens:800})});
+        data=await res.json();
+        if(data.error)throw new Error(data.error.message);
+        chatHistory.push({role:'assistant',content:data.choices[0].message.content});
+      } else {
+        res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sysP,messages:chatHistory.map(function(m){return{role:m.role,content:m.content};})})});
+        data=await res.json();
+        if(data.error)throw new Error(data.error.message||'API error');
+        chatHistory.push({role:'assistant',content:data.content.map(function(b){return b.text||'';}).join('')});
+      }
+    }catch(e){chatHistory.push({role:'assistant',content:demoChat(text,ctx)});}
+  }
+  document.getElementById('chatTyping').style.display='none';
+  document.getElementById('chatSendBtn').disabled=false;
+  renderChatMessages();
+}
+function renderChatMessages(){
+  var el=document.getElementById('chatMessages');
+  el.innerHTML=chatHistory.map(function(m){
+    var bubble=m.role==='assistant'?m.content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br/>'):esc(m.content);
+    return '<div class="msg '+m.role+'"><div class="msg-avatar" style="'+(m.role==='user'?'background:var(--accent);color:#fff':'background:var(--surface2);border:1px solid var(--border)')+'">'+(m.role==='user'?'\ud83d\udc64':aiProvider==='gpt'?'\ud83d\udfe2':'\ud83d\udfe0')+'</div><div class="msg-bubble">'+bubble+'</div></div>';
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+/* DEMO AI */
+function demoChat(text,ctx){
+  var t=(text||'').toLowerCase(),name=ctx?ctx.name:'the client';
+  if(t.includes('message')||t.includes('whatsapp')||t.includes('likhna'))return 'Hi '+name+'! \ud83d\udc4b\n\nAapka content dekha \u2014 bahut valuable work! \ud83d\udd25\n\nMere paas ek collaboration opportunity hai jo aapke audience ke liye genuinely useful hogi.\n\nKya is hafte 10 min baat kar sakte hain?\n\nWarm regards';
+  if(t.includes('email')||t.includes('gmail'))return 'Subject: Collaboration Opportunity\n\nHi '+name+',\n\nI recently came across your channel and I\'m genuinely impressed by your content.\n\nI\'d love to discuss a collaboration that would add real value to your audience.\n\nWarm regards';
+  if(t.includes('strategy')||t.includes('tips')||t.includes('suggest'))return 'Yahan kuch proven strategies hain:\n\n**1. Personalize karo** \u2014 Creator ka latest video mention karo\n**2. Value-first** \u2014 Deal baad mein, value pehle\n**3. 3-touch rule** \u2014 Day 1, Day 4, Day 10\n**4. Short raho** \u2014 WA pe 3-4 sentences max\n\nKya aur detail chahiye?';
+  if(t.includes('price')||t.includes('deal')||t.includes('negotiate'))return 'Deal strategy:\n\n\ud83d\udca1 **Anchor high, come down**\n- Want \u20b910K? Quote \u20b915K first\n- Negotiate \u2192 offer \u20b912K with "extra deliverable"\n- Final close at \u20b910K \u2014 win-win!';
+  return 'Tumhare '+clients.length+' clients hain CRM mein.'+(ctx?' '+name+' ka status "'+ctx.status+'" hai.':'')+'\n\nMain suggest karunga:\n1. Follow-up date set karo\n2. Template use karo\n3. Analytics check karo\n\n**Demo Mode** \u2014 Settings mein API key add karo real AI ke liye! \ud83d\ude80';
+}
+
+/* AI QUICK MODAL */
+var aqClientId=null;
+function openAIQuick(id){
+  aqClientId=id;
+  document.getElementById('aqResult').style.display='none';
+  document.getElementById('aiQuickModal').style.display='flex';
+}
+async function genAIMsg(){
+  var c=clients.find(function(x){return x.id===aqClientId;});
+  if(!c){toast('Client not found','\u26a0');return;}
+  var channel=document.getElementById('aq_channel').value;
+  var type=document.getElementById('aq_type').value;
+  var ctx=document.getElementById('aq_context').value;
+  var btn=document.getElementById('aqGenBtn');
+  btn.disabled=true;btn.textContent='Generating...';
+  document.getElementById('aqResult').style.display='block';
+  document.getElementById('aqResultText').innerHTML='<span style="color:var(--text3);font-style:italic">Generating message...</span>';
+  await new Promise(function(r){setTimeout(r,1200);});
+  var key=settings.claudeKey||settings.openaiKey;
+  var text='';
+  if(key){
+    try{
+      var prompt='Generate a '+type+' message for '+channel+' to "'+c.name+'", a '+c.platform+' creator in '+(c.tags||['content creation'])[0]+' niche'+(c.followers?' with '+(c.followers/1000).toFixed(0)+'K followers':'')+'. '+(ctx?'Extra: '+ctx:'')+' Rules: '+(channel==='Gmail'?'Include Subject: on first line. Professional but friendly.':'Conversational, warm, Hinglish ok, 3-5 sentences.')+' No placeholder brackets. CTA at end. Sign off "Warm regards". Write ONLY the message.';
+      var res,data;
+      if(settings.claudeKey){
+        res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:prompt}]})});
+        data=await res.json();text=data.content?data.content.map(function(b){return b.text||'';}).join(''):'';
+      } else {
+        res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+settings.openaiKey},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:prompt}],max_tokens:500})});
+        data=await res.json();text=data.choices&&data.choices[0]?data.choices[0].message.content:'';
+      }
+    }catch(e){text='';}
+  }
+  if(!text)text=demoGenMsg(c,channel,type);
+  document.getElementById('aqResultText').textContent=text;
+  btn.disabled=false;btn.textContent='\u2728 Generate';
+}
+function demoGenMsg(c,channel,type){
+  var niche=(c&&c.tags&&c.tags[0])||'content creation',name=c?c.name:'Creator';
+  var subs=c&&c.followers?(c.followers/1000).toFixed(0)+'K':'your';
+  if(channel==='Gmail'){
+    if(type==='Follow-up')return 'Subject: Following up \u2014 '+name+'\n\nHi '+name+',\n\nJust a quick follow-up on my previous message about a potential collaboration.\n\nI know you\'re busy \u2014 just making sure it didn\'t get lost!\n\nWarm regards';
+    return 'Subject: Collaboration Opportunity\n\nHi '+name+',\n\nI recently came across your channel and I\'m genuinely impressed by your '+niche+' content.\n\nI\'d love to explore a collaboration that would add real value to your '+subs+' subscribers.\n\nWould you be open to a quick 10-min chat?\n\nWarm regards';
+  }
+  if(type==='Follow-up')return 'Hi '+name+'! \ud83d\ude0a\n\nBas ek follow-up \u2014 meri pichli message miss ho gayi hogi.\n\nAapke '+niche+' audience ke liye kuch valuable laya hun!\n\nWarm regards';
+  if(type==='After No Reply')return 'Hi '+name+'! Last try \ud83d\ude04\n\nJaanta hun busy hain \u2014 but yeh '+niche+' audience ke liye really valuable hoga.\n\nBas "haan" ya "nahi" batao! \ud83d\ude4f\n\nWarm regards';
+  return 'Hi '+name+'! \ud83d\udc4b\n\nAapka '+niche+' content dekha \u2014 '+subs+' subscribers ke liye bahut valuable! \ud83d\udd25\n\nEk collaboration opportunity hai jo I think unhe genuinely benefit karegi.\n\nKya 2-3 min baat ho sakti hai? \ud83d\ude4f\n\nWarm regards';
+}
+function copyAQResult(){navigator.clipboard.writeText(document.getElementById('aqResultText').textContent).then(function(){toast('Copied!','\ud83d\udccb');});}
+function saveAQAsTemplate(){
+  var text=document.getElementById('aqResultText').textContent,ch=document.getElementById('aq_channel').value;
+  templates.push({id:nextTId++,name:'AI \u2013 '+ch+' '+nowStr(),channel:ch,subject:'',body:text});
+  saveTk();toast('Saved as template','\ud83d\udcbe');
+}
+
+/* RESPONSE ANALYZER */
+function populateAnalyzerClients(){
+  var s=document.getElementById('analyzerClient');
+  if(s)s.innerHTML='<option value="">Select client (optional)</option>'+clients.map(function(c){return '<option value="'+c.id+'">'+esc(c.name)+'</option>';}).join('');
+}
+async function analyzeResponse(){
+  var reply=document.getElementById('analyzerInput').value.trim();
+  if(!reply){toast('Paste their reply first','\u26a0');return;}
+  var cId=document.getElementById('analyzerClient').value;
+  var c=cId?clients.find(function(x){return x.id==cId;}):null;
+  var ctx=document.getElementById('analyzerContext').value;
+  var btn=document.getElementById('analyzeBtn');
+  btn.disabled=true;btn.textContent='Analyzing...';
+  document.getElementById('analyzerResult').innerHTML='<div style="color:var(--text3);font-style:italic;padding:12px 0">Analyzing...</div>';
+  await new Promise(function(r){setTimeout(r,1400);});
+  var key=settings.claudeKey||settings.openaiKey;
+  if(!key){showDemoAnalysis(reply,c);btn.disabled=false;btn.textContent='\ud83d\udd0d Analyze Response';return;}
+  try{
+    var prompt='Analyze this reply from a potential collaboration client.\n'+(c?'Client: '+c.name+' ('+c.platform+', '+(c.tags||[]).join(', ')+', '+(c.followers/1000|0)+'K followers)\n':'')+'Context: '+ctx+'\nTheir reply: "'+reply+'"\nRespond in JSON only: {"sentiment":"Interested"|"Neutral"|"Hesitant"|"Not Interested","confidence":0-100,"analysis":"2-3 sentence analysis","next_steps":["step1","step2","step3"],"suggested_reply":"brief suggested reply"}';
+    var res,data,text;
+    if(settings.claudeKey){
+      res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});
+      data=await res.json();text=data.content?data.content.map(function(b){return b.text||'';}).join(''):'{}';
+    } else {
+      res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+settings.openaiKey},body:JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:prompt}],max_tokens:600})});
+      data=await res.json();text=data.choices&&data.choices[0]?data.choices[0].message.content:'{}';
+    }
+    var clean=text.replace(/```json|```/g,'').trim();
+    var result=JSON.parse(clean);
+    renderAnalysisResult(result);
+  }catch(e){showDemoAnalysis(reply,c);}
+  btn.disabled=false;btn.textContent='\ud83d\udd0d Analyze Response';
+}
+function renderAnalysisResult(result){
+  var sentColor={Interested:'var(--green)',Neutral:'var(--amber)',Hesitant:'var(--amber)','Not Interested':'var(--red)'}[result.sentiment]||'var(--text)';
+  var sentBg={Interested:'var(--green-bg)',Neutral:'var(--amber-bg)',Hesitant:'var(--amber-bg)','Not Interested':'var(--red-bg)'}[result.sentiment]||'var(--surface2)';
+  var steps=(result.next_steps||[]).map(function(s,i){return '<div class="next-step-item"><div class="step-num">'+(i+1)+'</div><span>'+esc(s)+'</span></div>';}).join('');
+  var replyHtml=result.suggested_reply?'<div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px">Suggested Reply</div><div style="background:var(--surface2);border-radius:var(--radius);padding:12px;font-size:13px;color:var(--text2);line-height:1.6" id="sugReplyBox">'+esc(result.suggested_reply)+'</div><button class="btn btn-sm btn-green" onclick="navigator.clipboard.writeText(document.getElementById(\'sugReplyBox\').textContent).then(function(){toast(\'Copied!\',\'\ud83d\udccb\');})" style="margin-top:8px">\ud83d\udccb Copy Reply</button></div>':'';
+  document.getElementById('analyzerResult').innerHTML='<div class="analyzer-result"><div class="sentiment-badge" style="background:'+sentBg+';color:'+sentColor+'">'+(result.sentiment==='Interested'?'\u2705':'\u26a0')+' '+result.sentiment+' \u00b7 '+result.confidence+'% confidence</div><p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">'+esc(result.analysis||'')+'</p><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px">Recommended Next Steps</div><div class="next-steps">'+steps+'</div>'+replyHtml+'</div>';
+}
+function showDemoAnalysis(reply,c){
+  var r=(reply||'').toLowerCase();
+  var pos=['interested','haan','yes','sure','call','discuss','price','connect','details'].filter(function(w){return r.includes(w);}).length;
+  var neg=['not interested','nahi','no thanks','busy','pass','decline'].filter(function(w){return r.includes(w);}).length;
+  var hes=['maybe','sochna','later','baad mein','not sure','consider'].filter(function(w){return r.includes(w);}).length;
+  var result;
+  if(neg>0){result={sentiment:'Not Interested',confidence:85,analysis:'Client ne clearly decline kar diya. Pressure karna relationship damage karega. Better hai kuch months baad fresh angle se try karo.',next_steps:['Politely acknowledge their response','Mark as Not Interested in CRM','Revisit after 3-6 months'],suggested_reply:"Hi, completely understand! No worries at all. If anything changes, would love to reconnect. Warm regards"};}
+  else if(pos>hes){result={sentiment:'Interested',confidence:Math.min(92,70+pos*7),analysis:'Client interested lag raha hai! Engagement aur curiosity clearly dikh rahi hai. Hot lead \u2014 jaldi respond karo!',next_steps:['Reply within 2 hours \u2014 strike while iron is hot','Send clear proposal with pricing and deliverables','Schedule a call ASAP'],suggested_reply:"Great to hear! Would love to share the details. Can we hop on a quick 10-min call this week? When works best for you?"};}
+  else if(hes>0){result={sentiment:'Hesitant',confidence:58,analysis:'Hard no nahi diya but enthusiasm bhi nahi. Sahi approach se convert ho sakta hai. Specific value ya case study bhejo.',next_steps:['Send a result/case study','Offer a risk-free sample first','Follow up in 5 days with new angle'],suggested_reply:"Hi! Let me share a quick example of results we have achieved for similar creators. I think it will make the decision easier. Can I send that over?"};}
+  else{result={sentiment:'Neutral',confidence:50,analysis:'Clear intent nahi dikh raha. Direct qualifying question se unki interest level samjho.',next_steps:['Ask a direct yes/no qualifying question','Share social proof from similar creators','Give a clear low-commitment next step'],suggested_reply:"Thanks for getting back! Quick question \u2014 would you be open to a 10-min call to explore if this makes sense? No pressure!"};}
+  var html='<div style="font-size:11px;background:var(--amber-bg);color:var(--amber);border-radius:20px;padding:3px 10px;display:inline-block;margin-bottom:10px">\ud83c\udfa7 Demo Analysis \u2014 Add API key for real AI</div>';
+  document.getElementById('analyzerResult').innerHTML='<div class="analyzer-result">'+html+'</div>';
+  renderAnalysisResult(result);
+}
+
+/* ANALYTICS */
+var chartInst={};
+function renderAnalytics(){
+  var grid=document.getElementById('analyticsGrid');
+  grid.innerHTML='<div class="chart-card"><div class="chart-title">Conversion Funnel</div><div class="funnel-wrap" id="funnelChart"></div></div><div class="chart-card"><div class="chart-title">Platform Performance</div><div class="chart-wrap"><canvas id="platChart"></canvas></div></div><div class="chart-card"><div class="chart-title">Response Rate Metrics</div><div class="rate-grid" id="rateGrid"></div></div><div class="chart-card"><div class="chart-title">Tag Distribution</div><div class="chart-wrap"><canvas id="tagChart"></canvas></div></div><div class="chart-card"><div class="chart-title">Pipeline Value by Stage</div><div class="chart-wrap"><canvas id="dealChart"></canvas></div></div><div class="chart-card"><div class="chart-title">Score Distribution</div><div class="chart-wrap"><canvas id="scoreChart"></canvas></div></div>';
+  var stages=['New','Contacted','Replied','Negotiating','Closed'];
+  var sCounts=stages.map(function(s){return clients.filter(function(c){return c.status===s;}).length;});
+  var maxS=Math.max.apply(null,sCounts.concat([1]));
+  var sColors=['var(--blue)','var(--amber)','var(--green)','var(--accent)','#2dd4a0'];
+  document.getElementById('funnelChart').innerHTML=stages.map(function(s,i){
+    var pct=clients.length?((sCounts[i]/clients.length)*100).toFixed(0):0;
+    var w=Math.max(5,((sCounts[i]/maxS)*100)).toFixed(0);
+    return '<div class="funnel-row"><div class="funnel-label">'+s+'</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:'+w+'%;background:'+sColors[i]+'">'+sCounts[i]+'</div></div><div class="funnel-pct">'+pct+'%</div></div>';
+  }).join('');
+  var ytC=clients.filter(function(c){return c.platform==='Youtube';}),igC=clients.filter(function(c){return c.platform==='Instagram';});
+  var ytR=ytC.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length;
+  var igR=igC.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length;
+  ['platChart','tagChart','dealChart','scoreChart'].forEach(function(id){if(chartInst[id]){chartInst[id].destroy();delete chartInst[id];}});
+  chartInst.platChart=new Chart(document.getElementById('platChart'),{type:'bar',data:{labels:['Youtube','Instagram'],datasets:[{label:'Total',data:[ytC.length,igC.length],backgroundColor:'rgba(91,164,245,.45)',borderColor:'#5ba4f5',borderWidth:1},{label:'Replied/Won',data:[ytR,igR],backgroundColor:'rgba(45,212,160,.45)',borderColor:'#2dd4a0',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9393a8',font:{size:11}}}},scales:{x:{ticks:{color:'#9393a8'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#9393a8'},grid:{color:'rgba(255,255,255,.04)'}}}}});
+  var total=clients.length,rep=clients.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length,cl=clients.filter(function(c){return c.status==='Closed';}).length;
+  var rr=total?((rep/total)*100).toFixed(1):0,cr=rep?((cl/rep)*100).toFixed(1):0;
+  var sConv=(function(){var s=clients.filter(function(c){return c.sample==='Y';});return s.length?((s.filter(function(c){return['Replied','Closed'].includes(c.status);}).length/s.length)*100).toFixed(0):0;})();
+  var avgSc=total?(clients.reduce(function(a,c){return a+calcScore(c);},0)/total).toFixed(0):0;
+  document.getElementById('rateGrid').innerHTML='<div class="rate-item"><div class="rate-label">Response Rate</div><div class="rate-val" style="color:var(--green)">'+rr+'%</div></div><div class="rate-item"><div class="rate-label">Close Rate</div><div class="rate-val" style="color:var(--accent)">'+cr+'%</div></div><div class="rate-item"><div class="rate-label">Sample Conv.</div><div class="rate-val" style="color:var(--amber)">'+sConv+'%</div></div><div class="rate-item"><div class="rate-label">Avg Score</div><div class="rate-val" style="color:var(--blue)">'+avgSc+'%</div></div>';
+  var tagMap={};clients.forEach(function(c){(c.tags||[]).forEach(function(t){tagMap[t]=(tagMap[t]||0)+1;});});
+  var sortedTags=Object.entries(tagMap).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+  if(sortedTags.length)chartInst.tagChart=new Chart(document.getElementById('tagChart'),{type:'doughnut',data:{labels:sortedTags.map(function(t){return t[0];}),datasets:[{data:sortedTags.map(function(t){return t[1];}),backgroundColor:['rgba(91,164,245,.7)','rgba(240,98,146,.7)','rgba(45,212,160,.7)','rgba(245,166,35,.7)','rgba(124,106,247,.7)','rgba(255,95,106,.7)','rgba(37,211,102,.7)','rgba(180,120,200,.7)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#9393a8',font:{size:10},boxWidth:10}}}}});
+  var dealByStatus={};KCOLS.forEach(function(s){dealByStatus[s]=clients.filter(function(c){return c.status===s;}).reduce(function(a,c){return a+(c.dealVal||0);},0);});
+  chartInst.dealChart=new Chart(document.getElementById('dealChart'),{type:'bar',data:{labels:Object.keys(dealByStatus),datasets:[{data:Object.values(dealByStatus),backgroundColor:KCOLS.map(function(s){return KCOL_COLOR[s]+'66';}),borderColor:KCOLS.map(function(s){return KCOL_COLOR[s];}),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9393a8',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#9393a8',callback:function(v){return '\u20b9'+(v/1000).toFixed(0)+'K';}},grid:{color:'rgba(255,255,255,.04)'}}}}});
+  var buckets={Poor:0,Fair:0,Good:0,Great:0};clients.forEach(function(c){var s=calcScore(c);if(s<30)buckets.Poor++;else if(s<50)buckets.Fair++;else if(s<70)buckets.Good++;else buckets.Great++;});
+  chartInst.scoreChart=new Chart(document.getElementById('scoreChart'),{type:'pie',data:{labels:Object.keys(buckets),datasets:[{data:Object.values(buckets),backgroundColor:['rgba(255,95,106,.7)','rgba(245,166,35,.7)','rgba(91,164,245,.7)','rgba(45,212,160,.7)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#9393a8',font:{size:11},boxWidth:12}}}}});
+}
+
+/* SEQUENCES */
+function renderSequences(){
+  var el=document.getElementById('sequenceList');
+  if(!sequences.length){el.innerHTML='<div class="empty"><div class="empty-icon">\ud83d\udccb</div><p>No sequences yet</p></div>';return;}
+  el.innerHTML=sequences.map(function(s){
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:10px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:14px;font-weight:600">'+esc(s.name)+'</div><div style="font-size:12px;color:var(--text2);margin-top:2px">'+s.steps.length+' steps</div></div><div style="display:flex;gap:7px"><button class="btn btn-xs" onclick="editSeq('+s.id+')">Edit</button><button class="btn btn-xs btn-danger" onclick="delSeq('+s.id+')">Delete</button></div></div>'
+      +s.steps.map(function(step,i){return '<div class="seq-step"><div class="seq-num">'+(i+1)+'</div><div class="seq-content"><div class="seq-title">Day '+step.day+' \u2014 '+step.channel+'</div><div class="seq-meta">'+step.type+(step.note?' \u00b7 '+step.note:'')+'</div></div></div>';}).join('')
+      +'</div>';
+  }).join('');
+}
+var seqStepCount=0;
+function openAddSequence(){
+  document.getElementById('seqModalTitle').textContent='New Sequence';
+  document.getElementById('seq_id').value='';
+  document.getElementById('seq_name').value='';
+  seqStepCount=0;
+  document.getElementById('seqStepsBuilder').innerHTML='';
+  addSeqStep();addSeqStep();addSeqStep();
+  document.getElementById('seqModal').style.display='flex';
+}
+function addSeqStep(){
+  seqStepCount++;
+  var idx=seqStepCount;
+  var d=document.getElementById('seqStepsBuilder');
+  var div=document.createElement('div');
+  div.id='seqStep_'+idx;
+  div.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:7px;';
+  div.innerHTML='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:12px;font-weight:600;color:var(--text2);min-width:40px">Step '+idx+'</span><input type="number" placeholder="Day" style="width:60px;padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none" id="ss_day_'+idx+'" value="'+((idx-1)*3)+'"/><select style="padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none" id="ss_chan_'+idx+'"><option>WhatsApp</option><option>Gmail</option><option>Instagram DM</option></select><select style="padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none" id="ss_type_'+idx+'"><option>First Outreach</option><option>Follow-up</option><option>After No Reply</option><option>Closing</option></select><input placeholder="Note (optional)" style="flex:1;min-width:80px;padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none" id="ss_note_'+idx+'"/><button onclick="document.getElementById(\'seqStep_'+idx+'\').remove()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px">\u2715</button></div>';
+  d.appendChild(div);
+}
+function saveSequence(){
+  var name=(document.getElementById('seq_name').value||'').trim();if(!name){toast('Name required','\u26a0');return;}
+  var steps=[];
+  document.querySelectorAll('[id^="seqStep_"]').forEach(function(el){
+    var idx=el.id.split('_')[1];
+    var dayEl=document.getElementById('ss_day_'+idx),chanEl=document.getElementById('ss_chan_'+idx),typeEl=document.getElementById('ss_type_'+idx),noteEl=document.getElementById('ss_note_'+idx);
+    if(dayEl)steps.push({day:parseInt(dayEl.value)||0,channel:chanEl?chanEl.value:'WhatsApp',type:typeEl?typeEl.value:'First Outreach',note:noteEl?noteEl.value:''});
+  });
+  steps.sort(function(a,b){return a.day-b.day;});
+  var id=parseInt(document.getElementById('seq_id').value)||0;
+  if(id){var s=sequences.find(function(x){return x.id===id;});Object.assign(s,{name:name,steps:steps});}
+  else sequences.push({id:nextSId++,name:name,steps:steps});
+  saveSeqs();cm('seqModal');renderSequences();toast('Sequence saved','\u2713');
+}
+function editSeq(id){var s=sequences.find(function(x){return x.id===id;});document.getElementById('seqModalTitle').textContent='Edit Sequence';document.getElementById('seq_id').value=id;document.getElementById('seq_name').value=s.name;seqStepCount=0;document.getElementById('seqStepsBuilder').innerHTML='';s.steps.forEach(function(){addSeqStep();});document.getElementById('seqModal').style.display='flex';}
+function delSeq(id){if(!confirm('Delete?'))return;sequences=sequences.filter(function(x){return x.id!==id;});saveSeqs();renderSequences();toast('Deleted','\ud83d\uddd1');}
+
+/* CAMPAIGNS */
+function renderCampaigns(){
+  var el=document.getElementById('campaignList');
+  if(!campaigns.length){el.innerHTML='<div class="empty"><div class="empty-icon">\ud83c\udfaf</div><p>No campaigns yet</p></div>';return;}
+  el.innerHTML=campaigns.map(function(camp){
+    var cc=clients.filter(function(c){return c.campaignId===camp.id;});
+    var rep=cc.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length;
+    var pct=cc.length?Math.round((rep/cc.length)*100):0;
+    var val=cc.reduce(function(a,c){return a+(c.dealVal||0);},0);
+    return '<div class="campaign-card '+(camp.active?'active-camp':'')+'"><div class="camp-header"><div><div class="camp-name">'+esc(camp.name)+'</div><div style="font-size:12px;color:var(--text2);margin-top:2px">'+(camp.start||'')+(camp.end?' \u2192 '+camp.end:'')+'</div></div><div style="display:flex;gap:7px;align-items:center"><button class="btn btn-xs '+(camp.active?'btn-danger':'btn-green')+'" onclick="toggleCamp(\''+camp.id+'\')">'+(camp.active?'Pause':'Activate')+'</button><button class="btn btn-xs" onclick="editCamp(\''+camp.id+'\')">Edit</button><button class="btn btn-xs btn-danger" onclick="delCamp(\''+camp.id+'\')">Del</button></div></div><div class="camp-stats"><span>\ud83d\udc65 '+cc.length+' clients</span><span>\ud83d\udcac '+rep+' replied</span><span>\ud83d\udcb0 '+fmtINR(val)+'</span><span>\ud83c\udfaf Target: '+(camp.target||'\u2014')+'</span></div><div class="camp-progress"><div class="camp-progress-fill" style="width:'+pct+'%"></div></div>'+(camp.notes?'<div style="font-size:12px;color:var(--text3);margin-top:6px">'+esc(camp.notes)+'</div>':'')+'</div>';
+  }).join('');
+}
+function openAddCampaign(){document.getElementById('campModalTitle').textContent='New Campaign';['camp_id','camp_name','camp_start','camp_end','camp_target','camp_notes'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('campModal').style.display='flex';}
+function editCamp(id){var c=campaigns.find(function(x){return x.id===id;});document.getElementById('campModalTitle').textContent='Edit Campaign';document.getElementById('camp_id').value=id;document.getElementById('camp_name').value=c.name;document.getElementById('camp_start').value=c.start||'';document.getElementById('camp_end').value=c.end||'';document.getElementById('camp_target').value=c.target||'';document.getElementById('camp_notes').value=c.notes||'';document.getElementById('campModal').style.display='flex';}
+function saveCampaign(){
+  var name=(document.getElementById('camp_name').value||'').trim();if(!name){toast('Name required','\u26a0');return;}
+  var id=document.getElementById('camp_id').value;
+  var data={name:name,start:document.getElementById('camp_start').value,end:document.getElementById('camp_end').value,target:parseInt(document.getElementById('camp_target').value)||0,notes:document.getElementById('camp_notes').value,active:true};
+  if(id){var c=campaigns.find(function(x){return x.id===id;});Object.assign(c,data);}
+  else campaigns.push(Object.assign({id:String(nextCId++)},data));
+  saveCamps();cm('campModal');renderCampaigns();updateFilters();toast('Campaign saved','\ud83c\udfaf');
+}
+function toggleCamp(id){var c=campaigns.find(function(x){return x.id===id;});if(c){c.active=!c.active;saveCamps();renderCampaigns();}}
+function delCamp(id){if(!confirm('Delete campaign?'))return;campaigns=campaigns.filter(function(x){return x.id!==id;});clients.forEach(function(c){if(c.campaignId===id)c.campaignId='';});save();saveCamps();renderCampaigns();toast('Deleted','\ud83d\uddd1');}
+
+/* GOALS */
+function renderGoals(){
+  var now2=new Date(),yr=now2.getFullYear(),mo=now2.getMonth();
+  function thisMonth(c){return c.created&&new Date(c.created).getFullYear()===yr&&new Date(c.created).getMonth()===mo;}
+  var outDone=clients.filter(thisMonth).length;
+  var repDone=clients.filter(function(c){return thisMonth(c)&&['Replied','Negotiating'].includes(c.status);}).length;
+  var clDone=clients.filter(function(c){return thisMonth(c)&&c.status==='Closed';}).length;
+  var revDone=clients.filter(function(c){return c.status==='Closed';}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var gd=[{label:'Outreach',icon:'\ud83d\udce8',done:outDone,target:goals.outreach||50,color:'var(--blue)'},{label:'Replies',icon:'\ud83d\udcac',done:repDone,target:goals.replies||15,color:'var(--green)'},{label:'Deals Closed',icon:'\ud83e\udd1d',done:clDone,target:goals.closed||5,color:'var(--accent)'},{label:'Revenue',icon:'\ud83d\udcb0',done:revDone,target:goals.revenue||100000,color:'var(--amber)',isCurrency:true}];
+  document.getElementById('goalsGrid').innerHTML=gd.map(function(g){
+    var pct=Math.min(100,Math.round((g.done/g.target)*100));
+    var display=g.isCurrency?fmtINR(g.done):g.done,tDisplay=g.isCurrency?fmtINR(g.target):g.target;
+    return '<div class="goal-card"><div class="goal-header"><div class="goal-title">'+g.icon+' '+g.label+'</div><div class="goal-pct" style="color:'+g.color+'">'+pct+'%</div></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+g.color+'"></div></div><div class="goal-meta">'+display+' / '+tDisplay+(g.isCurrency?'':' completed')+'</div>'+(pct>=100?'<div style="font-size:12px;color:var(--green);margin-top:6px;font-weight:500">\ud83c\udf89 Goal achieved!</div>':'')+'</div>';
+  }).join('');
+  var ms=[10,25,50,100];
+  document.getElementById('streakSection').innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;max-width:400px;margin-top:6px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">\ud83c\udfc6 Milestones</div>'+ms.map(function(m){return '<div class="milestone '+(outDone>=m?'done':'')+'"><div class="milestone-dot"></div><span>'+(outDone>=m?'\u2705':'\u2b1c')+' '+m+' clients outreached'+(outDone>=m?' \u2014 Done!':' ('+Math.max(0,m-outDone)+' to go)')+'</span></div>';}).join('')+'</div>';
+}
+function openGoalEdit(){document.getElementById('g_outreach').value=goals.outreach||50;document.getElementById('g_replies').value=goals.replies||15;document.getElementById('g_closed').value=goals.closed||5;document.getElementById('g_revenue').value=goals.revenue||100000;document.getElementById('goalsModal').style.display='flex';}
+function saveGoals(){goals={outreach:parseInt(document.getElementById('g_outreach').value)||50,replies:parseInt(document.getElementById('g_replies').value)||15,closed:parseInt(document.getElementById('g_closed').value)||5,revenue:parseInt(document.getElementById('g_revenue').value)||100000};saveGoalsData();cm('goalsModal');renderGoals();toast('Goals saved','\ud83c\udfc6');}
+
+/* REVENUE */
+function renderRevenue(){
+  var pipe=clients.filter(function(c){return!['Closed','Not Interested'].includes(c.status);}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var cl=clients.filter(function(c){return c.status==='Closed';}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var neg=clients.filter(function(c){return c.status==='Negotiating';}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var total=clients.reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var rr=clients.length?clients.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length/clients.length:0;
+  var cr2=clients.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length?clients.filter(function(c){return c.status==='Closed';}).length/clients.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length:0.3;
+  var forecast=Math.round(pipe*rr*cr2);
+  document.getElementById('revGrid').innerHTML='<div class="rev-card"><div class="rev-label">Total Pipeline</div><div class="rev-val" style="color:var(--accent)">'+fmtINR(pipe)+'</div></div><div class="rev-card"><div class="rev-label">Revenue Closed</div><div class="rev-val" style="color:var(--green)">'+fmtINR(cl)+'</div></div><div class="rev-card"><div class="rev-label">In Negotiation</div><div class="rev-val" style="color:var(--amber)">'+fmtINR(neg)+'</div></div><div class="rev-card"><div class="rev-label">Revenue Forecast</div><div class="rev-val" style="color:var(--blue)">'+fmtINR(forecast)+'</div></div><div class="rev-card"><div class="rev-label">Total Portfolio</div><div class="rev-val">'+fmtINR(total)+'</div></div><div class="rev-card"><div class="rev-label">Avg Deal Value</div><div class="rev-val">'+fmtINR(Math.round(total/(clients.length||1)))+'</div></div>';
+  document.getElementById('revCharts').innerHTML='<div class="chart-card"><div class="chart-title">Revenue by Status</div><div class="chart-wrap"><canvas id="revChart"></canvas></div></div>';
+  if(chartInst.revChart){chartInst.revChart.destroy();delete chartInst.revChart;}
+  var revBySt={};KCOLS.forEach(function(s){revBySt[s]=clients.filter(function(c){return c.status===s;}).reduce(function(a,c){return a+(c.dealVal||0);},0);});
+  chartInst.revChart=new Chart(document.getElementById('revChart'),{type:'doughnut',data:{labels:Object.keys(revBySt),datasets:[{data:Object.values(revBySt),backgroundColor:KCOLS.map(function(s){return KCOL_COLOR[s]+'aa';}),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#9393a8',font:{size:10},boxWidth:10}}}}});
+  var top=clients.filter(function(c){return c.dealVal>0;}).sort(function(a,b){return(b.dealVal||0)-(a.dealVal||0);}).slice(0,10);
+  document.getElementById('revTable').innerHTML=top.length?'<div class="chart-card" style="max-width:700px"><div class="chart-title">Top Deals</div><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:8px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">Client</th><th style="text-align:left;padding:8px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">Status</th><th style="text-align:left;padding:8px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">Deal Value</th><th style="text-align:left;padding:8px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">Score</th></tr></thead><tbody>'+top.map(function(c){return '<tr><td style="padding:8px 10px;border-bottom:1px solid var(--border)">'+esc(c.name)+'</td><td style="padding:8px 10px;border-bottom:1px solid var(--border)">'+sb(c.status)+'</td><td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--green)">'+fmtINR(c.dealVal)+'</td><td style="padding:8px 10px;border-bottom:1px solid var(--border);color:'+scoreColor(calcScore(c))+';font-weight:600">'+calcScore(c)+'%</td></tr>';}).join('')+'</tbody></table></div>':'';
+}
+
+/* REMINDERS */
+function renderReminders(){
+  var t=todayStr(),in7=addDays(7);
+  var ov=clients.filter(function(c){return c.followup&&c.followup<t;}).sort(function(a,b){return a.followup.localeCompare(b.followup);});
+  var up=clients.filter(function(c){return c.followup&&c.followup>=t&&c.followup<=in7;}).sort(function(a,b){return a.followup.localeCompare(b.followup);});
+  var later=clients.filter(function(c){return c.followup&&c.followup>in7;}).sort(function(a,b){return a.followup.localeCompare(b.followup);});
+  var html='';
+  if(ov.length)html+='<div class="section-label" style="color:var(--red)">\u26a0 Overdue ('+ov.length+')</div>'+ov.map(function(c){return miniRem(c,true);}).join('');
+  if(up.length)html+='<div class="section-label">\ud83d\udcc5 This Week ('+up.length+')</div>'+up.map(function(c){return miniRem(c,false);}).join('');
+  if(later.length)html+='<div class="section-label">\ud83d\uddd3 Later ('+later.length+')</div>'+later.map(function(c){return miniRem(c,false);}).join('');
+  if(!html)html='<div class="empty"><div class="empty-icon">\u2705</div><p>No follow-ups scheduled</p></div>';
+  document.getElementById('reminderContent').innerHTML=html;
+}
+
+/* REPORT */
+function renderReport(){
+  var d=new Date();d.setMonth(d.getMonth()+reportOffset);
+  var yr=d.getFullYear(),mo=d.getMonth();
+  var monthName=d.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  document.getElementById('reportSub').textContent=monthName;
+  function inM(c){return c.followup&&new Date(c.followup).getFullYear()===yr&&new Date(c.followup).getMonth()===mo;}
+  var all=clients.filter(inM);
+  var rep=all.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length;
+  var cl=all.filter(function(c){return c.status==='Closed';}).length;
+  var revT=clients.filter(function(c){return c.status==='Closed';}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var pipeV=clients.filter(function(c){return!['Closed','Not Interested'].includes(c.status);}).reduce(function(a,c){return a+(c.dealVal||0);},0);
+  var rRate=clients.length?((clients.filter(function(c){return['Replied','Negotiating','Closed'].includes(c.status);}).length/clients.length)*100).toFixed(1):0;
+  document.getElementById('reportContent').innerHTML='<div class="report-wrap"><div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px"><div><div style="font-size:18px;font-weight:700">'+monthName+' Report</div><div style="font-size:12px;color:var(--text3);margin-top:3px">Generated: '+nowStr()+'</div></div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px"><div style="background:var(--surface2);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--accent)">'+all.length+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">Follow-ups Scheduled</div></div><div style="background:var(--surface2);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--green)">'+rep+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">Replied / Active</div></div><div style="background:var(--surface2);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--amber)">'+cl+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">Deals Closed</div></div></div><div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;background:var(--surface2);border-radius:var(--radius);padding:12px"><div><div style="font-size:11px;color:var(--text3)">Pipeline Value</div><div style="font-size:18px;font-weight:700;color:var(--accent)">'+fmtINR(pipeV)+'</div></div><div><div style="font-size:11px;color:var(--text3)">Revenue Closed</div><div style="font-size:18px;font-weight:700;color:var(--green)">'+fmtINR(revT)+'</div></div><div><div style="font-size:11px;color:var(--text3)">Total Clients</div><div style="font-size:18px;font-weight:700">'+clients.length+'</div></div><div><div style="font-size:11px;color:var(--text3)">Response Rate</div><div style="font-size:18px;font-weight:700;color:var(--blue)">'+rRate+'%</div></div></div><table class="report-table"><thead><tr><th>Client</th><th>Platform</th><th>Status</th><th>Follow-up</th><th>Deal</th><th>Score</th></tr></thead><tbody>'+(all.length?all.map(function(c){return '<tr><td>'+esc(c.name)+'</td><td>'+c.platform+'</td><td>'+sb(c.status)+'</td><td>'+(c.followup||'\u2014')+'</td><td style="color:var(--green)">'+(c.dealVal?fmtINR(c.dealVal):'\u2014')+'</td><td style="color:'+scoreColor(calcScore(c))+';font-weight:600">'+calcScore(c)+'%</td></tr>';}).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:16px">No follow-ups this month</td></tr>')+'</tbody></table></div>';
+}
+function chgReport(d){reportOffset+=d;renderReport();}
+
+/* PROFILE */
+function openProfile(id){
+  currentProfileId=id;
+  var c=clients.find(function(x){return x.id===id;});
+  document.getElementById('profileTitle').textContent=c.name;
+  var a=av(clients.indexOf(c)),score=calcScore(c);
+  document.getElementById('profileContent').innerHTML='<div class="profile-header"><div class="profile-avatar" style="background:'+a.bg+';color:'+a.c+'">'+initials(c.name)+'</div><div style="flex:1"><div style="font-size:17px;font-weight:700">'+esc(c.name)+(c.starred?' \u2b50':'')+'</div><div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px"><span class="badge '+(c.platform==='Youtube'?'b-yt':'b-ig')+'">'+c.platform+'</span>'+sb(c.status)+(c.tags||[]).map(function(t){return '<span class="badge b-tag">'+esc(t)+'</span>';}).join('')+'</div></div><div style="text-align:right"><div style="font-size:30px;font-weight:700;color:'+scoreColor(score)+'">'+score+'%</div><div style="font-size:11px;color:var(--text3)">Response Score</div></div></div>'
+    +'<div class="profile-section"><div class="profile-section-title">Contact Details</div><div class="profile-grid"><div class="pf-item"><label>Gmail</label><span style="color:var(--blue)">'+(c.gmail||'\u2014')+'</span></div><div class="pf-item"><label>WhatsApp</label><span>'+(c.wa||'\u2014')+'</span></div><div class="pf-item"><label>Contact / Insta</label><span>'+(c.contact||'\u2014')+'</span></div><div class="pf-item"><label>Followers</label><span>'+(c.followers?(c.followers/1000).toFixed(0)+'K':'\u2014')+'</span></div><div class="pf-item"><label>Deal Value</label><span style="color:var(--green)">'+(c.dealVal?fmtINR(c.dealVal):'\u2014')+'</span></div><div class="pf-item"><label>Sample Sent</label><span>'+(c.sample==='Y'?'Yes \u2713':'No')+'</span></div><div class="pf-item"><label>Follow-up</label><span style="color:'+(c.followup&&c.followup<todayStr()?'var(--red)':'var(--text)')+'"> '+(c.followup||'Not set')+'</span></div><div class="pf-item"><label>Added On</label><span>'+(c.created||'\u2014')+'</span></div></div>'
+    +'<div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">'+(c.wa?'<button class="btn btn-sm btn-wa" onclick="openWA(\''+c.wa+'\',\''+esc(c.name)+'\')">\ud83d\udcac WhatsApp</button>':'')+(c.gmail?'<button class="btn btn-sm btn-gmail" onclick="openGmail(\''+c.gmail+'\',\''+esc(c.name)+'\')">\ud83d\udce7 Gmail</button>':'')+((c.contact||'').startsWith('@')?'<button class="btn btn-sm btn-insta" onclick="openInsta(\''+c.contact+'\')">\ud83d\udcf8 Instagram</button>':'')+(c.ytUrl?'<button class="btn btn-sm btn-yt" onclick="popupWin(\''+c.ytUrl+'\',\'YT\',1100,750)">\u25b6\ufe0f YT Channel</button>':'')+'<button class="btn btn-sm" onclick="openAddModal('+c.id+')">\u270f Edit</button></div></div>'
+    +'<div class="profile-section"><div class="profile-section-title">Notes & Activity</div>'+(c.notes&&c.notes.length?'<div class="timeline">'+c.notes.slice().reverse().map(function(n){return '<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-ts">'+n.ts+'</div><div class="tl-text">'+esc(n.text)+'</div></div></div>';}).join('')+'</div>':'<div style="font-size:13px;color:var(--text3)">No notes yet</div>')+'<div class="note-add" style="margin-top:12px"><textarea id="profNoteIn" placeholder="Add a note..."></textarea><button class="btn btn-sm btn-accent" style="align-self:flex-end" onclick="addProfNote('+c.id+')">Add</button></div></div>';
+  go('profile');
+}
+function addProfNote(id){
+  var inp=document.getElementById('profNoteIn'),text=(inp.value||'').trim();if(!text)return;
+  var c=clients.find(function(x){return x.id===id;});if(!c.notes)c.notes=[];
+  c.notes.push({ts:nowStr(),text:text});inp.value='';save();openProfile(id);toast('Note saved','\u2713');
+}
+
+/* TEMPLATES */
+function renderTemplates(){
+  var el=document.getElementById('templateList');
+  if(!templates.length){el.innerHTML='<div class="empty"><div class="empty-icon">\u2709\ufe0f</div><p>No templates yet</p></div>';return;}
+  el.innerHTML=templates.map(function(t){
+    var preview=t.channel==='Gmail'?'<div style="margin-top:8px"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">Gmail Preview</div><div class="preview-box">'+(t.subject?'<div class="preview-subject">'+esc(t.subject)+'</div>':'')+esc(t.body).replace(/\n/g,'<br/>')+'</div></div>':'';
+    return '<div class="template-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:14px;font-weight:600">'+esc(t.name)+'</div><div style="display:flex;gap:5px;margin-top:4px"><span class="badge '+(t.channel==='WhatsApp'?'b-replied':t.channel==='Gmail'?'b-notint':'b-ig')+'">'+t.channel+'</span>'+(t.subject?'<span style="font-size:11px;color:var(--text3)">Sub: '+esc(t.subject)+'</span>':'')+'</div></div><div style="display:flex;gap:6px"><button class="btn btn-xs" onclick="editTmpl('+t.id+')">Edit</button><button class="btn btn-xs btn-danger" onclick="delTmpl('+t.id+')">Del</button></div></div><div style="background:var(--surface2);border-radius:var(--radius);padding:10px;font-size:12px;color:var(--text2);white-space:pre-wrap;line-height:1.6">'+esc(t.body)+'</div>'+preview+'</div>';
+  }).join('');
+}
+function openAddTmpl(){document.getElementById('tmplModalTitle').textContent='New Template';['t_id','t_name','t_subject','t_body'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('t_channel').value='WhatsApp';document.getElementById('tmplPreviewWrap').style.display='none';document.getElementById('tmplModal').style.display='flex';}
+function editTmpl(id){var t=templates.find(function(x){return x.id===id;});document.getElementById('tmplModalTitle').textContent='Edit Template';document.getElementById('t_id').value=id;document.getElementById('t_name').value=t.name;document.getElementById('t_channel').value=t.channel;document.getElementById('t_subject').value=t.subject||'';document.getElementById('t_body').value=t.body;renderTmplPreview();document.getElementById('tmplModal').style.display='flex';}
+function renderTmplPreview(){
+  var ch=document.getElementById('t_channel').value,sub=document.getElementById('t_subject').value,body=document.getElementById('t_body').value;
+  var pw=document.getElementById('tmplPreviewWrap');pw.style.display=ch==='Gmail'?'block':'none';
+  if(ch==='Gmail')document.getElementById('tmplPreviewBox').innerHTML=(sub?'<div class="preview-subject">'+esc(sub)+'</div>':'')+esc(body.replace(/{name}/g,'[Client Name]')).replace(/\n/g,'<br/>');
+}
+function saveTmpl(){
+  var name=(document.getElementById('t_name').value||'').trim();if(!name){toast('Name required','\u26a0');return;}
+  var id=parseInt(document.getElementById('t_id').value)||0;
+  var data={name:name,channel:document.getElementById('t_channel').value,subject:document.getElementById('t_subject').value,body:document.getElementById('t_body').value};
+  if(id){var t=templates.find(function(x){return x.id===id;});Object.assign(t,data);}else templates.push(Object.assign({id:nextTId++},data));
+  saveTk();cm('tmplModal');renderTemplates();toast('Template saved','\u2713');
+}
+function delTmpl(id){if(!confirm('Delete?'))return;templates=templates.filter(function(x){return x.id!==id;});saveTk();renderTemplates();toast('Deleted','\ud83d\uddd1');}
+
+/* SETTINGS */
+function renderSettings(){
+  var ACCENT=['#7c6af7','#5ba4f5','#2dd4a0','#f5a623','#ff5f6a','#f06292','#25d366','#ff6b35','#cc785c'];
+  document.getElementById('settingsContent').innerHTML='<div class="settings-section"><div class="settings-section-title">\ud83c\udfa8 Branding</div><div class="settings-grid"><div class="sf"><label>CRM Name</label><input id="set_name" value="'+esc(settings.brandName||'Outreach CRM')+'" placeholder="Your CRM name"/></div><div class="sf"><label>Accent Color</label><div class="color-swatches">'+ACCENT.map(function(c){return '<div class="color-swatch '+(settings.accentColor===c?'selected':'')+'" style="background:'+c+'" onclick="setAccent(\''+c+'\')"></div>';}).join('')+'</div></div><button class="btn btn-accent" onclick="saveBranding()">Save Branding</button></div></div>'
+    +'<div class="settings-section"><div class="settings-section-title">\ud83e\udd16 AI API Keys</div><div class="settings-grid"><div style="background:var(--amber-bg);border:1px solid rgba(245,166,35,.3);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--amber)">\ud83c\udfa7 <strong>Demo Mode active</strong> \u2014 AI features work with smart demo responses. Add API keys below for real AI (optional).</div><div class="sf"><label>OpenAI API Key (ChatGPT) <span class="api-status '+(settings.openaiKey?'api-ok':'api-missing')+'">'+(settings.openaiKey?'\u2713 Connected':'Optional \u00b7 Demo active')+'</span></label><input type="password" id="set_openai" placeholder="sk-..." value="'+(settings.openaiKey||'')+'"/><span style="font-size:11px;color:var(--text3)">Get from: platform.openai.com \u2192 API Keys</span></div><div class="sf"><label>Claude (Anthropic) Key <span class="api-status '+(settings.claudeKey?'api-ok':'api-missing')+'">'+(settings.claudeKey?'\u2713 Connected':'Optional \u00b7 Demo active')+'</span></label><input type="password" id="set_claude" placeholder="sk-ant-..." value="'+(settings.claudeKey||'')+'"/><span style="font-size:11px;color:var(--text3)">Get from: console.anthropic.com \u2192 API Keys</span></div><div class="sf"><label>YouTube Data API Key <span class="api-status '+(settings.ytApiKey?'api-ok':'api-missing')+'">'+(settings.ytApiKey?'\u2713 Connected':'Optional \u00b7 Demo active')+'</span></label><input type="password" id="set_yt" placeholder="AIza..." value="'+(settings.ytApiKey||'')+'"/><span style="font-size:11px;color:var(--text3)">Get from: console.cloud.google.com \u2192 YouTube Data API v3</span></div><button class="btn btn-accent" onclick="saveApiKeys()">Save API Keys</button></div></div>'
+    +'<div class="settings-section"><div class="settings-section-title">\u2699\ufe0f Preferences</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" onclick="toggleTheme()">'+(settings.theme==='dark'?'\u2600\ufe0f Switch to Light':'\ud83c\udf19 Switch to Dark')+'</button><button class="btn btn-danger" onclick="resetAll()">\ud83d\uddd1 Reset All Data</button></div></div>'
+    +'<div class="settings-section"><div class="settings-section-title">\ud83d\udcf1 Install as App (PWA)</div><p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">Install this CRM as a desktop app. Works offline for most features.</p><button class="btn btn-green" onclick="installPWA()">\ud83d\udcf1 Install App</button><p style="font-size:11px;color:var(--text3);margin-top:8px">Or in Chrome: address bar \u2192 Install icon (\u2295)</p></div>';
+}
+function setAccent(c){settings.accentColor=c;applyBranding();saveSets();renderSettings();}
+function saveBranding(){settings.brandName=document.getElementById('set_name').value||'Outreach CRM';applyBranding();saveSets();toast('Branding saved','\ud83c\udfa8');}
+function saveApiKeys(){settings.openaiKey=document.getElementById('set_openai').value.trim();settings.claudeKey=document.getElementById('set_claude').value.trim();settings.ytApiKey=document.getElementById('set_yt').value.trim();saveSets();renderSettings();toast('API keys saved','\ud83d\udd11');}
+function resetAll(){if(!confirm('Delete ALL data? Cannot be undone!'))return;[SK,TK,CK,SQK,GK,SETK].forEach(function(k){localStorage.removeItem(k);});location.reload();}
+
+/* IMPORT/EXPORT */
+function exportCSV(){
+  var h=['S.No','Name','Platform','Contact','Gmail','WhatsApp','Followers','Tags','Deal Value','Status','Sample','Followup','Score','Campaign','Notes'];
+  var rows=clients.map(function(c,i){var camp=campaigns.find(function(x){return x.id===c.campaignId;});return [i+1,c.name,c.platform,c.contact||'',c.gmail||'',c.wa||'',c.followers||'',(c.tags||[]).join('|'),c.dealVal||'',c.status,c.sample,c.followup||'',calcScore(c),camp?camp.name:'',(c.notes||[]).map(function(n){return n.text;}).join(' | ')].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');});
+  dl('CRM_Export_'+todayStr()+'.csv','text/csv',[h.join(',')].concat(rows).join('\n'));toast('Exported','\u2b07');
+}
+function importCSV(e){
+  var f=e.target.files[0];if(!f)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var n=0;
+    ev.target.result.split('\n').filter(function(l){return l.trim();}).slice(1).forEach(function(line){
+      var cols=parseCSVLine(line);if(!cols[0])return;
+      clients.push({id:nextId++,name:cols[0],platform:cols[1]||'Youtube',contact:cols[2]||'',gmail:cols[3]||'',wa:cols[4]||'',followers:parseInt(cols[5])||0,tags:cols[6]?cols[6].split('|').map(function(t){return t.trim();}):[] ,dealVal:parseInt(cols[7])||0,status:cols[8]||'New',sample:cols[9]||'N',followup:cols[10]||'',notes:cols[11]?[{ts:nowStr(),text:cols[11]}]:[],starred:false,created:todayStr(),campaignId:'',dealStage:'Lead',deliverables:[],paymentStatus:'Pending'});n++;
+    });
+    save();renderClients();toast('Imported '+n+' clients','\u2b06');
+  };
+  reader.readAsText(f);e.target.value='';
+}
+function parseCSVLine(line){
+  var res=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){var ch=line[i];if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(ch===','&&!inQ){res.push(cur.trim());cur='';}else cur+=ch;}
+  res.push(cur.trim());return res;
+}
+function exportJSON(){dl('CRM_Backup_'+todayStr()+'.json','application/json',JSON.stringify({clients:clients,templates:templates,campaigns:campaigns,sequences:sequences,goals:goals,settings:settings,exportedAt:nowStr()},null,2));toast('Backup saved','\ud83d\udcbe');}
+function importJSON(e){
+  var f=e.target.files[0];if(!f)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var d=JSON.parse(ev.target.result);
+      if(!confirm('Replace all data with this backup?'))return;
+      if(d.clients)clients=d.clients;if(d.templates)templates=d.templates;if(d.campaigns)campaigns=d.campaigns;if(d.sequences)sequences=d.sequences;if(d.goals)goals=d.goals;
+      nextId=Math.max.apply(null,clients.map(function(c){return c.id;}).concat([0]))+1;
+      nextTId=Math.max.apply(null,templates.map(function(t){return t.id;}).concat([0]))+1;
+      save();saveTk();saveCamps();saveSeqs();renderClients();toast('Restored','\u267b');
+    }catch(err){toast('Invalid JSON','\u26a0');}
+  };
+  reader.readAsText(f);e.target.value='';
+}
+function dl(name,type,content){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:type}));a.download=name;a.click();URL.revokeObjectURL(a.href);}
+
+/* NOTIFICATIONS */
+function checkNotifs(){
+  if(!('Notification' in window))return;
+  if(Notification.permission==='default')Notification.requestPermission();
+  clients.filter(function(c){return c.followup===todayStr();}).forEach(function(c){
+    if(Notification.permission==='granted')new Notification('\ud83d\udcc5 Follow-up Reminder',{body:'Time to follow up with '+c.name+'!'});
+    var ex=document.querySelector('.notif-banner');if(ex)ex.remove();
+    var d=document.createElement('div');d.className='notif-banner';
+    d.innerHTML='<button class="notif-close" onclick="this.parentElement.remove()">\u2715</button><div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:4px">\ud83d\udcc5 Follow-up Reminder</div><div style="font-size:12px;color:var(--text2)">Time to follow up with <strong>'+esc(c.name)+'</strong>!</div>';
+    document.body.appendChild(d);setTimeout(function(){if(d.isConnected)d.remove();},8000);
+  });
+}
+
+/* KEYBOARD SHORTCUTS */
+document.addEventListener('keydown',function(e){
+  if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+  if(e.key==='n'||e.key==='N')openAddModal();
+  else if(e.key==='s'||e.key==='S'){go('clients');setTimeout(function(){var sb=document.getElementById('searchBox');if(sb)sb.focus();},100);}
+  else if(e.key==='k'||e.key==='K')go('kanban');
+  else if(e.key==='a'||e.key==='A')go('ai');
+  else if(e.key==='g'||e.key==='G')go('goals');
+  else if(e.key==='?')showTour();
+  else if(e.key==='Escape')document.querySelectorAll('.modal-bg').forEach(function(m){m.style.display='none';});
+});
+
+/* TOUR */
+var TOUR=[
+  {icon:'\ud83c\udf89',title:'Welcome to Outreach CRM Pro v4!',desc:'Your complete creator outreach system. 21+ features, dual AI (ChatGPT + Claude), YouTube stats, Kanban pipeline, and much more. Let\'s take a quick tour!'},
+  {icon:'\ud83d\udc65',title:'All Clients',desc:'Add, search, filter clients. Each gets a response score %. Inline edit, notes history, quick follow-up scheduling, and star priority clients.'},
+  {icon:'\ud83d\uddc2\ufe0f',title:'Pipeline Board',desc:'Drag & drop Kanban \u2014 move clients from New \u2192 Contacted \u2192 Replied \u2192 Negotiating \u2192 Closed. Visualize every deal in your pipeline.'},
+  {icon:'\ud83e\udd16',title:'AI Assistant (Dual AI)',desc:'Chat with ChatGPT or Claude. Ask for outreach strategy, messages, or client analysis. Works in Demo Mode without any API key!'},
+  {icon:'\ud83d\udd0d',title:'Response Analyzer',desc:'Paste a client reply \u2014 AI tells you if they\'re Interested/Hesitant/Not Interested, gives next steps and a suggested reply. Fully works in Demo Mode!'},
+  {icon:'\ud83d\udcfa',title:'YouTube Channel Stats',desc:'Add YouTube URL \u2192 Click "Fetch YT Stats" \u2192 auto-fills subscribers. Works in Demo Mode. Add YouTube API key in Settings for real data.'},
+  {icon:'\ud83c\udfaf',title:'Campaigns & Sequences',desc:'Group clients into campaigns (Diwali Push, Q1 Finance). Create multi-step sequences with day-wise follow-up plans.'},
+  {icon:'\ud83c\udfc6',title:'Goals & Revenue',desc:'Set monthly targets for outreach, replies, deals, revenue. See live progress bars and milestones. Revenue page shows pipeline value and forecasts.'},
+  {icon:'\u2699\ufe0f',title:'Settings \u2014 Start Here!',desc:'Set your brand name + accent color. Optionally add OpenAI, Claude, or YouTube API keys to unlock real AI. Everything works in Demo Mode without keys!'},
+  {icon:'\ud83d\udcf1',title:'Install as Desktop App',desc:'Click "Install App" in Settings to install this CRM on your PC or phone \u2014 works just like a real app, even offline!'},
+];
+var tourStep=0;
+function showTour(){tourStep=0;renderTour();document.getElementById('tourOverlay').style.display='flex';}
+function renderTour(){
+  var t=TOUR[tourStep];
+  document.getElementById('tourIcon').textContent=t.icon;
+  document.getElementById('tourTitle').textContent=t.title;
+  document.getElementById('tourDesc').textContent=t.desc;
+  document.getElementById('tourDots').innerHTML=TOUR.map(function(_,i){return '<div class="tour-dot'+(i===tourStep?' active':'')+'"></div>';}).join('');
+  document.getElementById('prevTourBtn').style.display=tourStep===0?'none':'inline-flex';
+  document.getElementById('nextTourBtn').textContent=tourStep===TOUR.length-1?'Finish \u2713':'Next \u2192';
+}
+function nextTour(dir){
+  tourStep+=dir;
+  if(tourStep>=TOUR.length){document.getElementById('tourOverlay').style.display='none';settings.tourDone=true;saveSets();return;}
+  if(tourStep<0)tourStep=0;
+  renderTour();
+}
+
+/* PWA */
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('pwaBtn').style.display='block';});
+function installPWA(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;document.getElementById('pwaBtn').style.display='none';});}}
+var manifest={name:'Outreach CRM Pro',short_name:'CRM Pro',start_url:'.',display:'standalone',background_color:'#0f0f13',theme_color:'#7c6af7',icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="%237c6af7"/><text y="130" x="30" font-size="110">📊</text></svg>',sizes:'192x192',type:'image/svg+xml'}]};
+var mblob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+var mlink=document.createElement('link');mlink.rel='manifest';mlink.href=URL.createObjectURL(mblob);document.head.appendChild(mlink);
+
+/* UTILS */
+function cm(id){document.getElementById(id).style.display='none';}
+function toast(msg,icon,dur){
+  icon=icon||'\u2713';dur=dur||2200;
+  var t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;document.getElementById('toastIcon').textContent=icon;
+  t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(function(){t.classList.remove('show');},dur);
+}
+document.querySelectorAll('.modal-bg').forEach(function(bg){bg.addEventListener('click',function(e){if(e.target===bg)bg.style.display='none';});});
+
+/* INIT */
+applyTheme();
+applyBranding();
+checkMobile();
+renderDashboard();
+renderClients();
+setTimeout(checkNotifs,2000);
+setTimeout(populateAnalyzerClients,500);
+if(!settings.tourDone)setTimeout(showTour,1000);
+setInterval(function(){document.getElementById('navOverdue').textContent=clients.filter(function(c){return c.followup&&c.followup<todayStr();}).length;checkNotifs();},60000);
+
+</script>
+</body>
+</html>
