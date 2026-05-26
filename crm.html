@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — Outreach CRM</title>
+<meta name="description" content="Pro Outreach CRM — Leads, Pipeline, Analytics, AI Assistant, Revenue Tracker.">
+<meta property="og:title" content="Yaksh OS — Outreach CRM Pro">
+<meta property="og:image" content="shared/og-image.png">
+<link rel="stylesheet" href="shared/design-system.css">
+<link rel="stylesheet" href="shared/navbar.css">
+<link rel="stylesheet" href="shared/loader.css">
+<style>
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+/* CRM NAVBAR STRIP */
+.crm-nav-strip {
+  height: 52px;
+  background: rgba(8,8,8,0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  backdrop-filter: blur(12px);
+}
+.crm-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: #fff;
+}
+.crm-nav-logo {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #F5C842, #FF8C42);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900; font-size: 0.85rem; color: #000;
+}
+.crm-nav-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  letter-spacing: 1px; color: #fff;
+}
+.crm-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.crm-nav-links::-webkit-scrollbar { display: none; }
+.crm-nav-links a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+.crm-nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.crm-nav-links a.current { color: #F5C842; }
+.crm-back-btn {
+  background: rgba(245,200,66,0.12);
+  border: 1px solid rgba(245,200,66,0.25);
+  color: #F5C842;
+  border-radius: 7px;
+  padding: 5px 14px;
+  font-size: 0.72rem;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.crm-back-btn:hover {
+  background: rgba(245,200,66,0.2);
+  color: #fff;
+}
+
+/* FRAME */
+.crm-frame-wrap {
+  position: fixed;
+  top: 52px;
+  left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+.crm-frame {
+  width: 100%; height: 100%;
+  border: none;
+  display: block;
+}
+
+/* LOADER OVERLAY */
+.frame-loader {
+  position: fixed;
+  inset: 0;
+  background: #08080f;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  transition: opacity 0.5s ease;
+}
+.frame-loader.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.frame-loader-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 4rem;
+  font-weight: 900;
+  color: #7c6af7;
+  letter-spacing: -2px;
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.97)} }
+.frame-loader-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.frame-loader-bar-wrap {
+  width: 200px;
+  height: 2px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.frame-loader-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #7c6af7, #a78bfa);
+  border-radius: 2px;
+  animation: loadBar 1.2s ease forwards;
+}
+@keyframes loadBar { from{width:0%} to{width:100%} }
+
+/* Mobile hamburger */
+@media (max-width: 768px) {
+  .crm-nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="frame-loader" id="frameLoader">
+  <div class="frame-loader-logo">CRM</div>
+  <div class="frame-loader-bar-wrap"><div class="frame-loader-bar"></div></div>
+  <div class="frame-loader-label">Loading Outreach CRM Pro</div>
+</div>
+
+<!-- TOP NAV STRIP -->
+<div class="crm-nav-strip">
+  <a href="index.html" class="crm-nav-brand">
+    <div class="crm-nav-logo">Y</div>
+    <span class="crm-nav-name">YAKSH OS</span>
+  </a>
+  <div class="crm-nav-links">
+    <a href="index.html">Mission</a>
+    <a href="roadmap.html">Roadmap</a>
+    <a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a>
+    <a href="scripts.html">Scripts</a>
+    <a href="crm.html" class="current">CRM</a>
+    <a href="focus-os.html">Focus OS</a>
+  </div>
+  <a href="index.html" class="crm-back-btn">← Back to OS</a>
+</div>
+
+<!-- CRM IFRAME -->
+<div class="crm-frame-wrap">
+  <iframe
+    class="crm-frame"
+    id="crmFrame"
+    src="crm-app/OutreachCRM_Pro_v4_WORKING.html"
+    title="Outreach CRM Pro"
+    onload="onFrameLoad()"
+  ></iframe>
+</div>
+
+<script>
+function onFrameLoad() {
+  setTimeout(() => {
+    document.getElementById('frameLoader').classList.add('hide');
+  }, 600);
+}
+
+// Fallback: hide loader after 3s even if iframe is slow
+setTimeout(() => {
+  document.getElementById('frameLoader').classList.add('hide');
+}, 3000);
+</script>
+</body>
+</html>

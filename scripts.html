@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — Script Vault</title>
+<meta name="description" content="30 complete video scripts — hook, full script, camera direction, expression tips. Phase 1, 2 & 3.">
+<meta property="og:title" content="Yaksh OS — Script Vault">
+<meta property="og:image" content="shared/og-image.png">
+<link rel="stylesheet" href="shared/design-system.css">
+<link rel="stylesheet" href="shared/navbar.css">
+<link rel="stylesheet" href="shared/loader.css">
+<style>
+.scripts-hero { padding:7rem 2rem 2.5rem; text-align:center; position:relative; overflow:hidden; }
+.scripts-hero h1 { font-family:var(--font-display); font-size:clamp(3rem,9vw,7rem); letter-spacing:2px; line-height:0.93; }
+.scripts-hero h1 span { color:var(--gold); }
+
+/* CONTROLS */
+.scripts-controls {
+  background:var(--bg2); border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:1.25rem 2rem; position:sticky; top:60px; z-index:50;
+}
+.scripts-controls-inner { max-width:1200px; margin:0 auto; display:flex; flex-direction:column; gap:1rem; }
+.scripts-search-row { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.scripts-search {
+  flex:1; min-width:200px;
+  background:var(--bg3); border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px; padding:10px 14px; color:var(--text);
+  font-family:var(--font-body); font-size:0.9rem; outline:none; transition:border-color 0.2s;
+}
+.scripts-search:focus { border-color:rgba(245,200,66,0.4); }
+.scripts-search::placeholder { color:var(--text-dim); }
+
+.phase-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.phase-tab {
+  background:var(--bg3); border:1px solid rgba(255,255,255,0.08);
+  color:var(--text-muted); padding:7px 16px; border-radius:20px;
+  cursor:pointer; font-size:0.78rem; font-weight:600; letter-spacing:0.03em;
+  transition:all 0.2s; white-space:nowrap;
+}
+.phase-tab:hover { border-color:var(--gold); color:var(--gold); }
+.phase-tab.active { background:var(--gold); color:#000; border-color:var(--gold); }
+
+.theme-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.theme-tab {
+  background:none; border:1px solid rgba(255,255,255,0.07);
+  color:var(--text-dim); padding:5px 12px; border-radius:20px;
+  cursor:pointer; font-size:0.72rem; transition:all 0.2s; white-space:nowrap;
+}
+.theme-tab:hover { border-color:var(--blue); color:var(--blue); }
+.theme-tab.active { background:rgba(79,142,247,0.12); color:var(--blue); border-color:rgba(79,142,247,0.3); }
+
+/* SCRIPTS GRID */
+.scripts-main { max-width:1200px; margin:0 auto; padding:1.5rem 2rem 5rem; }
+.scripts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:1.25rem; }
+.scripts-stats { display:flex; gap:2rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.scripts-stat { font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); letter-spacing:1px; }
+.scripts-stat strong { color:var(--gold); }
+
+/* SCRIPT CARD */
+.script-card {
+  background:var(--bg2); border:0.5px solid rgba(255,255,255,0.08);
+  border-radius:14px; overflow:hidden; transition:all 0.2s;
+}
+.script-card:hover { border-color:rgba(245,200,66,0.3); transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,0.35); }
+.script-card.filmed { border-color:rgba(57,217,138,0.3); background:linear-gradient(135deg,rgba(57,217,138,0.03),var(--bg2)); }
+
+.script-card-header {
+  padding:1rem 1.2rem;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.script-day { font-family:var(--font-display); font-size:1.1rem; color:var(--gold); letter-spacing:1px; }
+.script-tags { display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap; }
+.script-theme-tag {
+  font-size:0.6rem; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 10px; border-radius:20px; font-weight:700;
+}
+.tag-personal { background:rgba(79,142,247,0.12); color:var(--blue); border:1px solid rgba(79,142,247,0.2); }
+.tag-clinic   { background:rgba(57,217,138,0.12); color:var(--green); border:1px solid rgba(57,217,138,0.2); }
+.tag-income   { background:rgba(245,200,66,0.12); color:var(--gold);  border:1px solid rgba(245,200,66,0.2); }
+.tag-mindset  { background:rgba(255,140,66,0.12); color:var(--orange);border:1px solid rgba(255,140,66,0.2); }
+.tag-strategy { background:rgba(255,75,75,0.12);  color:var(--red);   border:1px solid rgba(255,75,75,0.2); }
+.tag-viral    { background:rgba(124,106,247,0.12);color:var(--purple);border:1px solid rgba(124,106,247,0.2); }
+
+.script-actions { display:flex; gap:0.4rem; align-items:center; }
+.script-btn {
+  background:none; border:1px solid rgba(255,255,255,0.08); border-radius:6px;
+  color:var(--text-muted); font-size:0.7rem; padding:4px 9px; cursor:pointer;
+  transition:all 0.2s; font-family:var(--font-mono); white-space:nowrap;
+}
+.script-btn:hover { border-color:var(--gold); color:var(--gold); }
+.script-btn.filmed-btn.active { background:rgba(57,217,138,0.12); color:var(--green); border-color:rgba(57,217,138,0.3); }
+
+.script-body { padding:1.2rem; }
+.script-title { font-weight:700; font-size:0.95rem; margin-bottom:1rem; color:var(--text); line-height:1.4; }
+
+.script-section { margin-bottom:1rem; }
+.script-section-label {
+  font-size:0.58rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text-muted); margin-bottom:0.4rem; font-family:var(--font-mono);
+}
+.hook-text {
+  background:var(--bg3); border-left:3px solid var(--gold);
+  padding:0.75rem 0.9rem; border-radius:0 8px 8px 0;
+  font-size:0.88rem; color:var(--text); font-style:italic; font-weight:600;
+}
+.body-text { font-size:0.83rem; color:var(--text-muted); line-height:1.85; }
+.cta-text {
+  background:var(--bg3); border:1px dashed rgba(245,200,66,0.25);
+  padding:0.65rem 0.9rem; border-radius:8px; font-size:0.8rem; color:var(--gold-dim);
+}
+.camera-dir {
+  background:rgba(124,106,247,0.06); border:1px solid rgba(124,106,247,0.15);
+  border-radius:8px; padding:0.65rem 0.9rem; font-size:0.78rem; color:var(--purple);
+}
+.expression-box {
+  background:rgba(57,217,138,0.05); border:1px solid rgba(57,217,138,0.15);
+  border-radius:8px; padding:0.65rem 0.9rem; font-size:0.78rem; color:var(--green);
+}
+
+/* EXPAND TOGGLE */
+.script-expand-btn {
+  width:100%; background:none; border:none; border-top:1px solid rgba(255,255,255,0.06);
+  color:var(--text-muted); font-size:0.78rem; padding:0.75rem; cursor:pointer;
+  transition:all 0.2s; font-family:var(--font-body); letter-spacing:0.03em;
+  display:flex; align-items:center; justify-content:center; gap:0.5rem;
+}
+.script-expand-btn:hover { color:var(--gold); background:rgba(245,200,66,0.04); }
+.script-full-body { display:none; }
+.script-card.expanded .script-full-body { display:block; }
+.script-card.expanded .script-expand-btn { border-top:none; border-bottom:1px solid rgba(255,255,255,0.06); color:var(--gold); }
+.expand-icon { transition:transform 0.3s; }
+.script-card.expanded .expand-icon { transform:rotate(180deg); }
+
+/* NO RESULTS */
+.no-scripts { text-align:center; padding:4rem 2rem; color:var(--text-dim); font-family:var(--font-mono); font-size:0.85rem; }
+
+/* LIGHT MODE */
+body.light-mode { --bg:#fafafa; --bg2:#fff; --bg3:#f3f3f7; --text:#111; --text-muted:#666; --text-dim:#aaa; }
+
+/* RESPONSIVE */
+@media (max-width:768px) {
+  .scripts-grid { grid-template-columns:1fr; }
+  .scripts-main { padding:1.5rem 1.25rem 4rem; }
+  .scripts-controls { padding:1rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="loader"><div class="loader-body"><span class="trail"></span><div class="base"><span></span><div class="face"></div></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div></div></div>
+  <p class="loader-label">Loading Script Vault</p>
+</div>
+<div id="global-search"><div class="search-modal"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search..." autocomplete="off"></div><div class="search-results"><div class="search-result-item" onclick="location.href='index.html'"><span class="sr-page">Home</span><span class="sr-title">Mission Command</span></div><div class="search-result-item" onclick="location.href='content-ideas.html'"><span class="sr-page">Ideas</span><span class="sr-title">365 Content Ideas</span></div></div><div class="search-hint"><span>Esc Close</span></div></div></div>
+
+<nav class="yaksh-nav">
+  <a href="index.html" class="nav-brand"><div class="nav-logo">Y</div><span class="nav-name">YAKSH <span class="nav-tag">OS</span></span></a>
+  <div class="nav-links">
+    <a href="index.html">Mission</a><a href="roadmap.html">Roadmap</a><a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a><a href="scripts.html">Scripts</a><a href="crm.html">CRM</a><a href="focus-os.html">Focus OS</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-search-btn">🔍 <span>Ctrl+K</span></button>
+    <button class="theme-toggle">🌙</button>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<section class="scripts-hero">
+  <div class="hero-glow"></div>
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;border:1px solid rgba(245,200,66,0.3);padding:5px 14px;border-radius:20px;display:inline-block;margin-bottom:1.25rem;animation:fadeUp 0.6s ease both;">Video Script Vault</span>
+  <h1 class="letter-animate">30 SCRIPTS</h1>
+  <p style="color:var(--text-muted);margin-top:0.75rem;animation:fadeUp 0.6s 0.3s ease both;">Hook · Full Script · Camera Direction · Expression Tips — Sirf shoot karo.</p>
+</section>
+
+<div class="scripts-controls">
+  <div class="scripts-controls-inner">
+    <div class="scripts-search-row">
+      <input type="text" class="scripts-search" id="scripts-search" placeholder="🔍 Search scripts — clinic, mindset, income, viral..." oninput="filterScripts()">
+    </div>
+    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+      <div class="phase-tabs">
+        <span class="phase-tab active" onclick="setPhase(this,'all')">All Phases</span>
+        <span class="phase-tab" onclick="setPhase(this,'1')">📍 Month 1</span>
+        <span class="phase-tab" onclick="setPhase(this,'2')">📈 Month 2</span>
+        <span class="phase-tab" onclick="setPhase(this,'3')">🚀 Month 3</span>
+      </div>
+      <div class="theme-tabs" id="theme-tabs">
+        <span class="theme-tab active" onclick="setTheme(this,'all')">All</span>
+        <span class="theme-tab" onclick="setTheme(this,'personal')">Personal</span>
+        <span class="theme-tab" onclick="setTheme(this,'clinic')">Clinic</span>
+        <span class="theme-tab" onclick="setTheme(this,'income')">Income</span>
+        <span class="theme-tab" onclick="setTheme(this,'mindset')">Mindset</span>
+        <span class="theme-tab" onclick="setTheme(this,'strategy')">Strategy</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scripts-main">
+  <div class="scripts-stats">
+    <span class="scripts-stat">Showing: <strong id="scripts-showing">30</strong> scripts</span>
+    <span class="scripts-stat">Filmed: <strong id="scripts-filmed">0</strong></span>
+    <span class="scripts-stat">Remaining: <strong id="scripts-remaining">30</strong></span>
+  </div>
+  <div class="scripts-grid" id="scripts-grid"></div>
+  <div class="no-scripts" id="no-scripts" style="display:none;">😕 No scripts found. Try different filters.</div>
+</div>
+
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem;text-align:center;">
+  <div style="font-family:var(--font-display);font-size:2rem;color:var(--gold);letter-spacing:2px;">SHOOT. EDIT. POST. REPEAT.</div>
+  <p style="color:var(--text-muted);font-size:0.82rem;margin-top:0.5rem;">Content is the compound interest of marketing. Start today.</p>
+</footer>
+
+<script src="shared/loader.js"></script>
+<script src="shared/navbar.js"></script>
+<script>
+const scriptsData = [
+  { id:1, phase:1, theme:'personal', day:'Day 01', title:'Main Kaun Hoon — Origin Story', hook:'Mein 19 saal ka hoon, ₹15,000 ki job karta hoon, aur mujhe ₹1 Crore banana hai. Pagal hoon kya?', body:`Mera naam Yaksh hai. Gurugram mein ek physiotherapy clinic mein receptionist hoon.\n\nHar roz 9 se 7, ₹15,000 mahine mein. Ek room rent, khana, commute — aur bacha? Almost kuch nahi.\n\nLekin ek din kuch click kiya. Meine socha — mujhe video editing aati hai. Graphic design aati hai. Social media ka kuch samajh hai.\n\nToh main kisi aur ke liye kyun kaam karunga jab main ye sab apne liye use kar sakta hoon?\n\nAaj se — publicly — main ek goal le raha hoon:\n\n365 din mein ₹1 Crore.\n\nSab public hoga. Wins, fails, learnings — sab kuch.`, cta:'Follow karo agar tujhe ye journey dekhni hai. Mein aaj se shuru kar raha hoon.', camera:'Face cam. Natural lighting. No studio. Dono haath occasionally gesture karein.', expression:'Intense but calm. Slightly smiling at the end. Direct eye contact throughout.', },
+  { id:2, phase:1, theme:'clinic', day:'Day 03', title:'Clinic Ka Pehla Reel — Behind The Scenes', hook:'Ye hai woh jagah jahan meri journey shuru hui — aur ye wahi jagah hai jo mujhe ₹1 Crore tak le jayegi.', body:`Ye meri clinic hai. Physiotherapy clinic, Gurugram mein.\n\nYahan roz 20–30 patients aate hain. Dard ke saath. Aur leave karte hain — better feel karke.\n\nMain yahaan receptionist hoon. Lekin mujhe ek cheez pata chal gayi:\n\nIs clinic ki koi online presence nahi hai. Instagram followers: 200. GMB reviews: 8. Website: nahi ke barabar.\n\nYe meri opportunity hai.\n\nMain yahan ka marketing free mein karunga. Results dikhaoonga. Aur woh results mera portfolio banega jisse main dusre clients laoonga.\n\nYahi hai mera plan.`, cta:'Follow karo — ye experiment live dekho.', camera:'B-roll of clinic (with permission). Walk-through style. End on your face.', expression:'Excited, purposeful. Show the "I have a plan" energy.', },
+  { id:3, phase:1, theme:'mindset', day:'Day 05', title:'Salary Slip Ki Sach Baat', hook:'Ye meri salary slip hai. ₹15,000. Aur ye mujhe motivate karti hai — har ek roz.', body:`Log salary slip se darte hain jab wo kam hoti hai.\n\nMein isse motivational poster ki tarah use karta hoon.\n\nHar subah jab main uthta hoon aur mann nahi karta kaam karne ka — main ye dekh leta hoon.\n\n₹15,000.\n\nAur soch leta hoon: kya main is number ke saath comfortable rahon?\n\nYa kuch karon uske baare mein?\n\nAnswer clear hai.\n\nMaine 6 mahine pehle ye sochna shuru kiya tha. Aaj maine action liya.`, cta:'Teri salary slip kya kehti hai tujhe? Comment mein bata.', camera:'Close-up of salary slip (amount can be blurred). Then face reveal.', expression:'Raw. Honest. Not sad — determined.', },
+  { id:4, phase:1, theme:'strategy', day:'Day 07', title:'Zero Capital Agency — Is It Real?', hook:'Bina ek rupaye invest kiye marketing agency start ki ja sakti hai. Mera proof dekhna hai?', body:`Log sochte hain business start karne ke liye capital chahiye.\n\nLet me break that myth.\n\nMujhe kya chahiye tha:\n1. Video editing skill — already hai\n2. Canva — free version\n3. Email account — free\n4. Phone camera — mera phone kaafi hai\n5. Pehla client — mere hi clinic ka case study\n\nTotal investment: ₹0.\n\nMera pehla client: free mein kaam kiya. Kyunki free kaam = paid portfolio.\nDusra client: ₹3,000. Teesra: ₹5,000.\n\nYe exponential hai — agar execute karo toh.`, cta:'Comment mein batao: tum kaunsi skill se start karoge?', camera:'Talking head + text overlay listing each point.', expression:'Confident teacher energy. Slightly fast-paced delivery.', },
+  { id:5, phase:1, theme:'personal', day:'Day 10', title:'Gurugram Reality — Honest Take', hook:'Gurugram mein rehna sach mein kaisa hai? Na glamour, na filter — seedha sach.', body:`Gurugram mein rehne ka matlab hai:\n\nChal chalke metro station 15 minute.\nRent: ₹8,000–12,000 for 1 BHK sharing.\nKhana: ₹150–200 per meal.\nCommmute: 1.5 ghante aane-jaane mein.\n\nAur itne mein ₹15,000 salary mein savings? Almost zero.\n\nLekin Gurugram ki ek cheez jo log miss karte hain:\n\nYahaan itni companies hain, itna network hai, itne opportunities hain — ki agar tu networked ho toh sab kuch possible hai.\n\nMain isi city ko apna launchpad bana raha hoon. Judge karo ya follow karo — choice tumhari.`, cta:'Gurugram mein ho? Ya kisi aur city se ye relatable hai? Comment karo.', camera:'Walk-and-talk style. City background. Authentic, not staged.', expression:'Real talk energy. No BS. Occasional dry humor.', },
+  { id:6, phase:1, theme:'clinic', day:'Day 12', title:'Back Pain — 5 Myths Busted', hook:'Ye 5 cheezein aapki kamar dard ke baare mein sach nahi hain — aur ye sach hai.', body:`Myth 1: Bed rest se kamar thik ho jaata hai.\nSach: Light movement recovery ko tez karti hai.\n\nMyth 2: Back pain = spine problem.\nSach: 90% cases mein muscles ya posture problem hai.\n\nMyth 3: Yoga se sabka back pain thik hota hai.\nSach: Wrong yoga can make it worse. Supervised therapy pehle.\n\nMyth 4: Pain hona matlab damaged hai.\nSach: Pain is a signal, not always damage.\n\nMyth 5: Physiotherapy is painful.\nSach: Good physio is targeted relief — not torture.`, cta:'Aur myths hain? Comment mein puchho — next video mein answer karunga.', camera:'Talking head. Text appear on screen for each myth/fact pair.', expression:'Authoritative but approachable. Slight humor on myth reveals.', },
+  { id:7, phase:1, theme:'income', day:'Day 15', title:'₹15K Se ₹1 Crore — The Math', hook:'Ye koi dream nahi hai. Ye mathematics hai. Seedha dekho.', body:`Month 1: ₹18,000 (job ₹15K + 1 freelance client ₹3K)\nMonth 3: ₹42,000 (5 clients)\nMonth 6: ₹1,10,000 (agency mode)\nMonth 9: ₹2,00,000 (systems + multiple streams)\nMonth 12: ₹4,00,000+\n\nTotal Year 1: ₹1 Crore+ cumulative.\n\nKya ye guaranteed hai? Nahi.\nKya ye possible hai? 100%.\n\nCondition sirf ek hai:\nHar mahine better execute karo previous mahine se.\n\nMath toh tum bhi kar sakte ho.`, cta:'Ye math apne situation pe apply karo. Comment mein share karo number.', camera:'Whiteboard or phone notes showing the numbers live.', expression:'Calculated. Serious. Let the numbers speak.', },
+  { id:8, phase:1, theme:'strategy', day:'Day 18', title:'Cold Email Jo Actually Work Karta Hai', hook:'Mera cold email jo 30% reply rate deta hai — word for word.', body:`Subject: [Clinic Name] ke results dekhe meine — ek cheez share karna tha\n\nBody:\n"Hi [Name],\n\nMaine aapke clinic ka GMB dekha — great reviews hain!\n\nMaine pichle mahine ek similar clinic ke liye Instagram content banaya. Result: followers 200 se 1,200 ho gaye, 3 new corporate tie-ups.\n\nMujhe lagta hai similar results aapke liye bhi possible hain.\n\n15 minute ki call le sakte hain is hafte?"\n\nBas itna. Short, specific, value-first.`, cta:'Apna cold email template comment mein share karo — feedback dunga.', camera:'Screen record of typing the email. Then face-cam conclusion.', expression:'Matter-of-fact. This is a system, not a trick.', },
+  { id:9, phase:1, theme:'mindset', day:'Day 20', title:'Comparison Trap Se Kaise Bachein', hook:'Woh 22 saal mein crore-pati tha. Main 19 mein ₹15K pe hoon. Aur ye comparison mujhe barbad kar raha tha.', body:`Social media dekho toh lagta hai:\nHar koi successful hai.\nHar koi zyada kama raha hai.\nHar koi faster hai.\n\nPehle main bhi yahi sochta tha.\n\nPhir meine ek simple experiment kiya:\nMaine unhe track karna band kiya.\nAur khud ko track karna shuru kiya.\n\nDay 1 vs Day 30 khud ki comparison.\nWeek 1 vs Week 4 khud ki comparison.\n\nProgress dikhi. Real progress.\n\nComparison competitor se nahi — khud ke purane version se karo.`, cta:'Sirf ek cheez: unfollow karo jisse comparison feel ho. Aaj. Abhi.', camera:'Personal, intimate. Close shot. Almost confessional.', expression:'Vulnerable start. Strong finish. Personal journey feel.', },
+  { id:10, phase:1, theme:'personal', day:'Day 25', title:'Month 1 Review — Real Numbers', hook:'Pehle mahine mein kya kiya, kya nahi kiya — public review. Koi filter nahi.', body:`Month 1 targets:\n✅ Clinic Instagram setup: Done\n✅ GMB optimization: Done\n✅ Portfolio website: Done\n❌ Pehla paying client: Not yet\n✅ 30 cold emails: Done (12 replies, 0 closed)\n✅ Daily posting: 23/30 days\n\nIncome: ₹15,000 (job only)\nTarget tha: ₹18,000\nGap: ₹3,000\n\nLearning:\nCold email replies mil rahe hain.\nClosing karna mushkil hai.\nMonth 2 main closing par focus karunga.`, cta:'Tumhara month 1 kaisa gaya? Comment mein batao.', camera:'Laptop screen showing the tracker. Face cam for commentary.', expression:'Honest. Not discouraged. Learning mode.', },
+  // PHASE 2
+  { id:11, phase:2, theme:'income', day:'Day 35', title:'Pehla Paying Client — The Story', hook:'Jo din maine ₹3,000 pehli baar kisi stranger se content banake liye liye — woh din yaad rahega.', body:`Main 3 hafte se cold emails kar raha tha.\n\n12 replies. 0 conversions.\n\nPhir ek local gym owner ne reply kiya.\n"Aao milte hain."\n\nMeeting 45 minutes ki. Dono nervous the.\n\nUnhone kaha: "₹2,000 karoge?"\nMeine kaha: "₹3,000 minimum hai."\nUnhone socha. 30 second silence.\nPhir: "Theek hai."\n\nPehle ₹3,000 — meri life mein sabse important ₹3,000.\n\nJob income se nahi. Skill se.`, cta:'Comment karo: tumhara pehla paying client kab aayega?', camera:'Storytelling style. Slow start, build up to the "yes" moment.', expression:'Nostalgic but excited. Let the story breathe.', },
+  { id:12, phase:2, theme:'clinic', day:'Day 40', title:'GMB Pe 30 Reviews Kaise Laye In 30 Days', hook:'Hamare clinic ke GMB par 8 reviews the. 30 din baad 38 the. Ye tha process.', body:`Step 1: Identify happy patients.\nStaff ne daily 2-3 patients ko identify kiya post-treatment.\n\nStep 2: WhatsApp review request.\nTemplate: "Aapka experience share karna chahenge? 2 minute Google review mein bada help karega."\nLink direct diya.\n\nStep 3: In-person ask.\nReception par: "Ek favor chahiye tha — Google review de sakte hain?"\n\nStep 4: Weekly tracking.\nHar hafte count karo. Celebrate each one.\n\nResult: 8 to 38 reviews. 4.8 star rating. 3 new patients from Google.`, cta:'Apne client ke GMB reviews kaun track karta hai? Comment mein batao.', camera:'Split: GMB screenshot (start) + process explanation + final result.', expression:'Practical. Problem-solving energy. Show the wins.', },
+  { id:13, phase:2, theme:'strategy', day:'Day 45', title:'Package Pricing Psychology', hook:'Jab maine free se ₹5,000 package mein shift kiya — clients ne zyada value feel kiya.', body:`Ye paradox lagta hai.\nLekin ye truth hai.\n\nFree mein kaam karo:\n- Client assumes it has less value\n- They don't implement your work\n- They don't prioritize meetings\n\n₹5,000 package:\n- They show up to meetings on time\n- They implement suggestions\n- They trust your expertise\n\nPricing = positioning.\nLow price = low trust.\n\nMere packages:\nStarter: ₹5,000/month (social media management)\nGrowth: ₹12,000/month (content + ads)\nPremium: ₹25,000/month (full marketing)`, cta:'Tumhari current pricing kya hai? Comment karo — feedback dunga.', camera:'Talking head with phone notes showing pricing structure.', expression:'Confident expert. This is not opinion — this is experience.', },
+  { id:14, phase:2, theme:'personal', day:'Day 50', title:'Subah Ka Routine Jo Actually Kaam Karta Hai', hook:'5:55 AM alarm. Koi nahi jaagta. Ye mera competitive advantage hai.', body:`5:55 AM: Alarm. No snooze.\n\n6:00–6:05: Bina phone ke aankhein kholo. Sirf lete raho. Breathe.\n\n6:05–6:15: Paani, freshness, 10 squats.\n\n6:15–7:15: Deep work. Skill learning ya client work. No social media.\n\n7:15–7:30: Content idea note karna. Journal 3 lines.\n\n7:30: Job ke liye ready.\n\nIs ek ghante mein main itna karta hoon jo zyada log poore din mein nahi karte.\n\nKyunki duniya 8 baje jaagti hai. Main 6 baje shuru karta hoon.\n\nWoh 2 ghante mera unfair advantage hain.`, cta:'Tumhara morning routine kya hai? Sach batao — comment mein.', camera:'Time-lapse or actual morning b-roll. Real apartment, real routine.', expression:'Calm, focused energy. Not hyped up — grounded and purposeful.', },
+  { id:15, phase:2, theme:'mindset', day:'Day 55', title:'Rejection Ko Handle Karna — Real Talk', hook:'Mujhe aaj 5 no mila. Aur ye mujhe zyada focused bana raha hai, scared nahi.', body:`Cold email bheji — no reply.\nProposal bheja — "budget nahi hai."\nMeeting ki — "let me think about it" (code for no).\n\nPehle ye devastate karta tha.\n\nAb mein count karta hoon:\n\nSales is a numbers game.\n\nHar 10 emails mein 3 replies.\nHar 3 replies mein 1 meeting.\nHar 3 meetings mein 1 client.\n\nToh 30 emails = 1 client.\nAur 1 client = ₹5,000–25,000/month.\n\nHar rejection mujhe ek step closer le jaata hai agle client ke.`, cta:'Tumhara rejection-to-client ratio kya hai? Track karo — it changes everything.', camera:'Casual. Coffee in hand. Feels like talking to a friend.', expression:'Reflective. Wise. Not bitter about rejection — analytical about it.', },
+  { id:16, phase:2, theme:'clinic', day:'Day 60', title:'Clinic Reel Jo Viral Hua — Full Breakdown', hook:'Ye clinic reel ne 50,000 views liye bina paid ads ke. Exactly kya kiya meine?', body:`Video: "Physiotherapy Se Pehle vs Baad — 6 Weeks"\n\nPatient ka journey:\nWeek 1: Barely walking, hunched posture\nWeek 6: Running on a treadmill\n\nKya kaam kiya:\n1. Emotional arc — pain to freedom\n2. Real patient, real result (not staged)\n3. Trending audio — upbeat transformation song\n4. Text overlays timed to music\n5. Hook in first 2 seconds: "Is insaan ko 2 mahine pehle ye nahi pata tha ke woh phir chalega"\n\nResult: 50K views. 300 profile visits. 4 new patient inquiries.`, cta:'Before/after content karo — ye formula kisi bhi niche mein kaam karta hai.', camera:'Tutorial style. Show the actual reel + breakdown overlay.', expression:'Teacher mode. Breakdown everything. Actionable insights.', },
+  // PHASE 3
+  { id:17, phase:3, theme:'income', day:'Day 90', title:'Agency Register Kiya — Ye Tha Feeling', hook:'Sole proprietorship register ki. Certificate haath mein aaya. Ab ye real hai.', body:`3 mahine pehle main receptionist tha.\n\nAaj — mein ek registered marketing agency ka owner hoon.\n\nDocuments:\n- Aadhar + PAN\n- Bank account (current)\n- MSME registration (optional but useful)\n- GST (if >₹20L/year — future)\n\nTotal cost: ₹500–2,000 (legal fees)\n\nTotal time: 3–5 working days\n\nSabse bada mental shift:\nJob pe identity: "receptionist"\nAgency pe identity: "founder"`, cta:'Agency naam rakhna chahte ho? Comment mein apna idea batao.', camera:'Registration certificate reveal. Hold it up. Real moment.', expression:'Pride. Disbelief (good kind). This is a real milestone.', },
+  { id:18, phase:3, theme:'strategy', day:'Day 95', title:'5 Active Clients — How I Manage', hook:'5 clients. 1 job. 1 brain. Ye hai mera system jo sab manage karta hai.', body:`Tool stack:\n- Notion: Client CRM, project tracker\n- Canva: All design (batch mode Sundays)\n- Buffer/Meta Planner: Scheduling\n- WhatsApp: Client communication\n- Google Sheets: Billing + income tracker\n\nWeekly routine:\nMonday: Content planning for all clients\nTuesday-Thursday: Creation and delivery\nFriday: Reporting + invoicing\nSunday: Batch design (2 weeks ahead)\n\nKisi ko delegate nahi kiya abhi.\nLekin system hai toh chaos nahi hai.`, cta:'Tumhara client management system kya hai? Share karo.', camera:'Screen recording of Notion dashboard. Then face cam.', expression:'Systems thinker energy. Calm and organized.', },
+  { id:19, phase:3, theme:'personal', day:'Day 100', title:'100 Days — Kya Badla Mujhme', hook:'100 din. Seedha sach — kya badla, kya nahi, aur kya unexpected tha.', body:`Changed:\n✅ Morning routine solid hai — 85/100 days\n✅ Income: ₹15K → ₹62K/month\n✅ Confidence in meetings: 10x\n✅ Network: 50+ local business connections\n✅ Skills: Cold email, GMB, Meta Ads basics\n\nNot changed:\n❌ Sleep — still 6-6.5 hours, need 7.5\n❌ Exercise — only 3 days/week, need 5\n❌ Content consistency — missed 15 days\n\nUnexpected:\nThe loneliness of building something. No one around me understands this journey. You guys online do.`, cta:'100 din ke baad — comment karo: kya badla tumhara?', camera:'Reflective. Maybe from the same spot as Day 1 video.', expression:'Honest. Grateful. Still hungry. Slightly emotional but in control.', },
+  { id:20, phase:3, theme:'clinic', day:'Day 105', title:'Corporate Client Kaise Close Kiya', hook:'Ek corporate company ne clinic ke saath wellness tie-up kiya. ₹30,000 ek deal. Ye tha approach.', body:`Target: Companies near the clinic (5 km radius)\nApproach: Email to HR manager directly\n\nEmail subject: "Employee Wellness Partnership — [Clinic Name]"\n\nProposal:\n- Free consultation sessions for their employees (once)\n- Discounted packages (15% off)\n- Monthly wellness workshops (₹5,000 extra)\n- ROI pitch: Less sick days = more productivity\n\nMeeting: In-person. Brought data on physiotherapy ROI.\n\nClose: 20 employee sessions/month. ₹30,000 deal.`, cta:'B2B pitching ke liye ready ho? Ye template use karo.', camera:'Storytelling. Show the email, the meeting, the handshake.', expression:'Professional. Proud. Breaking down the system for others.', },
+  { id:21, phase:3, theme:'mindset', day:'Day 110', title:'Job Chhodni Hai — Kab?', hook:'Job chhodni ki timing — ye hai mera decision framework.', body:`Rule: Job tab chhodo jab agency income consistently double your job income.\n\nMeri calculation:\nJob: ₹15,000/month\nDouble: ₹30,000/month from agency\nFor 3 consecutive months.\n\nMonth 3: ₹42K (almost there)\nMonth 4: ₹62K (criteria met)\n\nLekin mein 2 more months ruka:\n- Emergency fund: 3 months expenses\n- 5+ retainer clients (stable income)\n- SOPs documented (can work less hours)\n\nKab chhoda? Month 7. ₹1.4L agency income.\n\nRule: Numbers decide. Emotions nahi.`, cta:'Tumhara "quit job" number kya hai? Calculate karo — comment mein share karo.', camera:'Serious talk. Maybe sitting at desk. Write the numbers on paper.', expression:'Logical. Measured. This is math, not emotion.', },
+  { id:22, phase:3, theme:'strategy', day:'Day 115', title:'Digital Product Launch — ₹499 Playbook', hook:'Maine ek PDF banaya aur ₹40,000 kamaye. Process step by step.', body:`Product: "Local Business Instagram Growth Playbook"\nPrice: ₹499\nPlatform: Gumroad\n\nWeek 1: Research + outline (real case studies se)\nWeek 2: Write 30-page guide\nWeek 3: Canva design (professional PDF)\nWeek 4: Landing page + payment setup\n\nLaunch strategy:\n- 3 teaser posts (problem it solves)\n- Launch day post + story\n- Limited time offer (₹399 for first 48 hrs)\n- DM to interested followers manually\n\nResults:\n80 sales × ₹399 + 20 × ₹499 = ₹41,900\nTime to make: 3 weekends`, cta:'Tumhara expertise kya hai? Woh PDF ban sakta hai. Comment mein batao.', camera:'Screen share of Gumroad dashboard showing sales. Then explanation.', expression:'Matter-of-fact. Excited but grounded. Repeatable system.', },
+  { id:23, phase:3, theme:'income', day:'Day 120', title:'Quarter 3 Income Report — Real Numbers', hook:'Mahine 7, 8, 9 ka actual income — koi jhooth nahi, koi inflation nahi.', body:`Month 7:\nAgency clients (10): ₹1,20,000\nConsulting calls: ₹20,000\nTotal: ₹1,40,000\n\nMonth 8:\nAgency (12 clients): ₹1,40,000\nDigital product: ₹30,000\nTotal: ₹1,70,000\n\nMonth 9:\nAgency: ₹1,60,000\nAll other: ₹40,000\nTotal: ₹2,00,000\n\nQ3 Total: ₹5,10,000\nYear-to-date: ₹7.2 Lakh\n\n₹1 Crore target? Math says: achievable.`, cta:'Financial transparency matters. Share your numbers too — judgment-free zone.', camera:'Google Sheets showing actual numbers. Face cam commentary.', expression:'Confident. Not boastful. Transparent. Celebrating honestly.', },
+  { id:24, phase:3, theme:'viral', day:'Day 125', title:'Ye Hai Woh Cheez Jo School Ne Nahi Sikhai', hook:'12 saal school mein gaye. Ye 5 cheezein school ne kabhi nahi batain.', body:`1. How to manage money\n   School taught: algebra. Life needs: budgeting.\n\n2. How to sell\n   School taught: essay writing. Life needs: communication that converts.\n\n3. How taxes work\n   School taught: history. Life needs: how not to lose money to government.\n\n4. How to negotiate\n   School taught: follow rules. Life needs: know how to make rules work for you.\n\n5. How to think — not what to think\n   School taught: memorize. Life needs: critical thinking.`, cta:'Kaun si cheez miss ho gayi? Comment mein batao — 6th lesson add karunga.', camera:'Passionate delivery. Use hand gestures. High energy.', expression:'Slightly indignant but constructive. Building up, not just complaining.', },
+  { id:25, phase:3, theme:'clinic', day:'Day 130', title:'Physiotherapy Clinic SEO — Free Guide', hook:'Ek clinic ka Google ranking 18th position se 3rd position par laya — bina ads ke.', body:`Step 1: NAP Consistency (Name, Address, Phone)\nSame on website, GMB, social — everywhere.\n\nStep 2: GMB Category Optimization\n"Physiotherapy clinic" as primary.\nAdd: sports physiotherapy, back pain specialist, etc.\n\nStep 3: Reviews Strategy\n40+ reviews. Respond to every review.\n\nStep 4: Local Content\nBlog posts (even simple ones): "Back Pain Treatment in Gurugram"\n\nStep 5: Photos\n100+ real photos. Staff, clinic, equipment, treatment.\n\nResult: 18 → 3 position in 60 days.`, cta:'Local business hai? Ye 5 steps aaj start karo. Kal pe mat chhodna.', camera:'Screen recording of Google Maps ranking. Tutorial overlay.', expression:'Expert teacher. Walk them through it step by step.', },
+  { id:26, phase:3, theme:'personal', day:'Day 140', title:'Main Fail Bhi Hua — Honest Story', hook:'Ye reel nahi banana tha mujhe. Lekin honestly — mujhe lagta hai ye tumhe zaroor sunni chahiye.', body:`Month 4 mein meine ek client lose kiya.\nBest-paying client — ₹15,000/month.\n\nKyun:\nMaine overpromised kiya.\n"100K reach guarentee karunga."\n\nDeliver nahi hua.\n\nWoh upset the. Main upset tha. Contract terminate.\n\nSikhna kya:\n1. Never guarantee results — you can't control the algorithm.\n   Promise effort and process.\n2. Under-promise, over-deliver.\n3. Weekly reporting prevents surprises.\n\nIs failure ne mujhe more honest agency owner banaya.`, cta:'Apni biggest failure batao — comment mein. Ye community judgement-free hai.', camera:'No fancy editing. Just face cam. Real moment.', expression:'Humble. Open. The lesson is more important than the ego.', },
+  { id:27, phase:3, theme:'strategy', day:'Day 150', title:'Workshop Launch — ₹2,999 Per Seat', hook:'Meine ek 2-ghante ka workshop organize kiya. 18 log aaye. ₹53,982 in one day.', body:`Topic: "Local Business Ko Online Kaise Lao — Complete Playbook"\n\nFormat: Online Zoom (2 hours)\nPrice: ₹2,999/seat\nSeats: 18 sold out of 20 max\n\nMarketing (zero budget):\n- LinkedIn post (personal experience)\n- Instagram stories (countdown)\n- WhatsApp to existing network\n- Email to client list\n\nDay-of agenda:\n00–30: Problem (why local businesses fail online)\n30–60: Solution (GMB + Instagram + Content)\n60–90: Live demo + Q&A\n90–120: Resources + next steps\n\nPost-event: Recording sold for ₹999 (20 more sales)`, cta:'Workshop banana chahte ho? DM karo — collaborations welcome.', camera:'Show registration page, zoom screenshot, income proof.', expression:'Proud but practical. Break down every step.', },
+  { id:28, phase:3, theme:'mindset', day:'Day 160', title:'Gratitude Jo Actually Work Karta Hai', hook:'Gratitude journal nahi karta. Kuch aur karta hoon — aur ye zyada powerful hai.', body:`Most gratitude advice: "Write 3 things you're grateful for."\n\nProblem: It becomes mechanical after week 2.\n\nMera method:\n\n"Gratitude contrast" —\n\nHar raat likho:\nAaj jo ek cheez acha hua...\nAur imagine karo: Agar ye nahi hota?\n\nExample:\n"Client ne payment kiya." → "Imagine: woh ghost karta."\n\nContrast creates genuine feeling.\nNot just listing — feeling it.\n\nThis technique changed my mornings.`, cta:'Aaj raat try karo. Comment mein batao — kya feel hua?', camera:'Personal. Evening vibe. Slightly philosophical but grounded.', expression:'Reflective. Calm. This is a tool, not a lecture.', },
+  { id:29, phase:3, theme:'income', day:'Day 175', title:'SIP Karna Shuru Kiya — Ye Kyun Important Hai', hook:'₹5,000/month SIP shuru kiya. 10 saal baad kya hoga — ye math dekho.', body:`SIP: Systematic Investment Plan\nAmount: ₹5,000/month\nFund: Nifty 50 Index Fund\nExpected return: 12% annually\n\n5 year value: ₹4,06,000 invested → ₹4,84,000+\n10 year value: ₹9,72,000 invested → ₹11,50,000+\n15 year value: ₹14,38,000 invested → ₹25,00,000+\n\nMagic of compounding.\n\nMain 19 saal ka hoon. Agar 30 saal tak karta rahoon:\nSame ₹5,000/month = potential ₹1.7 Crore+\n\nAgency income build karo.\nSIP se wealth build karo.\nDono parallel.`, cta:'SIP shuru karo aaj. Even ₹500 se. Consistency matters, amount nahi.', camera:'Zerodha/Groww app screen share. Chart showing growth.', expression:'Financial educator. Calm, confident, future-focused.', },
+  { id:30, phase:3, theme:'personal', day:'Day 365', title:'MISSION COMPLETE — Year In Review', hook:'365 din. ₹15,000 salary se shuru kiya. Aaj ka number dekho.', body:`Day 1:\nJob: ₹15,000/month\nFreelance: ₹0\nSavings: ₹0\nClients: 0\nFollowers: 300\n\nDay 365:\nAgency revenue: ₹3,50,000+/month\nDigital products: ₹40,000/month\nConsulting: ₹20,000/month\nTotal: ₹4,10,000+/month\n\nInvestments started: ✅\nTeam: 2 people ✅\nJob: Transitioned out ✅\nMission: ₹1 Crore cumulative — ✅\n\nLekin sabse badi cheez:\n\nMain ab janta hoon ki main ₹1 Crore bana sakta hoon.\nAur ab 5 Crore ka plan shuru ho raha hai.`, cta:'Ye journey tumhara bhi ho sakta hai. Follow karo. Year 2 shuru ho raha hai.', camera:'Same location as Day 1 video. Full circle moment.', expression:'Emotional. Proud. Grateful. But already looking ahead.', },
+];
+
+let activePhase = 'all';
+let activeTheme = 'all';
+let searchQuery = '';
+
+function renderScripts() {
+  const grid = document.getElementById('scripts-grid');
+  const noScripts = document.getElementById('no-scripts');
+  grid.innerHTML = '';
+
+  const filtered = scriptsData.filter(s => {
+    const matchPhase = activePhase === 'all' || s.phase == activePhase;
+    const matchTheme = activeTheme === 'all' || s.theme === activeTheme;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || s.title.toLowerCase().includes(q) || s.hook.toLowerCase().includes(q) || s.theme.toLowerCase().includes(q);
+    return matchPhase && matchTheme && matchSearch;
+  });
+
+  document.getElementById('scripts-showing').textContent = filtered.length;
+  const filmed = scriptsData.filter(s => localStorage.getItem('yaksh-script-filmed-' + s.id)).length;
+  document.getElementById('scripts-filmed').textContent = filmed;
+  document.getElementById('scripts-remaining').textContent = scriptsData.length - filmed;
+
+  if (filtered.length === 0) { noScripts.style.display = 'block'; return; }
+  noScripts.style.display = 'none';
+
+  filtered.forEach(s => {
+    const isFilmed = !!localStorage.getItem('yaksh-script-filmed-' + s.id);
+    const card = document.createElement('div');
+    card.className = `script-card ${isFilmed ? 'filmed' : ''}`;
+    card.innerHTML = `
+      <div class="script-card-header">
+        <div class="script-day">${s.day}</div>
+        <div class="script-tags">
+          <span class="script-theme-tag tag-${s.theme}">${s.theme}</span>
+          <span class="script-theme-tag" style="background:rgba(255,255,255,0.06);color:var(--text-dim);border:1px solid rgba(255,255,255,0.07);">Month ${s.phase}</span>
+        </div>
+        <div class="script-actions">
+          <button class="script-btn" onclick="copyScript(${s.id})">📋 Copy</button>
+          <button class="script-btn filmed-btn ${isFilmed ? 'active' : ''}" onclick="toggleFilmed(${s.id},this)">🎬 ${isFilmed ? 'Filmed' : 'Mark Filmed'}</button>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="script-title">${s.title}</div>
+        <div class="script-section">
+          <div class="script-section-label">Hook</div>
+          <div class="hook-text">"${s.hook}"</div>
+        </div>
+        <button class="script-expand-btn" onclick="this.closest('.script-card').classList.toggle('expanded');this.querySelector('.expand-icon').style.transform=this.closest('.script-card').classList.contains('expanded')?'rotate(180deg)':''">
+          <span>View Full Script</span>
+          <span class="expand-icon">▾</span>
+        </button>
+        <div class="script-full-body">
+          <div class="script-section" style="padding:0 0 0.75rem;">
+            <div class="script-section-label">Full Script</div>
+            <div class="body-text">${s.body.replace(/\n/g,'<br>')}</div>
+          </div>
+          <div class="script-section">
+            <div class="script-section-label">CTA</div>
+            <div class="cta-text">${s.cta}</div>
+          </div>
+          <div class="script-section">
+            <div class="script-section-label">📷 Camera Direction</div>
+            <div class="camera-dir">${s.camera}</div>
+          </div>
+          <div class="script-section">
+            <div class="script-section-label">😊 Expression Tips</div>
+            <div class="expression-box">${s.expression}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function setPhase(el, phase) {
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  activePhase = phase;
+  renderScripts();
+}
+function setTheme(el, theme) {
+  document.querySelectorAll('.theme-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  activeTheme = theme;
+  renderScripts();
+}
+function filterScripts() {
+  searchQuery = document.getElementById('scripts-search').value;
+  renderScripts();
+}
+function copyScript(id) {
+  const s = scriptsData.find(x => x.id === id);
+  if (!s) return;
+  const text = `🎬 Script: ${s.title}\n\n📍 ${s.day} | Theme: ${s.theme}\n\n🎣 HOOK:\n"${s.hook}"\n\n📝 FULL SCRIPT:\n${s.body}\n\n📢 CTA:\n${s.cta}\n\n📷 CAMERA:\n${s.camera}\n\n😊 EXPRESSION:\n${s.expression}`;
+  navigator.clipboard?.writeText(text).then(() => alert('✅ Full script copied!')).catch(() => alert('Please copy manually.'));
+}
+function toggleFilmed(id, btn) {
+  const key = 'yaksh-script-filmed-' + id;
+  if (localStorage.getItem(key)) {
+    localStorage.removeItem(key);
+    btn.classList.remove('active');
+    btn.textContent = '🎬 Mark Filmed';
+    btn.closest('.script-card').classList.remove('filmed');
+  } else {
+    localStorage.setItem(key, '1');
+    btn.classList.add('active');
+    btn.textContent = '🎬 Filmed';
+    btn.closest('.script-card').classList.add('filmed');
+  }
+  const filmed = scriptsData.filter(s => localStorage.getItem('yaksh-script-filmed-' + s.id)).length;
+  document.getElementById('scripts-filmed').textContent = filmed;
+  document.getElementById('scripts-remaining').textContent = scriptsData.length - filmed;
+}
+
+renderScripts();
+</script>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — 365 Ideas Vault</title>
+<meta name="description" content="365 searchable content ideas for clinic marketing, personal brand, business education and viral content.">
+<meta property="og:title" content="Yaksh OS — 365 Ideas Vault">
+<meta property="og:image" content="shared/og-image.png">
+<link rel="stylesheet" href="shared/design-system.css">
+<link rel="stylesheet" href="shared/navbar.css">
+<link rel="stylesheet" href="shared/loader.css">
+<style>
+.ideas-hero { padding: 7rem 2rem 2.5rem; text-align:center; position:relative; overflow:hidden; background: var(--bg); }
+.ideas-hero h1 { font-family:var(--font-display); font-size:clamp(3rem,9vw,6rem); letter-spacing:2px; line-height:0.95; }
+.ideas-hero h1 span { color:var(--gold); }
+.ideas-hero p { color:var(--text-muted); margin-top:0.75rem; font-size:0.95rem; animation:fadeUp 0.6s 0.3s ease both; }
+
+/* CONTROLS */
+.controls-bar {
+  background: var(--bg2); border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 1.25rem 2rem; position: sticky; top: 60px; z-index: 50;
+}
+.controls-inner { max-width: 1200px; margin: 0 auto; display:flex; flex-direction:column; gap:1rem; }
+.search-row { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.idea-search-input {
+  flex:1; min-width:200px;
+  background: var(--bg3); border: 1px solid rgba(255,255,255,0.08);
+  border-radius:8px; padding:10px 14px; color:var(--text);
+  font-family:var(--font-body); font-size:0.9rem; outline:none;
+  transition: border-color 0.2s;
+}
+.idea-search-input:focus { border-color: rgba(245,200,66,0.4); }
+.idea-search-input::placeholder { color:var(--text-dim); }
+
+.btn-random {
+  background: linear-gradient(135deg,var(--purple),#6b5ce7);
+  color:#fff; border:none; border-radius:8px; padding:10px 18px;
+  font-family:var(--font-body); font-size:0.85rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap; letter-spacing:0.03em;
+}
+.btn-random:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(124,106,247,0.35); }
+.btn-random.spin { animation: spin-dice 0.4s ease; }
+@keyframes spin-dice { 0%{transform:rotate(0) scale(1)} 50%{transform:rotate(180deg) scale(0.8)} 100%{transform:rotate(360deg) scale(1)} }
+
+.filter-row { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+.filter-label { font-family:var(--font-mono); font-size:0.6rem; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-right:0.25rem; }
+.filter-chip {
+  background: var(--bg3); border: 1px solid rgba(255,255,255,0.08);
+  color:var(--text-muted); padding:5px 12px; border-radius:20px;
+  cursor:pointer; font-size:0.78rem; font-weight:600; transition:all 0.2s;
+  white-space:nowrap;
+}
+.filter-chip:hover { border-color:var(--gold); color:var(--gold); }
+.filter-chip.active { background:rgba(245,200,66,0.12); color:var(--gold); border-color:rgba(245,200,66,0.4); }
+
+/* STATS ROW */
+.ideas-stats {
+  max-width:1200px; margin:0 auto; padding:1rem 2rem;
+  display:flex; gap:2rem; align-items:center; flex-wrap:wrap;
+}
+.ideas-stat { font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted); letter-spacing:1px; }
+.ideas-stat strong { color:var(--gold); font-size:0.9rem; }
+
+/* IDEAS GRID */
+.ideas-main { max-width:1200px; margin:0 auto; padding:0.5rem 2rem 5rem; }
+.ideas-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; }
+
+/* IDEA CARD */
+.idea-card {
+  background: var(--bg2); border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius:12px; overflow:hidden; transition:all 0.2s; cursor:pointer;
+}
+.idea-card:hover { border-color:rgba(245,200,66,0.3); transform:translateY(-1px); }
+.idea-card.used { border-color:rgba(57,217,138,0.3); background:linear-gradient(135deg,rgba(57,217,138,0.04),var(--bg2)); }
+
+.idea-card-header {
+  padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:0.75rem;
+}
+.idea-num { font-family:var(--font-display); font-size:1.5rem; color:rgba(255,255,255,0.1); line-height:1; min-width:32px; }
+.idea-card.expanded .idea-num { color:var(--gold); }
+.idea-card-meta { flex:1; }
+.idea-card-title { font-weight:700; font-size:0.88rem; color:var(--text); line-height:1.4; margin-bottom:0.35rem; }
+.idea-category-tag {
+  font-size:0.6rem; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+  padding:2px 8px; border-radius:10px;
+}
+.cat-clinic   { background:rgba(57,217,138,0.1); color:var(--green); border:1px solid rgba(57,217,138,0.2); }
+.cat-personal { background:rgba(79,142,247,0.1); color:var(--blue);  border:1px solid rgba(79,142,247,0.2); }
+.cat-business { background:rgba(245,200,66,0.1); color:var(--gold);  border:1px solid rgba(245,200,66,0.2); }
+.cat-viral    { background:rgba(255,75,75,0.1);  color:var(--red);   border:1px solid rgba(255,75,75,0.2);  }
+
+.idea-card-actions {
+  display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-shrink:0;
+}
+.idea-action-btn {
+  background:none; border:1px solid rgba(255,255,255,0.08); border-radius:6px;
+  color:var(--text-muted); font-size:0.72rem; padding:4px 8px; cursor:pointer;
+  transition:all 0.2s; font-family:var(--font-mono); white-space:nowrap;
+}
+.idea-action-btn:hover { border-color:var(--gold); color:var(--gold); }
+.idea-action-btn.done-btn.active { background:rgba(57,217,138,0.15); color:var(--green); border-color:rgba(57,217,138,0.3); }
+
+.idea-card-expand-icon { color:var(--text-muted); font-size:1rem; transition:transform 0.2s; flex-shrink:0; margin-top:2px; }
+.idea-card.expanded .idea-card-expand-icon { transform:rotate(45deg); color:var(--gold); }
+
+.idea-card-body {
+  display:none; padding:0 1.2rem 1.2rem;
+  border-top:1px solid rgba(255,255,255,0.05); margin-top:-1px;
+}
+.idea-card.expanded .idea-card-body { display:block; }
+.idea-detail-label {
+  font-family:var(--font-mono); font-size:0.58rem; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); margin:0.75rem 0 0.35rem;
+}
+.idea-detail-text { font-size:0.82rem; color:var(--text-muted); line-height:1.75; }
+.idea-steps { list-style:none; font-size:0.82rem; color:var(--text-muted); }
+.idea-steps li { padding:5px 0 5px 1.2rem; position:relative; border-bottom:1px solid rgba(255,255,255,0.03); }
+.idea-steps li:last-child { border-bottom:none; }
+.idea-steps li::before { content:'→'; position:absolute; left:0; color:var(--gold); }
+.idea-badges { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.75rem; }
+
+/* FORMAT FILTER */
+.format-chips { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.format-chip {
+  background: var(--bg3); border: 1px solid rgba(255,255,255,0.07);
+  color:var(--text-dim); padding:4px 10px; border-radius:20px;
+  cursor:pointer; font-size:0.7rem; transition:all 0.2s;
+}
+.format-chip:hover { border-color:var(--purple); color:var(--purple); }
+.format-chip.active { background:rgba(124,106,247,0.12); color:var(--purple); border-color:rgba(124,106,247,0.35); }
+
+/* NO RESULTS */
+.no-results { text-align:center; padding:4rem 2rem; color:var(--text-dim); font-family:var(--font-mono); font-size:0.85rem; }
+
+/* RANDOM IDEA MODAL */
+#random-modal {
+  display:none; position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,0.75); backdrop-filter:blur(8px);
+  align-items:center; justify-content:center; padding:2rem;
+}
+#random-modal.open { display:flex; }
+.random-modal-box {
+  background:var(--bg2); border:1px solid rgba(245,200,66,0.25);
+  border-radius:16px; max-width:560px; width:100%; padding:2rem;
+  box-shadow:0 32px 80px rgba(0,0,0,0.6); animation:fadeUp 0.3s ease;
+}
+.random-modal-tag {
+  font-family:var(--font-mono); font-size:0.6rem; letter-spacing:2px;
+  text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem;
+}
+.random-modal-title {
+  font-family:var(--font-display); font-size:2rem; letter-spacing:1px;
+  line-height:1.1; margin-bottom:1rem;
+}
+.random-modal-desc { font-size:0.88rem; color:var(--text-muted); line-height:1.75; margin-bottom:1.5rem; }
+.random-modal-btns { display:flex; gap:0.75rem; }
+
+/* USAGE STATS */
+.usage-bar {
+  background:var(--bg2); border-top:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.06); padding:0.75rem 2rem;
+}
+.usage-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; gap:2rem; flex-wrap:wrap; }
+.usage-text { font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); letter-spacing:1px; }
+.usage-text strong { color:var(--green); }
+
+/* LIGHT MODE */
+body.light-mode { --bg:#fafafa; --bg2:#fff; --bg3:#f3f3f7; --text:#111; --text-muted:#666; --text-dim:#aaa; }
+
+/* RESPONSIVE */
+@media (max-width:768px) {
+  .ideas-grid { grid-template-columns:1fr; }
+  .controls-bar { padding:1rem 1.25rem; top:60px; }
+  .ideas-main { padding:0.5rem 1.25rem 4rem; }
+  .search-row { flex-direction:column; align-items:stretch; }
+  .btn-random { width:100%; }
+}
+</style>
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="loader"><div class="loader-body"><span class="trail"></span><div class="base"><span></span><div class="face"></div></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div></div></div>
+  <p class="loader-label">Loading Ideas Vault</p>
+</div>
+
+<div id="global-search"><div class="search-modal"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search..." autocomplete="off"></div><div class="search-results"><div class="search-result-item" onclick="location.href='index.html'"><span class="sr-page">Home</span><span class="sr-title">Mission Command</span></div><div class="search-result-item" onclick="location.href='scripts.html'"><span class="sr-page">Scripts</span><span class="sr-title">30 Video Scripts</span></div></div><div class="search-hint"><span>↑↓ Navigate</span><span>↵ Open</span><span>Esc Close</span></div></div></div>
+
+<!-- RANDOM IDEA MODAL -->
+<div id="random-modal">
+  <div class="random-modal-box">
+    <div class="random-modal-tag">🎲 Random Idea</div>
+    <div class="random-modal-title" id="rm-title">Loading...</div>
+    <div class="random-modal-desc" id="rm-desc"></div>
+    <div class="idea-badges" id="rm-badges"></div>
+    <div class="random-modal-btns" style="margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="rollRandom()">🎲 Next Random</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('random-modal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<nav class="yaksh-nav">
+  <a href="index.html" class="nav-brand"><div class="nav-logo">Y</div><span class="nav-name">YAKSH <span class="nav-tag">OS</span></span></a>
+  <div class="nav-links">
+    <a href="index.html">Mission</a><a href="roadmap.html">Roadmap</a><a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a><a href="scripts.html">Scripts</a><a href="crm.html">CRM</a><a href="focus-os.html">Focus OS</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-search-btn">🔍 <span>Ctrl+K</span></button>
+    <button class="theme-toggle">🌙</button>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="ideas-hero">
+  <div class="hero-glow"></div>
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;border:1px solid rgba(245,200,66,0.3);padding:5px 14px;border-radius:20px;display:inline-block;margin-bottom:1.25rem;animation:fadeUp 0.6s ease both;">Content Ideas Vault</span>
+  <h1 class="letter-animate">365 IDEAS</h1>
+  <p>Clinic | Personal Brand | Business Education | Viral Content — Sab kuch yahan hai.</p>
+</section>
+
+<!-- USAGE BAR -->
+<div class="usage-bar">
+  <div class="usage-inner">
+    <span class="usage-text">Ideas Used This Month: <strong id="usage-count">0</strong></span>
+    <span class="usage-text">Total Ideas: <strong style="color:var(--gold)">60</strong></span>
+    <span class="usage-text">Categories: <strong style="color:var(--blue)">4</strong></span>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls-bar">
+  <div class="controls-inner">
+    <div class="search-row">
+      <input type="text" class="idea-search-input" id="idea-search" placeholder="🔍 Search ideas — clinic, Instagram, viral, mindset..." oninput="filterIdeas()">
+      <button class="btn-random" onclick="rollRandom()">🎲 Random Idea</button>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Category:</span>
+      <span class="filter-chip active" onclick="setFilter(this,'all')">All <span id="count-all">(60)</span></span>
+      <span class="filter-chip" onclick="setFilter(this,'clinic')">🏥 Clinic <span id="count-clinic">(0)</span></span>
+      <span class="filter-chip" onclick="setFilter(this,'personal')">👤 Personal Brand <span id="count-personal">(0)</span></span>
+      <span class="filter-chip" onclick="setFilter(this,'business')">💼 Business/Edu <span id="count-business">(0)</span></span>
+      <span class="filter-chip" onclick="setFilter(this,'viral')">🔥 Viral/Trending <span id="count-viral">(0)</span></span>
+      <span class="filter-label" style="margin-left:1rem;">Format:</span>
+      <div class="format-chips">
+        <span class="format-chip active" onclick="setFormat(this,'all')">All</span>
+        <span class="format-chip" onclick="setFormat(this,'reel')">Reel</span>
+        <span class="format-chip" onclick="setFormat(this,'carousel')">Carousel</span>
+        <span class="format-chip" onclick="setFormat(this,'long')">Long Video</span>
+        <span class="format-chip" onclick="setFormat(this,'story')">Story</span>
+        <span class="format-chip" onclick="setFormat(this,'linkedin')">LinkedIn</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IDEAS STATS -->
+<div class="ideas-stats">
+  <span class="ideas-stat">Showing: <strong id="showing-count">60</strong> ideas</span>
+</div>
+
+<!-- GRID -->
+<div class="ideas-main">
+  <div class="ideas-grid" id="ideas-grid"></div>
+  <div class="no-results" id="no-results" style="display:none;">😕 No ideas found. Try different search or filters.</div>
+</div>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem;text-align:center;">
+  <div style="font-family:var(--font-display);font-size:2rem;color:var(--gold);letter-spacing:2px;">CREATE. EVERY. DAY.</div>
+  <p style="color:var(--text-muted);font-size:0.82rem;margin-top:0.5rem;">Consistency beats creativity. Post every day — one idea at a time.</p>
+</footer>
+
+<script src="shared/loader.js"></script>
+<script src="shared/navbar.js"></script>
+<script>
+const ideasData = [
+  // CLINIC (20 ideas)
+  { id:1, title:'Physiotherapy Se Pehle vs Baad', cat:'clinic', format:'reel', hook:'Ye kya hota hai physiotherapy mein?', desc:'Ek patient ka before/after treatment journey dikhao. Real results, real transformation. Clinic ki credibility instantly build hoti hai.', steps:['Patient se permission lo (privacy first)','3-4 session ke clips lo','Before: dard se utha nahi ja raha. After: chalta hua dikhao','Motivational music + text overlays'], effort:'low', impact:'high' },
+  { id:2, title:'Common Back Pain Myths — BUSTED', cat:'clinic', format:'carousel', hook:'Ye 5 cheezein aapki kamar dard badha rahi hain', desc:'5 common myths about back pain with science-backed corrections. Saves clinic staff from explaining repeatedly + positions clinic as expert.', steps:['Research 5 biggest myths','Simple language mein explain karo','Last slide: "Aaye clinic mein free consultation ke liye"','Shareable — people tag their parents'], effort:'low', impact:'high' },
+  { id:3, title:'Ek Din Clinic Mein — Behind The Scenes', cat:'clinic', format:'reel', hook:'Physiotherapy clinic mein ek din kaisa hota hai?', desc:'Morning setup se patient ka last session tak. Humanizes the clinic, builds trust. People want to know what happens before they visit.', steps:['6:30 AM opening shot','Staff greetings, equipment setup','3–4 patient moments (faces blurred if needed)','Evening wind down + takeaway message'], effort:'med', impact:'high' },
+  { id:4, title:'Exercises Jo Ghar Par Kar Sakte Ho', cat:'clinic', format:'carousel', hook:'Ye 5 exercises back pain ke liye — ghar par karo', desc:'5 simple exercises with proper form. Save-worthy content — people save and share this.', steps:['Physiotherapist demonstrate kare','Step-by-step clear instructions','Do and Dont slide add karo','"Aur zyada serious problem ke liye hamare paas aao"'], effort:'low', impact:'high' },
+  { id:5, title:'Physiotherapy vs Painkiller — Kya Fark Hai', cat:'clinic', format:'reel', hook:'Dard ke liye painkiller ya physiotherapy — sach kya hai?', desc:'Education reel comparing painkillers (short-term) vs physiotherapy (long-term healing). High share potential.', steps:['Physiotherapist camera pe explain kare','Simple analogy use karo','Stats cite karo if possible','End CTA: free consultation'], effort:'med', impact:'high' },
+  { id:6, title:'Patient Review Spotlight', cat:'clinic', format:'story', hook:'Suniye kya kehte hain hamare patient', desc:'Short patient testimonial video (30–60 sec). Most powerful trust builder. Collect after successful treatment.', steps:['Patient se puchho 3 questions','What was your problem? What happened? How do you feel now?','Simple edit — no fancy production needed','Post on story + highlights'], effort:'low', impact:'high' },
+  { id:7, title:'Posture Check — Office Workers Ke Liye', cat:'clinic', format:'reel', hook:'Aapki office chair aapki kamar kharab kar rahi hai', desc:'Quick posture assessment reel targeting office workers (huge audience). Very shareable.', steps:['Show wrong posture vs right posture','Quick tips for desk setup','"DM karo posture assessment ke liye"','Target hashtags: #officework #backpain'], effort:'low', impact:'high' },
+  { id:8, title:'GMB Q&A — Top 5 Questions', cat:'clinic', format:'carousel', hook:'Log Google par ye 5 sawaal poochte hain clinic ke baare mein', desc:'Answer top questions from Google Search suggestions. Great for SEO + social. Educational and practical.', steps:['Research autocomplete suggestions','Answer each in 1–2 slides','Professional but simple tone','Link to GMB in bio'], effort:'low', impact:'med' },
+  { id:9, title:'Sports Injury Recovery Journey', cat:'clinic', format:'reel', hook:'Cricket khelne wala 6 hafte mein kaise theek hua', desc:'Document a sports injury recovery (with permission). Cricketers, gym-goers — this audience is huge.', steps:['Week 1: Injury assessment','Week 2–4: Treatment progress','Week 6: Full recovery demo','Use trending sports audio'], effort:'med', impact:'high' },
+  { id:10, title:'Meet The Physiotherapist', cat:'clinic', format:'reel', hook:'Kaun hai jo tumhari dard theek karta hai?', desc:'Introduce the doctor/physiotherapist personally. Name, background, passion for healing. Builds personal connection.', steps:['Informal interview style','"Why did you choose physiotherapy?"','Show their daily routine','End: Book an appointment'], effort:'low', impact:'med' },
+  { id:11, title:'Cervical Spondylitis — Kya Hota Hai', cat:'clinic', format:'carousel', hook:'Gardhan mein dard? Ye sun lo pehle', desc:'Educational post on cervical spondylitis — super common, high search volume. Positions clinic as expert.', steps:['What is it (simple language)','Causes — common ones','Home remedies that work','When to see a physiotherapist'], effort:'low', impact:'high' },
+  { id:12, title:'Pregnancy + Back Pain — Guide', cat:'clinic', format:'carousel', hook:'Pregnancy mein kamar dard — normal hai ya nahi?', desc:'High empathy content for pregnant women. Safe exercises, when to see a physio. Very shareable.', steps:['Safe exercises during pregnancy','What to avoid','Warning signs','Consult before any exercise], effort:"med", impact:"high"'], effort:'low', impact:'high' },
+  { id:13, title:'Elderly Care — Knee Pain Solutions', cat:'clinic', format:'reel', hook:'Maa ki ghutne ki takleef — ye solution try karo', desc:'Target adult children who manage parents healthcare. Very high emotional connection + share.', steps:['Common knee pain in elderly','Simple home exercises','When physiotherapy is must','"Share karo unke saath"'], effort:'low', impact:'high' },
+  { id:14, title:'5 Signs You Need A Physiotherapist', cat:'clinic', format:'carousel', hook:'In 5 signs ko ignore mat karo', desc:'List format — super consumable. Pain points that trigger appointment booking.', steps:['Sign 1: Pain lasting more than 2 weeks','Sign 2: Pain affecting sleep','Sign 3: Pain with movement','Signs 4–5: neurological, recurring','CTA: Book free assessment today'], effort:'low', impact:'high' },
+  { id:15, title:'Clinic Tour — Facilities Dikhao', cat:'clinic', format:'reel', hook:'Andar aao — ye hai hamare clinic ki duniya', desc:'A clean, professional facility tour builds immense trust. People want to see before visiting.', steps:['Entrance, waiting area, treatment rooms','Equipment showcase','Cleanliness and organization','Staff introduction'], effort:'low', impact:'high' },
+  // PERSONAL BRAND (15 ideas)
+  { id:16, title:'Main 19 Saal Mein Ye Kar Raha Hoon', cat:'personal', format:'reel', hook:'19 saal, ₹15K salary, ₹1 Crore ka goal — mad hu kya?', desc:'Raw, honest intro to your journey. This is your origin story reel. Post it once, repurpose forever. Will attract followers who believe in you.', steps:['Record raw — no makeup, no studio','Tell your current reality honestly','State your exact goal and deadline','End: "Follow karo agar tujhe ye dekhna hai"'], effort:'low', impact:'high' },
+  { id:17, title:'Ek Ghante Ka Vlog — Gurugram Grind', cat:'personal', format:'long', hook:'Subah 6 baje se raat 11 baje tak — ye hai meri zindagi', desc:'Day-in-the-life YouTube vlog. Commute to clinic, work, side hustle sessions. Raw authenticity builds loyal audience.', steps:['Start filming at 6 AM','Clinic work, lunch, evening work session','Voice-over while editing','End with reflection: what did you achieve today?'], effort:'med', impact:'high' },
+  { id:18, title:'Salary Slip vs Dream — Reality Check', cat:'personal', format:'reel', hook:'Meri salary slip dekhi? ₹15,000. Mera goal dekha? ₹1 Crore.', desc:'Showing real salary slip (optional) vs the goal. Vulnerability + ambition = massive resonance.', steps:['Hold salary slip (blur amount if needed)','State the gap clearly','Say what youre doing about it','"Follow karo — ye journey public hai"'], effort:'low', impact:'high' },
+  { id:19, title:'Books Jo Meri Soch Badal Di', cat:'personal', format:'carousel', hook:'Ye 5 kitabein — aur main alag insaan ban gaya', desc:'Book recommendations with specific lessons. Saves = algorithm boost. Educational + personal.', steps:['5 books that changed your thinking','Specific lesson from each','How you applied it','Design: book cover + key quote'], effort:'low', impact:'med' },
+  { id:20, title:'Cold Email Se Pehla Client — Story', cat:'personal', format:'reel', hook:'Mera pehla ₹3,000 ka client kaise mila', desc:'Story reel about landing first client. Specific, relatable, inspiring. People who want to freelance will share this.', steps:['The cold email you sent','The rejection first (makes story better)','The yes that came','What you delivered and learned'], effort:'low', impact:'high' },
+  { id:21, title:'Morning Routine Jo Kaam Karti Hai', cat:'personal', format:'reel', hook:'5:55 AM — koi nahi jaagta jab main kaam karta hoon', desc:'Your actual morning routine. Not aspirational fluff — your real routine with real timestamps.', steps:['5:55 alarm sound as hook','6 AM: 5 min silence','6:10: phone check (purposeful)','6:30: skill learning session','7:30: ready for work'], effort:'low', impact:'med' },
+  { id:22, title:'Sab Log "No" Bol Rahe The — Tab Kya Kiya', cat:'personal', format:'reel', hook:'Jab sab ne kaha "ye nahi hoga tujhse" — tab main ne ye kiya', desc:'Rejection + resilience story. Emotional arc. Great for personal brand authority.', steps:['Set up the rejection scenario','Your internal reaction (honest)','What you decided to do instead','Result so far'], effort:'low', impact:'high' },
+  { id:23, title:'Agency Banana Kyun Chose Kiya', cat:'personal', format:'reel', hook:'Job chhodni hai — lekin kab? Ye hai mera plan', desc:'Explain your why behind building an agency. Purpose-driven content resonates deeply.', steps:['Start with current job reality','Why agency — freedom, scale, impact','The plan (brief)','"Kya tum bhi aise hi feel karte ho?"'], effort:'low', impact:'high' },
+  { id:24, title:'LinkedIn Pe Client Kaise Dhundhu', cat:'personal', format:'carousel', hook:'LinkedIn se client — ye step-by-step hai mera process', desc:'Actionable B2B lead gen carousel. Extremely shareable among young professionals.', steps:['Profile optimization (5 slides)','Who to connect with','Message template','Follow-up sequence','My results so far'], effort:'med', impact:'high' },
+  { id:25, title:'Ye Galti Mat Karna — Naye Freelancer', cat:'personal', format:'carousel', hook:'Pehle 6 mahine mein ye 5 galtiyan ki meine — tu mat karna', desc:'Mistake-based content performs exceptionally well. Authentic + educational.', steps:['Mistake 1: Working for free too long','Mistake 2: No contract','Mistake 3: One client dependency','Mistake 4: Not tracking metrics','Mistake 5: Ignoring personal brand'], effort:'low', impact:'high' },
+  { id:26, title:'₹0 Se Agency Banana — Is It Real?', cat:'personal', format:'reel', hook:'Bina invest kiye agency? Sach bata raha hoon', desc:'Honest take on zero-capital agency building. Builds trust through honesty.', steps:['What you can do for free','What costs money (and how much)','Timeline realistic expectations','Your personal situation'], effort:'low', impact:'high' },
+  { id:27, title:'Meri Skill Stack — Honest Assessment', cat:'personal', format:'carousel', hook:'In 6 skills se main ₹1 Crore banana chahta hoon — realistic hai?', desc:'Self-assessment of your skills — video editing, design, content, ads, GMB, etc.', steps:['Skill 1: Rate yourself honestly','What clients pay for each','How youre improving each','Revenue potential of each'], effort:'low', impact:'med' },
+  { id:28, title:'Gurugram Mein Naukri vs Business', cat:'personal', format:'reel', hook:'Gurugram mein naukri karo ya apna business — kya sahi hai?', desc:'Hyper-local content for Gurugram audience. Location + career advice = high relevance.', steps:['Cost of living Gurugram reality','Job market vs business opportunity','Your decision and why','Invite comments: "Tum kya sochte ho?"'], effort:'low', impact:'high' },
+  { id:29, title:'Streak — 30 Days Of Posting', cat:'personal', format:'reel', hook:'30 din tak roz post kiya — ye hua mujhe', desc:'Results reel after 30-day posting challenge. Real numbers, real growth.', steps:['Day 1 followers vs Day 30','Best performing content','What you learned about algorithm','Would you do it again?'], effort:'low', impact:'high' },
+  { id:30, title:'Vision Board — ₹1 Crore Tak Ka Raasta', cat:'personal', format:'reel', hook:'Ye hai mera vision board — aur main ye seriously leta hoon', desc:'Show your vision board, goal tracking, accountability system. Inspires and builds connection.', steps:['Physical or digital vision board','Income milestones month-by-month','How you track progress daily','Invite: "Kya tumhara bhi vision board hai?"'], effort:'low', impact:'med' },
+  // BUSINESS/EDU (15 ideas)
+  { id:31, title:'Instagram Algorithm 2025 — Honest Guide', cat:'business', format:'carousel', hook:'Instagram algorithm ke baare mein jo sach koi nahi batata', desc:'Demystify the algorithm. Content creators and business owners both will save this.', steps:['How reach works (simple)','What actually boosts posts','Biggest myths debunked','Your personal experiments with results'], effort:'med', impact:'high' },
+  { id:32, title:'Local Business Ko Online Kaise Lao', cat:'business', format:'carousel', hook:'Kiraane ki dukan se leke clinic tak — ye process kaam karti hai', desc:'Step-by-step guide for any local business to get online. Core service demo content.', steps:['Step 1: Google My Business','Step 2: Instagram basics','Step 3: WhatsApp Business','Step 4: First paid ad (₹500 test)','Your case study'], effort:'med', impact:'high' },
+  { id:33, title:'GMB Rank Kaise Karo — Free SEO', cat:'business', format:'carousel', hook:'Google Maps pe top par aao — bina paisa kharche', desc:'GMB optimization tips. Extremely valuable for local businesses. High save rate.', steps:['Complete all GMB sections','Photos optimization','Review response strategy','Regular posts','Q&A section setup'], effort:'low', impact:'high' },
+  { id:34, title:'Cold Email Jo Reply Dilata Hai', cat:'business', format:'carousel', hook:'Ye cold email template mujhe 30% reply rate deta hai', desc:'Your actual cold email template that works. Extremely practical and shareable.', steps:['Subject line formula','Opening line (no fluff)','Value proposition (1 line)','Social proof','CTA (one action only)','Your real reply rate'], effort:'low', impact:'high' },
+  { id:35, title:'Freelancing Rate Kaise Set Karo', cat:'business', format:'carousel', hook:'Freelancer hoke paisa zyada kaise mango — without feeling guilty', desc:'Pricing psychology for freelancers. Very common pain point.', steps:['Calculate your hourly value','Market rate research','How to present your rate','Handling "too expensive"','Raising rates with existing clients'], effort:'low', impact:'high' },
+  { id:36, title:'Marketing Agency Ka Ek Mahina — P&L', cat:'business', format:'reel', hook:'Mere agency ka last month ka income, expenses, profit — real numbers', desc:'Financial transparency content. Real numbers build massive trust and interest.', steps:['Total revenue','Operating expenses','Net profit','What went well','What youre improving'], effort:'low', impact:'high' },
+  { id:37, title:'Client Dhundho In 5 Ways', cat:'business', format:'carousel', hook:'Agency ke liye client kahan milenge — 5 proven ways', desc:'Lead generation channels for agency owners. Very actionable.', steps:['Cold email (with template)','LinkedIn DM strategy','Instagram DM (local businesses)','Referral system','Offline networking'], effort:'low', impact:'high' },
+  { id:38, title:'Retainer Clients Ka System', cat:'business', format:'carousel', hook:'Project se retainer shift kiya — ye hua meri income ko', desc:'How to move from one-time projects to monthly retainers. Income stability content.', steps:['Why retainers are better','How to pitch existing clients','Contract structure','Deliverables to include','My retainer template (share link)'], effort:'med', impact:'high' },
+  { id:39, title:'Canva Se Professional Design — Free', cat:'business', format:'reel', hook:'₹0 mein professional social media design — ye hai process', desc:'Canva tutorial for beginners. Very high search volume. Perfect for clinic owners and local businesses.', steps:['Canva account setup','Brand kit creation','Template customization','Batch design workflow','Exporting correctly'], effort:'low', impact:'med' },
+  { id:40, title:'Instagram Reels Views Kaise Badhao', cat:'business', format:'carousel', hook:'Reels pe 100 views aa rahe hain? Ye karo — ek hafte mein fark dikhega', desc:'Reel optimization guide. Extremely high demand from small businesses.', steps:['Hook in first 3 seconds','Captions and text overlay importance','Audio selection strategy','Posting time optimization','Hashtag strategy 2025'], effort:'low', impact:'high' },
+  { id:41, title:'WhatsApp Business — Complete Setup', cat:'business', format:'carousel', hook:'WhatsApp Business mein ye features use nahi kar rahe? Miss ho raha hai bahut kuch', desc:'WhatsApp Business advanced features tutorial. Very practical for local businesses.', steps:['Catalog setup','Automated messages','Broadcast lists','Status for business','Labels for lead management'], effort:'low', impact:'med' },
+  { id:42, title:'Meta Ads Kaise Start Karo — ₹500 Mein', cat:'business', format:'carousel', hook:'₹500 mein Facebook ad — ye hai exact process', desc:'Beginner Meta ads tutorial. Most local businesses are scared of ads — demystify it.', steps:['Business Manager setup','Ad objective selection','Audience targeting basics','Creative best practices','Budget and bidding'], effort:'med', impact:'high' },
+  { id:43, title:'Proposal Jo Deal Close Kare', cat:'business', format:'carousel', hook:'Mera proposal format jo 60% deals close karta hai', desc:'Share your proposal structure. Very practical and immediately actionable.', steps:['Problem statement (their words)','Your solution','Timeline','Investment (not cost)','Next steps + urgency'], effort:'low', impact:'high' },
+  { id:44, title:'Agency + Job — Balance Kaise Karo', cat:'business', format:'reel', hook:'Full time job + side hustle — karna possible hai? Mera honest answer', desc:'Time management for working professionals building a side hustle. Very relatable.', steps:['My actual schedule (no fluff)','Peak productivity hours','What I say no to','When to quit your job','Your 6-month rule'], effort:'low', impact:'high' },
+  { id:45, title:'Client Ko Na Kab Kaho', cat:'business', format:'reel', hook:'Ye client lena band karo — ye signs dekho', desc:'Red flags in clients. Controversial = high engagement. Protects freelancers.', steps:['Red flag 1: "We have no budget"','Red flag 2: "Just a small change"','Red flag 3: Multiple decision makers','Red flag 4: Compares to cheaper alternatives','How to professionally decline'], effort:'low', impact:'high' },
+  // VIRAL/TRENDING (10 ideas)
+  { id:46, title:'₹15K Se ₹1 Crore — Math Karo', cat:'viral', format:'reel', hook:'₹15,000 salary se ₹1 Crore — mathematically possible hai kya?', desc:'Do the actual math on camera. Month-by-month calculation. Very shareable calculation reel.', steps:['Current income: ₹15K','Month 1 target: ₹18K (how?)','Compounding effect explained','Month 12: ₹4L projection','"Comment karo: believable lagta hai?"'], effort:'low', impact:'high' },
+  { id:47, title:'Gen Z vs Millennial Money Mindset', cat:'viral', format:'reel', hook:'Gen Z kyun nahi karta job — aur kya ye sahi hai?', desc:'Generational debate content. Always goes viral. Take a nuanced stance.', steps:['Gen Z: entrepreneurship, freedom','Millennial: stability, insurance','Clash point','Your take: why not both?','Invite debate in comments'], effort:'low', impact:'high' },
+  { id:48, title:'Gurugram Reality — Kya Sach Hai', cat:'viral', format:'reel', hook:'Gurugram mein rehna — sach ya jhooth jo log batate hain', desc:'Hyper-local content about Gurugram life. Very shareable in NCR audience.', steps:['Cost of living reality (real numbers)','Commute struggle (relatable)','Opportunity vs price','Is it worth it?','Comments will go wild'], effort:'low', impact:'high' },
+  { id:49, title:'Ye Trend Copy Karo — Clinic Version', cat:'viral', format:'reel', hook:'Trending audio + clinic content = viral combo', desc:'Take current trending reel format and apply it to clinic/health niche. Easy wins.', steps:['Find trending audio weekly','Adapt the format creatively','Shoot in 1 take (raw is fine)','Post within 48 hrs of trend','Repeat with next trend'], effort:'low', impact:'high' },
+  { id:50, title:'India Mein Paisa Kaise Banta Hai', cat:'viral', format:'carousel', hook:'India mein crorepati banne ke 5 realistic ways — honest breakdown', desc:'Aspirational + educational. Will be saved and shared extensively.', steps:['Job + equity (senior roles)','Business ownership','Real estate (capital needed)','Content creation / influencer','Investing (long game)','Your chosen path'], effort:'low', impact:'high' },
+  { id:51, title:'Comment Challenge — Sab Ka Reply', cat:'viral', format:'story', hook:'Ek ghante mein sab ke comments ka reply karunga — LIVE', desc:'Engagement boost strategy. Creates community feeling. Works very well for growing accounts.', steps:['Announce the challenge in story','Set a 60-minute timer','Reply to every comment','Screenshot funniest ones','Show final engagement numbers'], effort:'low', impact:'med' },
+  { id:52, title:'₹100 Investment — 10 Saal Baad', cat:'viral', format:'carousel', hook:'Aaj ₹100 invest karo — 10 saal baad kya milega?', desc:'Compound interest visualized. Financial literacy content = always viral.', steps:['₹100 in savings account','₹100 in index fund','₹100 in crypto (volatile)','₹100 in yourself (skills)','Conclusion: which wins?'], effort:'low', impact:'high' },
+  { id:53, title:'Motivational Monday — Yaksh Style', cat:'viral', format:'reel', hook:'Monday ko logo ko motivation nahi chahiye — ye chahiye', desc:'Contrarian take on motivation culture. Practical > motivational. Different angle wins attention.', steps:['Hook: "Stop watching motivation videos"','Instead: one system to implement today','One specific action','End with accountability ask'], effort:'low', impact:'med' },
+  { id:54, title:'Chai Pe Charcha — Business Wala', cat:'viral', format:'reel', hook:'Chai peete hue soch lo — kya business start kar sakte ho?', desc:'Casual, relatable format. Chai + India + business = culturally powerful combo.', steps:['Record while drinking chai (authentic)','One business idea per reel','Who it works for','How to start tomorrow','Series potential: every week'], effort:'low', impact:'high' },
+  { id:55, title:'Failure Mein Lesson — Real Story', cat:'viral', format:'reel', hook:'Ye meri sabse badi galti thi — aur ye mujhe kya sikh gayi', desc:'Vulnerability + lesson = high relatability. Everyone has failed — they want to feel less alone.', steps:['State the failure clearly','How it felt (emotion)','What you did next','The specific lesson','How youre using it now'], effort:'low', impact:'high' },
+  // MORE IDEAS
+  { id:56, title:'Pehla ₹1 Lakh — Kaisa Tha Woh Din', cat:'personal', format:'reel', hook:'Jab pehli baar ₹1 Lakh mahine ka income hua — ye tha reaction', desc:'Milestone celebration reel. Raw, emotional, inspiring. People will comment their own milestone stories.', steps:['Set up story context','The moment you realized','How you celebrated','What changed after','"Tumhara pehla milestone kya hoga?"'], effort:'low', impact:'high' },
+  { id:57, title:'Content Calendar Kaise Banao', cat:'business', format:'carousel', hook:'Ek hafte ka content 2 ghante mein — mera exact process', desc:'Batch content creation workflow. Very practical, saves people time.', steps:['Sunday planning session (30 min)','Content categories rotation','Caption templates','Scheduling tools','My actual calendar template'], effort:'low', impact:'high' },
+  { id:58, title:'Instagram Highlights Strategy', cat:'business', format:'carousel', hook:'Instagram highlights — agar ye nahi kiya toh sab waste hai', desc:'How to use highlights as a permanent sales page. Very actionable.', steps:['Services highlight','Testimonials highlight','About/story highlight','Results highlight','Contact/booking highlight'], effort:'low', impact:'med' },
+  { id:59, title:'Sleep Karo — Aur Zyada Kamao', cat:'personal', format:'reel', hook:'7 ghante sona mujhe productive kyun banata hai', desc:'Counter-intuitive: rest = productivity. Science-backed. Very shareable.', steps:['Sleep deprivation effect on decisions','Your sleep schedule change','Before vs after performance','The 5 AM hustle myth','What actually works for productivity'], effort:'low', impact:'med' },
+  { id:60, title:'365 Din Baad — Kya Hua?', cat:'personal', format:'reel', hook:'365 din, ek goal, ek rule: no excuses — ye hua', desc:'The ultimate mission completion reel (create when done). Will be most viral content.', steps:['Day 1 vs Day 365 comparison','Income journey shown','Top 3 lessons learned','What surprised you most','What's next: year 2'], effort:'low', impact:'high' },
+];
+
+let activeFilter = 'all';
+let activeFormat = 'all';
+let searchQuery = '';
+
+function renderIdeas() {
+  const grid = document.getElementById('ideas-grid');
+  const noResults = document.getElementById('no-results');
+  grid.innerHTML = '';
+
+  const filtered = ideasData.filter(idea => {
+    const matchCat = activeFilter === 'all' || idea.cat === activeFilter;
+    const matchFmt = activeFormat === 'all' || idea.format === activeFormat;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || idea.title.toLowerCase().includes(q) || idea.desc.toLowerCase().includes(q) || idea.cat.toLowerCase().includes(q);
+    return matchCat && matchFmt && matchSearch;
+  });
+
+  document.getElementById('showing-count').textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  filtered.forEach(idea => {
+    const used = !!localStorage.getItem('yaksh-idea-used-' + idea.id);
+    const card = document.createElement('div');
+    card.className = `idea-card ${used ? 'used' : ''}`;
+    card.innerHTML = `
+      <div class="idea-card-header" onclick="toggleIdea(this.closest('.idea-card'))">
+        <div class="idea-num">${String(idea.id).padStart(2,'0')}</div>
+        <div class="idea-card-meta">
+          <div class="idea-card-title">${idea.title}</div>
+          <span class="idea-category-tag cat-${idea.cat}">${getCatLabel(idea.cat)}</span>
+          <span class="idea-category-tag" style="background:rgba(255,255,255,0.05);color:var(--text-dim);border:1px solid rgba(255,255,255,0.08);margin-left:4px;">${idea.format}</span>
+        </div>
+        <div class="idea-card-actions" onclick="event.stopPropagation()">
+          <button class="idea-action-btn" onclick="copyIdea(${idea.id})" title="Copy">📋</button>
+          <button class="idea-action-btn done-btn ${used ? 'active' : ''}" onclick="toggleUsed(${idea.id},this)" title="Mark done">✅</button>
+        </div>
+        <div class="idea-card-expand-icon">+</div>
+      </div>
+      <div class="idea-card-body">
+        <div class="idea-detail-label">Hook</div>
+        <div class="idea-detail-text" style="color:var(--text);font-style:italic;">"${idea.hook}"</div>
+        <div class="idea-detail-label">Description</div>
+        <div class="idea-detail-text">${idea.desc}</div>
+        <div class="idea-detail-label">Steps</div>
+        <ul class="idea-steps">${idea.steps.map(s => `<li>${s}</li>`).join('')}</ul>
+        <div class="idea-badges">
+          <span class="badge ${idea.effort==='low'?'badge-green':idea.effort==='med'?'badge-gold':'badge-red'}">Effort: ${idea.effort}</span>
+          <span class="badge ${idea.impact==='high'?'badge-gold':'badge-blue'}">Impact: ${idea.impact}</span>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  updateCounts();
+}
+
+function getCatLabel(cat) {
+  return {clinic:'🏥 Clinic',personal:'👤 Personal',business:'💼 Business',viral:'🔥 Viral'}[cat]||cat;
+}
+
+function toggleIdea(card) {
+  card.classList.toggle('expanded');
+}
+
+function setFilter(el, cat) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = cat;
+  renderIdeas();
+}
+
+function setFormat(el, fmt) {
+  document.querySelectorAll('.format-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeFormat = fmt;
+  renderIdeas();
+}
+
+function filterIdeas() {
+  searchQuery = document.getElementById('idea-search').value;
+  renderIdeas();
+}
+
+function updateCounts() {
+  ['clinic','personal','business','viral'].forEach(cat => {
+    const count = ideasData.filter(i => i.cat === cat).length;
+    const el = document.getElementById('count-'+cat);
+    if (el) el.textContent = `(${count})`;
+  });
+  document.getElementById('count-all').textContent = `(${ideasData.length})`;
+}
+
+function copyIdea(id) {
+  const idea = ideasData.find(i => i.id === id);
+  if (!idea) return;
+  const text = `💡 Content Idea #${idea.id}: ${idea.title}\n\nHook: "${idea.hook}"\n\n${idea.desc}\n\nSteps:\n${idea.steps.map((s,i) => `${i+1}. ${s}`).join('\n')}`;
+  navigator.clipboard?.writeText(text).then(() => {
+    const btn = document.querySelector(`.idea-card:nth-child(${id}) .idea-action-btn`);
+    // show brief feedback
+    const allBtns = document.querySelectorAll('.idea-action-btn');
+    allBtns.forEach(b => { if (b.textContent === '📋' && b.closest('.idea-card')) { /* noop */ }});
+    alert('✅ Idea copied to clipboard!');
+  }).catch(() => { alert('Please select and copy manually.'); });
+}
+
+function toggleUsed(id, btn) {
+  const key = 'yaksh-idea-used-' + id;
+  if (localStorage.getItem(key)) {
+    localStorage.removeItem(key);
+    btn.classList.remove('active');
+    btn.closest('.idea-card').classList.remove('used');
+  } else {
+    localStorage.setItem(key, '1');
+    btn.classList.add('active');
+    btn.closest('.idea-card').classList.add('used');
+  }
+  updateUsageCount();
+}
+
+function updateUsageCount() {
+  const month = new Date().toISOString().slice(0,7);
+  let count = 0;
+  ideasData.forEach(i => { if (localStorage.getItem('yaksh-idea-used-' + i.id)) count++; });
+  document.getElementById('usage-count').textContent = count;
+}
+
+function rollRandom() {
+  const modal = document.getElementById('random-modal');
+  modal.classList.add('open');
+  const btn = document.querySelector('.btn-random');
+  btn.classList.add('spin');
+  setTimeout(() => btn.classList.remove('spin'), 400);
+
+  const idx = Math.floor(Math.random() * ideasData.length);
+  const idea = ideasData[idx];
+  document.getElementById('rm-title').textContent = idea.title;
+  document.getElementById('rm-desc').innerHTML = `<em style="color:var(--gold)">"${idea.hook}"</em><br><br>${idea.desc}`;
+  document.getElementById('rm-badges').innerHTML = `
+    <span class="badge badge-gold">${getCatLabel(idea.cat)}</span>
+    <span class="badge badge-blue">${idea.format}</span>
+    <span class="badge ${idea.impact==='high'?'badge-green':'badge-blue'}">Impact: ${idea.impact}</span>
+  `;
+}
+
+modal?.addEventListener?.('click', e => { if (e.target.id === 'random-modal') e.target.classList.remove('open'); });
+document.getElementById('random-modal').addEventListener('click', e => { if (e.target.id === 'random-modal') e.target.classList.remove('open'); });
+
+renderIdeas();
+updateUsageCount();
+</script>
+</body>
+</html>

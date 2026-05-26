@@ -1,0 +1,260 @@
+/* ===================================================
+   YAKSH OS — GLOBAL DESIGN SYSTEM
+   Version 1.0 | design-system.css
+=================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  /* Backgrounds */
+  --bg:        #080808;
+  --bg2:       #0f0f13;
+  --bg3:       #17171e;
+  --bg4:       #1e1e28;
+
+  /* Brand Accents */
+  --gold:      #F5C842;
+  --gold-dim:  #c49a20;
+  --blue:      #4F8EF7;
+  --green:     #39D98A;
+  --red:       #FF4B4B;
+  --purple:    #7C6AF7;
+  --orange:    #FF8C42;
+
+  /* Glassmorphism */
+  --glass:           rgba(255,255,255,0.04);
+  --glass-border:    rgba(255,255,255,0.10);
+  --glass-border2:   rgba(255,255,255,0.06);
+
+  /* Text */
+  --text:         #f0f0f0;
+  --text-muted:   #888;
+  --text-dim:     #555;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', cursive;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-serif:   'Playfair Display', serif;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.4;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+/* ===== PASTEL GRADIENT BG (Hero sections only) ===== */
+@keyframes rotate-cw  { to { transform: translate(-50%,-50%) rotate(360deg);  } }
+@keyframes rotate-ccw { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+
+.pastel-bg-layer-1 {
+  position: absolute; top: 50%; left: 50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(#ff9aa2, #ffdac1, #e2f0cb, #a2e4ff, #c9afff, #ff9aa2);
+  animation: rotate-cw 8s linear infinite;
+  filter: blur(50px);
+  opacity: 0.12;
+  pointer-events: none;
+}
+.pastel-bg-layer-2 {
+  position: absolute; top: 50%; left: 50%;
+  width: 180%; height: 180%;
+  background: conic-gradient(#ff9aa2, #ffdac1, #e2f0cb, #a2e4ff, #c9afff, #ff9aa2);
+  animation: rotate-ccw 10s linear infinite;
+  filter: blur(50px);
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* ===== SPEED LINES ===== */
+.speed-lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.speed-lines span {
+  position: absolute;
+  height: 1px;
+  width: 18%;
+  background: var(--gold);
+  opacity: 0.06;
+}
+.speed-lines span:nth-child(1) { top: 20%; animation: lf 0.6s linear infinite; animation-delay: -5s; }
+.speed-lines span:nth-child(2) { top: 40%; animation: lf 0.8s linear infinite; animation-delay: -1s; }
+.speed-lines span:nth-child(3) { top: 60%; animation: lf 0.6s linear infinite; }
+.speed-lines span:nth-child(4) { top: 80%; animation: lf 0.5s linear infinite; animation-delay: -3s; }
+@keyframes lf { 0% { left: 200%; } 100% { left: -200%; opacity: 0; } }
+
+/* ===== LETTER ANIMATION ===== */
+@keyframes letterReveal {
+  0%   { opacity: 0; transform: translateY(24px); filter: blur(8px); }
+  100% { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+.letter-animate span {
+  display: inline-block;
+  opacity: 0;
+  animation: letterReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ===== HERO GLOW ===== */
+.hero-glow {
+  position: absolute;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(245,200,66,0.10) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ===== GLOBAL CARD STYLE ===== */
+.card {
+  background: var(--bg2);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.card:hover {
+  border-color: rgba(245,200,66,0.3);
+  transform: translateY(-2px);
+}
+
+/* ===== SECTION LAYOUT ===== */
+.section-wrap {
+  padding: 5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.section-header { margin-bottom: 3rem; }
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.section-header p { color: var(--text-muted); margin-top: 0.8rem; max-width: 600px; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+}
+.btn-primary {
+  background: var(--gold);
+  color: #000;
+}
+.btn-primary:hover {
+  background: #ffd84d;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(245,200,66,0.3);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+}
+.btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-1px);
+}
+
+/* ===== BADGES ===== */
+.badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.badge-gold { background: rgba(245,200,66,0.12); color: var(--gold); border: 1px solid rgba(245,200,66,0.2); }
+.badge-green { background: rgba(57,217,138,0.12); color: var(--green); border: 1px solid rgba(57,217,138,0.2); }
+.badge-blue  { background: rgba(79,142,247,0.12); color: var(--blue);  border: 1px solid rgba(79,142,247,0.2); }
+.badge-red   { background: rgba(255,75,75,0.12);  color: var(--red);   border: 1px solid rgba(255,75,75,0.2);  }
+.badge-purple{ background: rgba(124,106,247,0.12);color: var(--purple); border: 1px solid rgba(124,106,247,0.2); }
+
+/* ===== DIVIDER ===== */
+.divider { border: none; border-top: 1px solid var(--glass-border2); margin: 2rem 0; }
+
+/* ===== HERO BASE ===== */
+.page-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== FADE IN ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.6s ease both; }
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .section-wrap { padding: 3rem 1.25rem; }
+  .speed-lines span { opacity: 0.03; }
+}

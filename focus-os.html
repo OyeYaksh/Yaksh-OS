@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — Focus OS</title>
+<meta name="description" content="Focus OS — Eisenhower Matrix, Pomodoro Timer, Habit Tracker, Journal, Goals, Reports.">
+<meta property="og:title" content="Yaksh OS — Focus OS">
+<meta property="og:image" content="shared/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=DM+Sans:wght@400;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; background: #08080f; }
+
+/* TOP NAV STRIP */
+.focus-nav-strip {
+  height: 52px;
+  background: rgba(8,8,8,0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  backdrop-filter: blur(12px);
+}
+.focus-nav-brand {
+  display: flex; align-items: center; gap: 0.6rem;
+  text-decoration: none; color: #fff;
+}
+.focus-nav-logo {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #F5C842, #FF8C42);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 900; font-size: 0.85rem; color: #000;
+}
+.focus-nav-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  letter-spacing: 1px; color: #fff;
+}
+.focus-nav-links {
+  display: flex; align-items: center; gap: 0.15rem;
+  overflow-x: auto; scrollbar-width: none;
+}
+.focus-nav-links::-webkit-scrollbar { display: none; }
+.focus-nav-links a {
+  color: rgba(255,255,255,0.5); text-decoration: none;
+  font-size: 0.72rem; letter-spacing: 0.5px; padding: 5px 10px;
+  border-radius: 6px; transition: all 0.2s; white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+.focus-nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.focus-nav-links a.current { color: #7c3aed; }
+.focus-back-btn {
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(124,58,237,0.3);
+  color: #a78bfa;
+  border-radius: 7px; padding: 5px 14px;
+  font-size: 0.72rem; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; text-decoration: none;
+  white-space: nowrap; transition: all 0.2s; letter-spacing: 0.5px;
+}
+.focus-back-btn:hover { background: rgba(124,58,237,0.25); color: #fff; }
+
+/* FRAME */
+.focus-frame-wrap {
+  position: fixed;
+  top: 52px; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+.focus-frame {
+  width: 100%; height: 100%; border: none; display: block;
+}
+
+/* LOADER */
+.frame-loader {
+  position: fixed; inset: 0; background: #08080f; z-index: 9998;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1.5rem;
+  transition: opacity 0.5s ease;
+}
+.frame-loader.hide { opacity: 0; pointer-events: none; }
+.frame-loader-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3.5rem; font-weight: 900;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -2px;
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.97)} }
+.frame-loader-ring {
+  width: 48px; height: 48px;
+  border: 3px solid rgba(124,58,237,0.15);
+  border-top-color: #7c3aed;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.frame-loader-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; color: rgba(255,255,255,0.25);
+  letter-spacing: 3px; text-transform: uppercase;
+}
+
+@media (max-width: 768px) { .focus-nav-links { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="frame-loader" id="frameLoader">
+  <div class="frame-loader-logo">Focus OS</div>
+  <div class="frame-loader-ring"></div>
+  <div class="frame-loader-label">Loading Productivity Suite</div>
+</div>
+
+<!-- NAV STRIP -->
+<div class="focus-nav-strip">
+  <a href="index.html" class="focus-nav-brand">
+    <div class="focus-nav-logo">Y</div>
+    <span class="focus-nav-name">YAKSH OS</span>
+  </a>
+  <div class="focus-nav-links">
+    <a href="index.html">Mission</a>
+    <a href="roadmap.html">Roadmap</a>
+    <a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a>
+    <a href="scripts.html">Scripts</a>
+    <a href="crm.html">CRM</a>
+    <a href="focus-os.html" class="current">Focus OS</a>
+  </div>
+  <a href="index.html" class="focus-back-btn">← Back to OS</a>
+</div>
+
+<!-- FOCUS OS IFRAME -->
+<div class="focus-frame-wrap">
+  <iframe
+    class="focus-frame"
+    id="focusFrame"
+    src="focus-app/focus-os-v3.html"
+    title="Focus OS"
+    onload="onFrameLoad()"
+  ></iframe>
+</div>
+
+<script>
+function onFrameLoad() {
+  setTimeout(() => {
+    document.getElementById('frameLoader').classList.add('hide');
+  }, 500);
+}
+// Fallback
+setTimeout(() => {
+  document.getElementById('frameLoader').classList.add('hide');
+}, 3500);
+</script>
+</body>
+</html>

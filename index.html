@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — Mission Command</title>
+<meta name="description" content="Zero to ₹1 Crore in 365 Days — Yaksh's public mission dashboard. Receptionist to Agency Owner.">
+<meta property="og:title" content="Yaksh OS — Mission Command">
+<meta property="og:description" content="Zero to ₹1 Crore in 365 Days. Follow the journey live.">
+<meta property="og:image" content="shared/og-image.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#080808">
+<link rel="stylesheet" href="shared/design-system.css">
+<link rel="stylesheet" href="shared/navbar.css">
+<link rel="stylesheet" href="shared/loader.css">
+<style>
+/* ===== PAGE LOADER ===== */
+#page-loader { background: var(--bg); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(245,200,66,0.3);
+  padding: 6px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 13vw, 9rem);
+  line-height: 0.92;
+  letter-spacing: 3px;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.hero-sub strong { color: var(--text); }
+
+/* ===== COUNTDOWN ===== */
+.countdown-box {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 2rem auto;
+  max-width: 480px;
+  animation: fadeUp 0.6s 0.5s ease both;
+}
+.cd-unit {
+  background: var(--bg2);
+  padding: 1.4rem 0.8rem;
+  text-align: center;
+  position: relative;
+}
+.cd-unit::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+.cd-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+.cd-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 6px;
+  display: block;
+  font-family: var(--font-mono);
+}
+
+/* ===== HERO BUTTONS ===== */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  animation: fadeUp 0.6s 0.7s ease both;
+}
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 2rem;
+}
+.stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+}
+.stat-item {
+  text-align: center;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: rgba(255,255,255,0.06);
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  display: block;
+  line-height: 1;
+}
+.stat-sub {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ===== MISSION PARAMS ===== */
+.mission-params {
+  background: linear-gradient(135deg, rgba(245,200,66,0.07), rgba(245,200,66,0.02));
+  border: 0.5px solid rgba(245,200,66,0.2);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  max-width: 760px;
+  margin: 0 auto 2rem;
+  animation: fadeUp 0.6s 0.6s ease both;
+}
+.mission-params h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 1.25rem;
+}
+.params-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  text-align: left;
+}
+.param-item { display: flex; flex-direction: column; gap: 3px; }
+.param-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-mono); }
+.param-val { font-size: 1rem; font-weight: 700; color: var(--text); }
+.param-val.gold { color: var(--gold); }
+.param-val.red  { color: var(--red); }
+.param-val.green{ color: var(--green); }
+
+/* ===== 12 MONTHS GRID ===== */
+.months-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.month-card {
+  background: var(--bg2);
+  padding: 1.5rem;
+  position: relative;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.month-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.month-card.q1::before { background: var(--blue); }
+.month-card.q2::before { background: var(--green); }
+.month-card.q3::before { background: var(--orange); }
+.month-card.q4::before { background: var(--gold); }
+.month-card:hover { background: var(--bg3); }
+.month-card.active-month { background: var(--bg3); box-shadow: inset 0 0 0 1px rgba(245,200,66,0.3); }
+.month-card.past { opacity: 0.5; }
+.month-card.locked { opacity: 0.35; }
+
+.month-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.month-income {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.month-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0.4rem 0 0.8rem;
+}
+.month-actions {
+  list-style: none;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  padding: 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 0.8rem;
+  margin-top: 0.4rem;
+}
+.month-actions li {
+  padding: 3px 0 3px 1.2rem;
+  position: relative;
+}
+.month-actions li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+}
+.month-badge {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.month-badge.active-badge { background: rgba(245,200,66,0.15); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+.month-badge.locked-badge { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+/* ===== DAILY CHECK-IN ===== */
+.checkin-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.checkin-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.checkin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.checkin-day {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,140,66,0.12);
+  border: 1px solid rgba(255,140,66,0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--orange);
+  letter-spacing: 1px;
+}
+.priority-inputs { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+.priority-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.priority-num {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: rgba(245,200,66,0.3);
+  min-width: 28px;
+  line-height: 1;
+}
+.priority-input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.priority-input:focus { border-color: rgba(245,200,66,0.4); }
+.priority-input::placeholder { color: var(--text-dim); }
+.save-btn {
+  width: 100%;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.save-btn:hover { background: #ffd84d; transform: translateY(-1px); }
+.save-confirm {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--green);
+  margin-top: 0.5rem;
+  display: none;
+  font-family: var(--font-mono);
+}
+
+/* ===== MILESTONE WALL ===== */
+.milestone-wall { border-top: 1px solid rgba(255,255,255,0.06); }
+.milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.milestone-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s;
+}
+.milestone-card.unlocked {
+  border-color: rgba(245,200,66,0.3);
+  background: linear-gradient(135deg, rgba(245,200,66,0.05), var(--bg2));
+}
+.milestone-card.locked-ms { filter: grayscale(1); opacity: 0.4; }
+.milestone-icon-big { font-size: 2.2rem; margin-bottom: 0.75rem; display: block; }
+.milestone-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+.milestone-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+.milestone-lock {
+  position: absolute;
+  top: 0.75rem; right: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+.milestone-share {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.68rem;
+  color: var(--gold);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid rgba(245,200,66,0.2);
+  border-radius: 4px;
+  padding: 3px 10px;
+  transition: all 0.2s;
+}
+.milestone-share:hover { background: rgba(245,200,66,0.1); }
+
+/* ===== GLOBAL SEARCH OVERLAY ===== */
+#global-search {
+  display: none;
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+}
+#global-search.open { display: flex; }
+.search-modal {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+}
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.search-icon { color: var(--text-muted); font-size: 1rem; }
+#search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+#search-input::placeholder { color: var(--text-dim); }
+.search-results {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+.search-result-item {
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background 0.15s;
+}
+.search-result-item:hover { background: var(--bg3); }
+.sr-page {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: var(--gold);
+  text-transform: uppercase;
+  min-width: 70px;
+}
+.sr-title { font-size: 0.88rem; color: var(--text); }
+.search-hint {
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  gap: 1rem;
+}
+
+/* ===== FOOTER ===== */
+.site-footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.footer-inner { max-width: 600px; margin: 0 auto; }
+.footer-quote {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.footer-sub { color: var(--text-muted); font-size: 0.82rem; }
+.footer-links { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+.footer-links a { color: var(--text-dim); font-size: 0.78rem; text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+
+/* ===== LIGHT MODE ===== */
+body.light-mode {
+  --bg: #fafafa; --bg2: #fff; --bg3: #f3f3f7; --bg4: #ebebf3;
+  --text: #111; --text-muted: #666; --text-dim: #aaa;
+  --glass-border: rgba(0,0,0,0.08); --glass-border2: rgba(0,0,0,0.05);
+}
+body.light-mode body::before { opacity: 0.15; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .stat-item:nth-child(2)::after { display: none; }
+  .params-grid { grid-template-columns: 1fr; }
+  .months-grid { grid-template-columns: 1fr; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  .countdown-box { grid-template-columns: repeat(2, 1fr); }
+  .stats-inner { grid-template-columns: 1fr; }
+  .stat-item::after { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="loader">
+    <div class="loader-body">
+      <span class="trail"></span>
+      <div class="base">
+        <span></span>
+        <div class="face"></div>
+      </div>
+      <div class="fazer"></div>
+      <div class="fazer"></div>
+      <div class="fazer"></div>
+      <div class="fazer"></div>
+    </div>
+  </div>
+  <p class="loader-label">Loading Yaksh OS</p>
+</div>
+
+<!-- GLOBAL SEARCH -->
+<div id="global-search">
+  <div class="search-modal">
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search scripts, ideas, tasks..." autocomplete="off">
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="search-result-item" onclick="location.href='roadmap.html'">
+        <span class="sr-page">Roadmap</span>
+        <span class="sr-title">Agency Blueprint — ₹15K to ₹1Cr</span>
+      </div>
+      <div class="search-result-item" onclick="location.href='blueprint.html'">
+        <span class="sr-page">Blueprint</span>
+        <span class="sr-title">365 Day Plan — Phase 1: Neev</span>
+      </div>
+      <div class="search-result-item" onclick="location.href='content-ideas.html'">
+        <span class="sr-page">Ideas</span>
+        <span class="sr-title">365 Content Ideas Vault</span>
+      </div>
+      <div class="search-result-item" onclick="location.href='scripts.html'">
+        <span class="sr-page">Scripts</span>
+        <span class="sr-title">30 Video Scripts — Phase 1</span>
+      </div>
+      <div class="search-result-item" onclick="location.href='crm.html'">
+        <span class="sr-page">CRM</span>
+        <span class="sr-title">Outreach CRM Pro — Client Pipeline</span>
+      </div>
+      <div class="search-result-item" onclick="location.href='focus-os.html'">
+        <span class="sr-page">Focus OS</span>
+        <span class="sr-title">Pomodoro + Habit Tracker</span>
+      </div>
+    </div>
+    <div class="search-hint">
+      <span>↑↓ Navigate</span>
+      <span>↵ Open</span>
+      <span>Esc Close</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="yaksh-nav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-logo">Y</div>
+    <span class="nav-name">YAKSH <span class="nav-tag">OS</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Mission</a>
+    <a href="roadmap.html">Roadmap</a>
+    <a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a>
+    <a href="scripts.html">Scripts</a>
+    <a href="crm.html">CRM</a>
+    <a href="focus-os.html">Focus OS</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-search-btn" title="Search (Ctrl+K)">🔍 <span>Ctrl+K</span></button>
+    <button class="theme-toggle" title="Toggle theme">🌙</button>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="pastel-bg-layer-1"></div>
+  <div class="pastel-bg-layer-2"></div>
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="hero-glow"></div>
+
+  <span class="hero-tag">Birthday → Birthday Mission 🎂</span>
+
+  <h1 class="letter-animate">ZERO TO 8 DIGIT IN 365</h1>
+
+  <p class="hero-sub">
+    Aaj tera birthday hai. 15,000 ki salary, Gurugram mein koi saving nahi.<br>
+    <strong>Agle birthday pe — bank mein 8+ digit hona chahiye.</strong><br>
+    Ye hai tera war plan.
+  </p>
+
+  <div class="countdown-box" id="countdown">
+    <div class="cd-unit"><span class="cd-num" id="cd-days">365</span><span class="cd-label">Days</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Hours</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Mins</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Secs</span></div>
+  </div>
+
+  <div class="mission-params">
+    <h3>🎯 THE MISSION PARAMETERS</h3>
+    <div class="params-grid">
+      <div class="param-item">
+        <span class="param-label">Current Income</span>
+        <span class="param-val">₹15,000 / month</span>
+      </div>
+      <div class="param-item">
+        <span class="param-label">Current Savings</span>
+        <span class="param-val red">₹0</span>
+      </div>
+      <div class="param-item">
+        <span class="param-label">Target (8 digit min)</span>
+        <span class="param-val gold">₹1,00,00,000+</span>
+      </div>
+      <div class="param-item">
+        <span class="param-label">Deadline</span>
+        <span class="param-val gold">Next Birthday 🎂</span>
+      </div>
+      <div class="param-item">
+        <span class="param-label">Primary Tool</span>
+        <span class="param-val">Marketing Skill + Clinic Portfolio</span>
+      </div>
+      <div class="param-item">
+        <span class="param-label">Strategy</span>
+        <span class="param-val">Agency + Content + Investments</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-buttons">
+    <a href="roadmap.html" class="btn btn-primary">📋 View Full Roadmap</a>
+    <a href="focus-os.html" class="btn btn-ghost">⚡ Start Focus OS</a>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-label">Current Income</span>
+      <span class="stat-value" id="live-income">₹15K</span>
+      <span class="stat-sub">per month</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Target</span>
+      <span class="stat-value">₹1Cr</span>
+      <span class="stat-sub">in 12 months</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Deadline</span>
+      <span class="stat-value">🎂</span>
+      <span class="stat-sub">Next Birthday</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Tools Ready</span>
+      <span class="stat-value">7</span>
+      <span class="stat-sub">Pages live</span>
+    </div>
+  </div>
+</div>
+
+<!-- 12 MONTHS CHAPTER MAP -->
+<section class="months-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Phase Roadmap</span>
+      <h2>12 MAHINE — 12 CHAPTERS</h2>
+      <p>Har mahine ka income target, key actions, aur milestones. Ye plan aggressive hai — par realistic bhi.</p>
+    </div>
+    <div class="months-grid" id="months-grid">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- DAILY CHECK-IN -->
+<section class="checkin-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Daily Mission</span>
+      <h2>TODAY'S PRIORITIES</h2>
+      <p>Aaj ke teen sabse important kaam. Sirf teen. Baaki sab baad mein.</p>
+    </div>
+    <div class="checkin-card">
+      <div class="checkin-header">
+        <span class="checkin-day" id="today-day">Day — of 365</span>
+        <span class="streak-badge">🔥 Streak: <strong id="streak-count">0</strong> days</span>
+      </div>
+      <div class="priority-inputs">
+        <div class="priority-row">
+          <span class="priority-num">1</span>
+          <input type="text" class="priority-input" id="p1" placeholder="Priority 1 — Sabse important kaam aaj...">
+        </div>
+        <div class="priority-row">
+          <span class="priority-num">2</span>
+          <input type="text" class="priority-input" id="p2" placeholder="Priority 2 — Second most important...">
+        </div>
+        <div class="priority-row">
+          <span class="priority-num">3</span>
+          <input type="text" class="priority-input" id="p3" placeholder="Priority 3 — Complete karna hai aaj...">
+        </div>
+      </div>
+      <button class="save-btn" onclick="savePriorities()">✅ Save Today's Priorities</button>
+      <p class="save-confirm" id="save-confirm">✓ Priorities saved! Ab focus karo — kaam shuru karo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONE WALL -->
+<section class="milestone-wall">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Achievement Wall</span>
+      <h2>MILESTONES UNLOCKED</h2>
+      <p>Progress mark karo — badges unlock honge. Ye tera public proof of work hai.</p>
+    </div>
+    <div class="milestones-grid" id="milestones-grid">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-quote">ZERO TO CRORE</div>
+    <p class="footer-sub">Yaksh OS — A living dashboard for a 365-day mission. Built in Gurugram. Hustle made public.</p>
+    <div class="footer-links">
+      <a href="roadmap.html">Roadmap</a>
+      <a href="blueprint.html">365 Plan</a>
+      <a href="content-ideas.html">Ideas</a>
+      <a href="scripts.html">Scripts</a>
+      <a href="crm.html">CRM</a>
+      <a href="focus-os.html">Focus OS</a>
+    </div>
+    <p style="margin-top:1.5rem; font-size:0.7rem; color:var(--text-dim); font-family:var(--font-mono);">
+      © 2025 Yaksh OS · All rights reserved · Version 1.0
+    </p>
+  </div>
+</footer>
+
+<script src="shared/loader.js"></script>
+<script src="shared/navbar.js"></script>
+<script>
+// ===== COUNTDOWN TIMER =====
+(function() {
+  const MISSION_START = localStorage.getItem('yaksh-mission-start');
+  let deadline;
+  if (MISSION_START) {
+    deadline = new Date(MISSION_START);
+    deadline.setFullYear(deadline.getFullYear() + 1);
+  } else {
+    // Default: 365 days from now if not set
+    deadline = new Date();
+    deadline.setDate(deadline.getDate() + 365);
+    deadline.setHours(0,0,0,0);
+  }
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = deadline - now;
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '000';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent = '00';
+      document.getElementById('cd-secs').textContent = '00';
+      return;
+    }
+    const days  = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins  = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const secs  = Math.floor((diff % (1000*60)) / 1000);
+    document.getElementById('cd-days').textContent  = String(days).padStart(3,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
+
+// ===== DAY COUNTER =====
+(function() {
+  const start = localStorage.getItem('yaksh-mission-start');
+  let dayNum = 1;
+  if (start) {
+    const diff = new Date() - new Date(start);
+    dayNum = Math.max(1, Math.floor(diff / (1000*60*60*24)) + 1);
+  }
+  document.getElementById('today-day').textContent = `Day ${dayNum} of 365`;
+})();
+
+// ===== STREAK =====
+(function() {
+  const today = new Date().toDateString();
+  const last  = localStorage.getItem('yaksh-last-checkin');
+  let streak  = parseInt(localStorage.getItem('yaksh-streak') || '0');
+  if (last) {
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    if (last === yesterday.toDateString()) { /* continue */ }
+    else if (last !== today) { streak = 0; }
+  }
+  document.getElementById('streak-count').textContent = streak;
+})();
+
+// ===== LOAD SAVED PRIORITIES =====
+(function() {
+  const today = new Date().toDateString();
+  const saved = JSON.parse(localStorage.getItem('yaksh-priorities-' + today) || 'null');
+  if (saved) {
+    document.getElementById('p1').value = saved[0] || '';
+    document.getElementById('p2').value = saved[1] || '';
+    document.getElementById('p3').value = saved[2] || '';
+  }
+})();
+
+// ===== SAVE PRIORITIES =====
+function savePriorities() {
+  const today = new Date().toDateString();
+  const data = [
+    document.getElementById('p1').value,
+    document.getElementById('p2').value,
+    document.getElementById('p3').value
+  ];
+  localStorage.setItem('yaksh-priorities-' + today, JSON.stringify(data));
+
+  // Update streak
+  const last = localStorage.getItem('yaksh-last-checkin');
+  let streak = parseInt(localStorage.getItem('yaksh-streak') || '0');
+  if (last !== today) {
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    if (last === yesterday.toDateString()) { streak++; }
+    else { streak = 1; }
+    localStorage.setItem('yaksh-last-checkin', today);
+    localStorage.setItem('yaksh-streak', streak);
+    document.getElementById('streak-count').textContent = streak;
+  }
+
+  const confirm = document.getElementById('save-confirm');
+  confirm.style.display = 'block';
+  setTimeout(() => confirm.style.display = 'none', 3000);
+
+  checkMilestones();
+}
+
+// ===== 12 MONTHS DATA =====
+const months = [
+  { num:'01', name:'Foundation',    income:'₹18,000',  q:'q1', actions:['Clinic Instagram + GMB setup karo','Pehla freelance client (free ya 3k)','Portfolio website banao (Carrd.co)','10 cold emails bhejo daily'] },
+  { num:'02', name:'Momentum',      income:'₹28,000',  q:'q1', actions:['Clinic ka pehla viral reel','GMB reviews 8→30+','2 corporate pitch emails weekly','Pehla paid freelance client confirm'] },
+  { num:'03', name:'First Proof',   income:'₹42,000',  q:'q1', actions:['1 Corporate wellness deal close karo','1 Gym/hospital tie-up clinic ke liye','Agency ka naam + packages finalize karo','Case studies document karo (real numbers)'] },
+  { num:'04', name:'Scale Up',      income:'₹62,000',  q:'q2', actions:['1 intern hire karo (Internshala — unpaid)','Referral program launch karo existing clients ke liye','YouTube channel start karo (personal brand)','LinkedIn premium content weekly'] },
+  { num:'05', name:'Agency Mode',   income:'₹85,000',  q:'q2', actions:['Agency register karo (solo proprietorship first)','Niche: Healthcare + local business only','Consulting calls start karo (500-1000/hr)','Pehla digital product outline karo'] },
+  { num:'06', name:'Compound Start',income:'₹1,10,000',q:'q2', actions:['SIP start karo — ₹5,000/month (index fund)','Job se ya part-time transition plan banao','Pehle 5k followers personal Instagram','2nd corporate client for clinic'] },
+  { num:'07', name:'Full Agency',   income:'₹1,40,000',q:'q3', actions:['1 full-time contractor hire karo','Retainer clients = stable income','Premium package launch (₹25,000/month)','Speaking/workshop opportunities explore karo'] },
+  { num:'08', name:'Content Economy',income:'₹1,70,000',q:'q3',actions:['Digital product launch karo (₹499-999)','YouTube AdSense start hoga (small but real)','Brand sponsorship pitch karo (tools/SaaS)','Workshop: Local Business ke liye Marketing 2999/seat'] },
+  { num:'09', name:'Systems',       income:'₹2,00,000',q:'q3', actions:['SOPs + templates banao — delegation ke liye','2nd tier clients (larger companies) pitch karo','Clinic equity/revenue share negotiate karo boss se','Mutual funds + stocks mein invest start karo seriously'] },
+  { num:'10', name:'Authority',     income:'₹2,50,000',q:'q4', actions:['Media features — local business magazines/blogs','Agency case study book / PDF publish karo','Retainer pricing badhao (existing clients)','₹5L+ emergency + investment fund complete'] },
+  { num:'11', name:'Pre-Summit',    income:'₹3,00,000',q:'q4', actions:['Hire 2nd full-time team member','Offer high-ticket packages (₹50K+/month)','Book a speaking slot — startup event / college','Raise retainer prices to ₹30K minimum'] },
+  { num:'12', name:'SUMMIT',        income:'₹4,00,000+',q:'q4',actions:['₹1 Crore annual revenue milestone','Team of 3–4 people','Exit job completely — agency full-time','Plan next year: ₹5 Crore target'] },
+];
+
+(function renderMonths() {
+  const grid = document.getElementById('months-grid');
+  const start = localStorage.getItem('yaksh-mission-start');
+  let currentMonth = 1;
+  if (start) {
+    const diff = new Date() - new Date(start);
+    currentMonth = Math.min(12, Math.max(1, Math.ceil(diff / (1000*60*60*24*30.5))));
+  }
+
+  months.forEach((m, i) => {
+    const mNum = i + 1;
+    let status = '';
+    let badge = '';
+    if (mNum < currentMonth) { status = 'past'; }
+    else if (mNum === currentMonth) { status = 'active-month'; badge = '<span class="month-badge active-badge">● Active</span>'; }
+    else { status = 'locked'; badge = '<span class="month-badge locked-badge">🔒</span>'; }
+
+    const card = document.createElement('div');
+    card.className = `month-card ${m.q} ${status}`;
+    card.innerHTML = `
+      ${badge}
+      <div class="month-num">Month ${m.num} — ${m.name}</div>
+      <div class="month-income">${m.income}</div>
+      <ul class="month-actions">
+        ${m.actions.map(a => `<li>${a}</li>`).join('')}
+      </ul>
+    `;
+    grid.appendChild(card);
+  });
+})();
+
+// ===== MILESTONES =====
+const milestonesData = [
+  { id:'m1', icon:'🏆', title:'First Client',     desc:'Month 1 tasks complete karo — pehla client land karo', key:'first-client' },
+  { id:'m2', icon:'📸', title:'Portfolio Live',   desc:'Portfolio website publish ho gayi — proof of work ready', key:'portfolio-live' },
+  { id:'m3', icon:'💰', title:'₹1 Lakh Month',   desc:'Monthly income ₹1 Lakh cross kar gayi', key:'lakh-month' },
+  { id:'m4', icon:'🔥', title:'100 Days',         desc:'100 din consecutively kaam kiya — no excuses', key:'100-days' },
+  { id:'m5', icon:'🚀', title:'Agency Registered',desc:'Legal entity ban gayi — ab tu ek CEO hai', key:'agency-reg' },
+  { id:'m6', icon:'📱', title:'10K Followers',    desc:'Personal brand Instagram par 10K followers', key:'10k-followers' },
+  { id:'m7', icon:'🎓', title:'First Workshop',   desc:'Pehla paid workshop ya speaking gig complete', key:'first-workshop' },
+  { id:'m8', icon:'👑', title:'8 DIGIT',          desc:'₹1 Crore bank balance — mission accomplished!', key:'8-digit' },
+];
+
+function checkMilestones() {
+  const start = localStorage.getItem('yaksh-mission-start');
+  if (start) {
+    const diff = new Date() - new Date(start);
+    const days = Math.floor(diff / (1000*60*60*24));
+    if (days >= 100) localStorage.setItem('yaksh-ms-100-days', '1');
+  }
+}
+
+(function renderMilestones() {
+  const grid = document.getElementById('milestones-grid');
+  milestonesData.forEach(ms => {
+    const unlocked = !!localStorage.getItem('yaksh-ms-' + ms.key);
+    const card = document.createElement('div');
+    card.className = `milestone-card ${unlocked ? 'unlocked' : 'locked-ms'}`;
+    card.innerHTML = `
+      ${!unlocked ? '<span class="milestone-lock">🔒</span>' : ''}
+      <span class="milestone-icon-big">${ms.icon}</span>
+      <div class="milestone-title">${ms.title}</div>
+      <div class="milestone-desc">${ms.desc}</div>
+      ${unlocked ? `<span class="milestone-share" onclick="shareMilestone('${ms.title}')">📤 Share</span>` : ''}
+    `;
+    if (!unlocked) {
+      card.addEventListener('click', () => {
+        if (confirm(`Mark "${ms.title}" as unlocked?`)) {
+          localStorage.setItem('yaksh-ms-' + ms.key, '1');
+          renderMilestones();
+        }
+      });
+    }
+    grid.appendChild(card);
+  });
+})();
+
+function renderMilestones() {
+  const grid = document.getElementById('milestones-grid');
+  grid.innerHTML = '';
+  milestonesData.forEach(ms => {
+    const unlocked = !!localStorage.getItem('yaksh-ms-' + ms.key);
+    const card = document.createElement('div');
+    card.className = `milestone-card ${unlocked ? 'unlocked' : 'locked-ms'}`;
+    card.innerHTML = `
+      ${!unlocked ? '<span class="milestone-lock">🔒</span>' : ''}
+      <span class="milestone-icon-big">${ms.icon}</span>
+      <div class="milestone-title">${ms.title}</div>
+      <div class="milestone-desc">${ms.desc}</div>
+      ${unlocked ? `<span class="milestone-share" onclick="shareMilestone('${ms.title}')">📤 Share</span>` : ''}
+    `;
+    if (!unlocked) {
+      card.addEventListener('click', () => {
+        if (confirm(`Mark "${ms.title}" as unlocked?`)) {
+          localStorage.setItem('yaksh-ms-' + ms.key, '1');
+          renderMilestones();
+        }
+      });
+    }
+    grid.appendChild(card);
+  });
+}
+
+function shareMilestone(title) {
+  const text = `🏆 Just unlocked "${title}" on my Zero to ₹1 Crore journey!\n\n#YakshOS #ZeroToCrore #365DayMission`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('✅ Share text copied to clipboard!'));
+  } else {
+    prompt('Copy this:', text);
+  }
+}
+
+checkMilestones();
+</script>
+</body>
+</html>

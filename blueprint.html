@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — 365 Blueprint</title>
+<meta name="description" content="365 Day Blueprint — Zero to 8 Digits. Day-by-day plan from Phase 1 (Neev) to Phase 5 (Aag).">
+<meta property="og:title" content="Yaksh OS — 365 Blueprint">
+<meta property="og:description" content="365 Day Mission Blueprint — Zero to ₹1 Crore">
+<meta property="og:image" content="shared/og-image.png">
+<link rel="stylesheet" href="shared/design-system.css">
+<link rel="stylesheet" href="shared/navbar.css">
+<link rel="stylesheet" href="shared/loader.css">
+<style>
+/* HERO */
+.bp-hero {
+  min-height: 70vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 8rem 2rem 3rem; position: relative; overflow: hidden;
+}
+.bp-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 9rem);
+  line-height: 0.9; letter-spacing: 2px;
+  background: linear-gradient(135deg, #fff 30%, var(--gold) 70%, #F5C842 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.bp-hero-sub {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 4vw, 2.2rem);
+  letter-spacing: 0.12em; color: var(--gold);
+  margin-top: 0.5rem; animation: fadeUp 0.7s 0.2s ease both;
+}
+.bp-hero-goal {
+  margin-top: 1.5rem; font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 2vw, 0.9rem);
+  color: var(--text-muted); animation: fadeUp 0.7s 0.3s ease both; max-width: 480px;
+}
+.bp-hero-goal span { color: var(--orange); font-weight: 700; }
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.2em;
+  color: var(--text-dim); animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+/* DAY TRACKER BAR */
+.day-tracker-bar {
+  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 1.5rem 2rem;
+}
+.day-tracker-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+}
+.day-counter {
+  font-family: var(--font-display); font-size: 3rem;
+  color: var(--gold); letter-spacing: 2px; line-height: 1; white-space: nowrap;
+}
+.day-tracker-info { flex: 1; min-width: 200px; }
+.day-track-label {
+  font-family: var(--font-mono); font-size: 0.62rem;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;
+}
+.day-progress-bar {
+  background: var(--bg3); border-radius: 4px; height: 6px; overflow: hidden;
+}
+.day-progress-fill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--orange), var(--gold));
+  transition: width 1s ease;
+}
+.day-pct { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); margin-top: 4px; display: block; }
+
+/* PHASE NAV */
+.phase-nav-sticky {
+  position: sticky; top: 60px; z-index: 100;
+  background: rgba(8,8,8,0.95); backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0; overflow-x: auto; scrollbar-width: none;
+}
+.phase-nav-sticky::-webkit-scrollbar { display: none; }
+.phase-nav-inner {
+  display: flex; min-width: max-content; padding: 0 1.5rem;
+  max-width: 1200px; margin: 0 auto;
+}
+.phase-btn {
+  padding: 1rem 1.5rem; background: none; border: none;
+  color: var(--text-muted); font-family: var(--font-mono);
+  font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s; border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.phase-btn:hover { color: var(--text); }
+.phase-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+/* PHASE SECTIONS */
+.bp-container { max-width: 960px; margin: 0 auto; padding: 0 2rem 5rem; }
+.phase-section { display: none; padding-top: 3rem; }
+.phase-section.active { display: block; }
+
+.phase-header { margin-bottom: 2.5rem; }
+.phase-number {
+  font-family: var(--font-display); font-size: 8rem;
+  line-height: 1; color: rgba(255,255,255,0.04); user-select: none; letter-spacing: -2px;
+}
+.phase-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 0.05em; margin-top: -2.5rem; position: relative;
+}
+.phase-days {
+  font-family: var(--font-mono); font-size: 0.68rem;
+  color: var(--orange); letter-spacing: 0.2em; margin-top: 0.5rem;
+}
+.phase-desc {
+  margin-top: 1.25rem; font-size: 0.95rem; color: var(--text-muted);
+  max-width: 580px; border-left: 2px solid var(--orange); padding-left: 1rem; line-height: 1.8;
+}
+
+/* NON-NEGOTIABLES PILLS */
+.nonneg-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem; }
+.nonneg-pill {
+  background: rgba(255,107,26,0.08); border: 1px solid rgba(255,107,26,0.2);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 0.8rem; color: var(--text); display: flex; align-items: center; gap: 6px;
+}
+.nonneg-pill .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+
+/* WARN BOX */
+.warn-box {
+  background: rgba(255,75,75,0.06); border: 1px solid rgba(255,75,75,0.18);
+  border-radius: 8px; padding: 1rem 1.25rem; font-size: 0.85rem;
+  color: #ff8fa3; margin: 1.5rem 0; line-height: 1.7;
+}
+.warn-box strong { color: var(--red); }
+
+/* QUOTE BLOCK */
+.quote-block {
+  border-left: 3px solid var(--gold); padding: 1rem 1.5rem;
+  margin: 2rem 0; background: rgba(245,200,66,0.04);
+  font-family: var(--font-serif); font-style: italic; color: var(--gold);
+  font-size: 0.95rem; border-radius: 0 8px 8px 0;
+}
+
+/* WEEK CARDS */
+.week-card {
+  margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; overflow: hidden; transition: border-color 0.3s;
+}
+.week-card:hover { border-color: rgba(255,107,26,0.3); }
+.week-card-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.25rem; background: var(--bg2);
+  cursor: pointer; user-select: none;
+}
+.week-card-num {
+  font-family: var(--font-mono); font-size: 0.62rem;
+  color: var(--orange); letter-spacing: 0.2em; min-width: 60px;
+}
+.week-card-title {
+  font-family: var(--font-display); font-size: 1.2rem;
+  letter-spacing: 0.05em; flex: 1;
+}
+.week-card-emoji { font-size: 1.2rem; }
+.week-card-toggle {
+  font-size: 0.8rem; color: var(--text-muted); transition: transform 0.3s;
+}
+.week-card.open .week-card-toggle { transform: rotate(180deg); }
+.week-card-body {
+  display: none; padding: 1.5rem; background: var(--bg3);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.week-card.open .week-card-body { display: block; }
+
+/* DAY GRID */
+.day-grid { display: grid; gap: 0.75rem; margin-bottom: 1.5rem; }
+.day-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px; padding: 1rem 1.2rem;
+  display: grid; grid-template-columns: 56px 1fr; gap: 1rem; align-items: start;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.day-card:hover { border-color: rgba(245,200,66,0.2); }
+.day-card.checked { border-color: rgba(57,217,138,0.3); background: rgba(57,217,138,0.03); }
+.day-num {
+  font-family: var(--font-display); font-size: 2rem;
+  line-height: 1; color: var(--orange); opacity: 0.4;
+}
+.day-card.checked .day-num { color: var(--green); opacity: 0.8; }
+.day-focus { font-weight: 700; font-size: 0.92rem; color: var(--text); margin-bottom: 0.3rem; }
+.day-action { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+.day-action strong { color: var(--gold); }
+
+/* HABIT BLOCK */
+.habit-block {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px; padding: 1.25rem; margin-top: 1rem;
+}
+.habit-title {
+  font-family: var(--font-mono); font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 0.75rem;
+}
+.habit-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.habit-list li {
+  display: flex; align-items: flex-start; gap: 0.7rem;
+  font-size: 0.85rem; color: var(--text);
+}
+.habit-list li::before { content: '→'; color: var(--orange); flex-shrink: 0; margin-top: 0.1rem; }
+.habit-list li span { color: var(--text-muted); font-size: 0.78rem; }
+
+/* MILESTONE ROW */
+.milestone-row {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem;
+  background: rgba(255,107,26,0.06); border: 1px solid rgba(255,107,26,0.25);
+  border-radius: 6px; margin: 1.5rem 0;
+}
+.milestone-icon { font-size: 1.4rem; }
+.milestone-text { font-size: 0.88rem; line-height: 1.6; }
+.milestone-text strong { color: var(--orange); }
+
+/* TAGS */
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.tag {
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em;
+  padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+}
+.tag-health { background: rgba(57,217,138,0.08); color: var(--green); border: 1px solid rgba(57,217,138,0.2); }
+.tag-money  { background: rgba(245,200,66,0.08); color: var(--gold);  border: 1px solid rgba(245,200,66,0.2); }
+.tag-mind   { background: rgba(79,142,247,0.08);  color: var(--blue);  border: 1px solid rgba(79,142,247,0.2); }
+.tag-habit  { background: rgba(255,107,26,0.08);  color: var(--orange);border: 1px solid rgba(255,107,26,0.2); }
+.tag-skill  { background: rgba(255,75,75,0.08);   color: var(--red);   border: 1px solid rgba(255,75,75,0.2);  }
+
+/* FLOATING DAILY RULES BUTTON */
+.floating-rules {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 500;
+}
+.rules-btn {
+  background: var(--orange); color: #000; border: none;
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+  padding: 0.7rem 1rem; border-radius: 6px; cursor: pointer;
+  font-weight: 700; text-transform: uppercase; transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(255,140,66,0.35);
+}
+.rules-btn:hover { background: #ff9c33; transform: translateY(-1px); }
+.rules-panel {
+  display: none; position: fixed; bottom: 5rem; right: 1.5rem;
+  width: 280px; background: var(--bg2);
+  border: 1px solid rgba(255,107,26,0.3); border-radius: 10px;
+  padding: 1.5rem; z-index: 500;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+.rules-panel.open { display: block; }
+.rules-panel-title {
+  font-family: var(--font-mono); font-size: 0.62rem;
+  letter-spacing: 0.2em; color: var(--orange);
+  text-transform: uppercase; margin-bottom: 1rem;
+}
+.rule-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.83rem;
+}
+.rule-item:last-child { border-bottom: none; }
+.rule-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+
+/* LIGHT MODE */
+body.light-mode { --bg:#fafafa; --bg2:#fff; --bg3:#f3f3f7; --bg4:#ebebf3; --text:#111; --text-muted:#666; --text-dim:#aaa; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .day-tracker-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .day-counter { font-size: 2.5rem; }
+  .day-card { grid-template-columns: 44px 1fr; }
+  .bp-container { padding: 0 1.25rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="page-loader">
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="loader"><div class="loader-body"><span class="trail"></span><div class="base"><span></span><div class="face"></div></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div></div></div>
+  <p class="loader-label">Loading 365 Blueprint</p>
+</div>
+
+<!-- GLOBAL SEARCH -->
+<div id="global-search"><div class="search-modal"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search scripts, ideas, tasks..." autocomplete="off"></div><div class="search-results"><div class="search-result-item" onclick="location.href='index.html'"><span class="sr-page">Home</span><span class="sr-title">Mission Command</span></div><div class="search-result-item" onclick="location.href='roadmap.html'"><span class="sr-page">Roadmap</span><span class="sr-title">Agency Blueprint</span></div><div class="search-result-item" onclick="location.href='content-ideas.html'"><span class="sr-page">Ideas</span><span class="sr-title">365 Content Ideas</span></div><div class="search-result-item" onclick="location.href='scripts.html'"><span class="sr-page">Scripts</span><span class="sr-title">30 Video Scripts</span></div></div><div class="search-hint"><span>↑↓ Navigate</span><span>↵ Open</span><span>Esc Close</span></div></div></div>
+
+<!-- NAVBAR -->
+<nav class="yaksh-nav">
+  <a href="index.html" class="nav-brand"><div class="nav-logo">Y</div><span class="nav-name">YAKSH <span class="nav-tag">OS</span></span></a>
+  <div class="nav-links">
+    <a href="index.html">Mission</a><a href="roadmap.html">Roadmap</a><a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a><a href="scripts.html">Scripts</a><a href="crm.html">CRM</a><a href="focus-os.html">Focus OS</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-search-btn">🔍 <span>Ctrl+K</span></button>
+    <button class="theme-toggle">🌙</button>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- FLOATING DAILY RULES -->
+<div class="floating-rules">
+  <button class="rules-btn" onclick="toggleRules()">⚡ Daily Rules</button>
+</div>
+<div class="rules-panel" id="rulesPanel">
+  <div class="rules-panel-title">// Daily Non-Negotiables</div>
+  <div class="rule-item"><div class="rule-dot"></div> Subah 6 baje uthna</div>
+  <div class="rule-item"><div class="rule-dot"></div> Phone screen se pehle 5 min silence</div>
+  <div class="rule-item"><div class="rule-dot"></div> Paani — 3L minimum</div>
+  <div class="rule-item"><div class="rule-dot"></div> 30 min movement (walk/gym/anything)</div>
+  <div class="rule-item"><div class="rule-dot"></div> Ek skill par 1 ghanta kaam</div>
+  <div class="rule-item"><div class="rule-dot"></div> Raat ko kal ki list banana</div>
+  <div class="rule-item"><div class="rule-dot"></div> Ek cheez ke liye grateful rehna</div>
+</div>
+
+<!-- HERO -->
+<section class="bp-hero">
+  <div class="pastel-bg-layer-1"></div>
+  <div class="pastel-bg-layer-2"></div>
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="hero-glow"></div>
+  <div style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.3em;color:var(--orange);text-transform:uppercase;margin-bottom:1.5rem;border:1px solid rgba(255,107,26,0.3);padding:0.35rem 1rem;border-radius:3px;animation:fadeUp 0.6s ease both;display:inline-block;">// 365 Day Blueprint — Zero to 8 Digits</div>
+  <h1 class="letter-animate">YAKSH</h1>
+  <div class="bp-hero-sub">vs. Khud Ka Purana Version</div>
+  <div class="bp-hero-goal">
+    Goal: <span>₹1 Crore</span> Bank Balance by Next Birthday<br>
+    Starting point: Zero. Energy: Unlimited.
+  </div>
+  <div class="scroll-hint">↓ SCROLL</div>
+</section>
+
+<!-- DAY TRACKER -->
+<div class="day-tracker-bar">
+  <div class="day-tracker-inner">
+    <div class="day-counter" id="bp-day-counter">Day 1</div>
+    <div class="day-tracker-info">
+      <div class="day-track-label">Mission Progress</div>
+      <div class="day-progress-bar"><div class="day-progress-fill" id="bp-progress" style="width:0%"></div></div>
+      <span class="day-pct" id="bp-day-pct">0% of 365 days</span>
+    </div>
+    <div>
+      <label style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px;">Set Start Date</label>
+      <input type="date" id="start-date-input" style="background:var(--bg3);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font-mono);font-size:0.82rem;outline:none;">
+    </div>
+  </div>
+</div>
+
+<!-- PHASE NAV -->
+<nav class="phase-nav-sticky">
+  <div class="phase-nav-inner">
+    <button class="phase-btn active" onclick="showPhase('p1',this)">Phase 1 — Neev (Days 1–30)</button>
+    <button class="phase-btn" onclick="showPhase('p2',this)">Phase 2 — Jaagna (31–60)</button>
+    <button class="phase-btn" onclick="showPhase('p3',this)">Phase 3 — Hunnar (61–120)</button>
+    <button class="phase-btn" onclick="showPhase('p4',this)">Phase 4 — Paisa (121–240)</button>
+    <button class="phase-btn" onclick="showPhase('p5',this)">Phase 5 — Aag (241–365)</button>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="bp-container">
+
+<!-- NON-NEGOTIABLES (shown always) -->
+<div style="padding-top:2rem;margin-bottom:2rem;">
+  <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:0.75rem;">Daily Non-Negotiables — Har Roz, No Exceptions</div>
+  <div class="nonneg-pills">
+    <span class="nonneg-pill"><span class="pill-dot"></span>🌅 Subah 6 baje uthna</span>
+    <span class="nonneg-pill"><span class="pill-dot"></span>🤫 Phone se pehle 5 min silence</span>
+    <span class="nonneg-pill"><span class="pill-dot"></span>💧 3L paani minimum</span>
+    <span class="nonneg-pill"><span class="pill-dot"></span>🏃 30 min movement</span>
+    <span class="nonneg-pill"><span class="pill-dot"></span>📚 1 ghanta skill work</span>
+    <span class="nonneg-pill"><span class="pill-dot"></span>📝 Raat ko kal ki list</span>
+    <span class="nonneg-pill"><span class="pill-dot"></span>🙏 Ek cheez grateful</span>
+  </div>
+</div>
+
+<!-- PHASE 1 — NEEV -->
+<div id="p1" class="phase-section active">
+  <div class="phase-header">
+    <div class="phase-number">01</div>
+    <div class="phase-title">NEEV</div>
+    <div class="phase-days">// Days 1–30 — Foundation</div>
+    <p class="phase-desc">Pehle mahine ka ek hi kaam hai — <strong style="color:var(--text)">toot-ti hui cheezein theek karna.</strong> Koi bada goal nahi. Sirf ek solid insaan banna jiske upar baaki sab kuch build ho sake.</p>
+  </div>
+  <div class="warn-box"><strong>⚠️ Yaksh, sun:</strong> Pehle 30 din koi result nahi dikhega. Log nahi dekhenge. Viral nahi hoga. Aur yahi woh time hai jab 90% log quit kar dete hain. Tu nahi karega.</div>
+  <div class="quote-block">"You don't rise to the level of your goals. You fall to the level of your systems." — James Clear</div>
+
+  <div class="week-card open">
+    <div class="week-card-header" onclick="toggleWeek(this)">
+      <span class="week-card-num">WEEK 01</span>
+      <span class="week-card-title">Gandi Aadtein Identify Karo</span>
+      <span class="week-card-emoji">🔍</span>
+      <span class="week-card-toggle">▾</span>
+    </div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-habit">Habit</span><span class="tag tag-mind">Mental</span></div>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1rem;">Pehle week mein kuch "karna" nahi hai. Sirf <strong style="color:var(--text)">observe karna hai</strong> — khud ko judge kiye bina.</p>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d1')"><div class="day-num">1</div><div><div class="day-focus">Audit Day — Kal kya kiya?</div><div class="day-action">Ek kagaz pe likho — <strong>subah se raat tak kal ka poora din.</strong> Kitna time phone pe gaya? Kya useful tha, kya waste? Seedha likho — jhooth mat bolo khud se.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d2')"><div class="day-num">2</div><div><div class="day-focus">Screen Time Reality Check</div><div class="day-action">Phone settings mein ja aur <strong>screen time report dekho.</strong> Jo number aaye, usse note karo. Instagram scroll = converted time to money — kitna gaya?</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d3')"><div class="day-num">3</div><div><div class="day-focus">Energy Drain Map</div><div class="day-action">3 cheezein likho jo tujhe <strong>sabse zyada energy drain karti hain</strong> — chahe woh log hoon, apps hoon ya thoughts. Ek temporary solution soch.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d45')"><div class="day-num">4–5</div><div><div class="day-focus">Sleep Pattern Fix Start</div><div class="day-action">Aaj se <strong>raat 11 baje phone band.</strong> Seriously. Alarm lagao 10:45 ka. Pehle 2 din mushkil lagega — normal hai.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d67')"><div class="day-num">6–7</div><div><div class="day-focus">Week 1 Review + Ek Habit Choose</div><div class="day-action">Jo tune observe kiya — usme se <strong>sirf ek sabse badi problem</strong> choose karo. Next week sirf uss par focus hoga.</div></div></div>
+      </div>
+      <div class="habit-block">
+        <div class="habit-title">// Week 1 Mein Sirf Itna Karo</div>
+        <ul class="habit-list">
+          <li>Subah uthke 5 min bina phone ke baitho <span>(literally sirf baitho, kuch mat socho)</span></li>
+          <li>Raat ko sone se pehle kal ki teen priority likho <span>(ek note mein, 2 min kaam)</span></li>
+          <li>Paani bottle bharke rakho — jab dikhegi tab peeyoge <span>(brain hack hai)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-card-header" onclick="toggleWeek(this)">
+      <span class="week-card-num">WEEK 02</span>
+      <span class="week-card-title">Body Ko Signal Do — "Ab Kuch Badal Raha Hai"</span>
+      <span class="week-card-emoji">🏃</span>
+      <span class="week-card-toggle">▾</span>
+    </div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-health">Health</span><span class="tag tag-habit">Habit</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d8')"><div class="day-num">8</div><div><div class="day-focus">Pehli Walk — 20 Minutes</div><div class="day-action">Aaj sirf <strong>20 min walk karo</strong> — ghar ke bahar. Phone mat le jaana. Sirf chalo aur observe karo.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d910')"><div class="day-num">9–10</div><div><div class="day-focus">Morning Routine — 15 Min Version</div><div class="day-action">Uthna → <strong>5 min silence → paani → 10 push-ups ya 10 squats.</strong> Bas. Itna hi. Gym nahi.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d1112')"><div class="day-num">11–12</div><div><div class="day-focus">Khaana — Ek Change</div><div class="day-action">Koi diet nahi. Sirf ek rule: <strong>subah kuch bhi fried mat khao.</strong> Ek fruit, bread, dahi — kuch bhi.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d1314')"><div class="day-num">13–14</div><div><div class="day-focus">Raat ki neend — Fix Karo</div><div class="day-action"><strong>7-8 ghante sona mandatory hai.</strong> Neend mein compromise = brain slow = decisions kharab = money gaya.</div></div></div>
+      </div>
+      <div class="milestone-row"><div class="milestone-icon">🎯</div><div class="milestone-text">Week 2 ke baad: <strong>Tu physically zyada alert feel karega.</strong> Yeh feel remember karna.</div></div>
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-card-header" onclick="toggleWeek(this)">
+      <span class="week-card-num">WEEK 03</span>
+      <span class="week-card-title">Mind Ko Declutter Karo</span>
+      <span class="week-card-emoji">🧠</span>
+      <span class="week-card-toggle">▾</span>
+    </div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-mind">Mental</span><span class="tag tag-habit">Habit</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d15')"><div class="day-num">15</div><div><div class="day-focus">Brain Dump Exercise</div><div class="day-action">Ek page lo aur <strong>sab kuch likho jo dimag mein chal raha hai</strong> — worries, plans, random thoughts. Judge mat karo.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d1617')"><div class="day-num">16–17</div><div><div class="day-focus">Negative People / Content Filter</div><div class="day-action"><strong>Toxic ya useless content unfollow/mute karo.</strong> Sirf creators follow karo jo actually kuch sikhate hain. Tera feed = tera mind.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d1819')"><div class="day-num">18–19</div><div><div class="day-focus">5-Minute Journal Start</div><div class="day-action">Raat ko sirf: <strong>1) Aaj kya accha hua 2) Kya aur better kar sakta tha 3) Kal ka ek goal.</strong> 5 min max.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d2021')"><div class="day-num">20–21</div><div><div class="day-focus">Comparison Band Karo</div><div class="day-action"><strong>"Woh already successful hai" —</strong> yeh thought aayi toh immediately apne Day 1 se aaj tak ki progress likho. Comparison khud se hai.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-card-header" onclick="toggleWeek(this)">
+      <span class="week-card-num">WEEK 04</span>
+      <span class="week-card-title">Clinic Ka Kaam Shuru — First Output</span>
+      <span class="week-card-emoji">🏥</span>
+      <span class="week-card-toggle">▾</span>
+    </div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-money">Money</span><span class="tag tag-skill">Skill</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d22')"><div class="day-num">22</div><div><div class="day-focus">Clinic Instagram Audit</div><div class="day-action">Current followers, engagement rate, last 10 posts ka performance note karo. <strong>Competitors ke 3 clinic accounts analyse karo.</strong></div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d2324')"><div class="day-num">23–24</div><div><div class="day-focus">Pehla Content Batch Create</div><div class="day-action"><strong>5 clinic posts design karo Canva mein</strong> — 3 educational, 1 testimonial, 1 promotional. Schedule karo Buffer/Meta Planner se.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d2526')"><div class="day-num">25–26</div><div><div class="day-focus">GMB Listing Optimize Karo</div><div class="day-action">Google My Business claim karo (if not done). <strong>Photos upload, description write, services add</strong> karo. Reviews ke liye plan banao.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d2730')"><div class="day-num">27–30</div><div><div class="day-focus">Phase 1 Review + Phase 2 Plan</div><div class="day-action"><strong>30 din ka honest review likho.</strong> Kya achieve kiya? Kya miss kiya? Phase 2 ke targets set karo — realistic but aggressive.</div></div></div>
+      </div>
+      <div class="milestone-row"><div class="milestone-icon">🏆</div><div class="milestone-text">Phase 1 Complete: <strong>Tu ab ek alag insaan hai.</strong> Habits bani hain, mind clear hai, clinic ka kaam shuru ho gaya hai. Phase 2 ke liye ready hai.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 — JAAGNA -->
+<div id="p2" class="phase-section">
+  <div class="phase-header">
+    <div class="phase-number">02</div>
+    <div class="phase-title">JAAGNA</div>
+    <div class="phase-days">// Days 31–60 — Awareness</div>
+    <p class="phase-desc">Ab sona band. Pehle mahine mein tune khud ko theek kiya. Ab <strong style="color:var(--text)">duniya ko dikhana hai ki tu exist karta hai</strong> — professional, credible, trustworthy.</p>
+  </div>
+  <div class="quote-block">"Your personal brand is what people say about you when you're not in the room." — Jeff Bezos</div>
+  <div class="week-card open">
+    <div class="week-card-header" onclick="toggleWeek(this)"><span class="week-card-num">WEEK 05</span><span class="week-card-title">Portfolio + Online Presence</span><span class="week-card-emoji">🌐</span><span class="week-card-toggle">▾</span></div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-skill">Skill</span><span class="tag tag-money">Money</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d31')"><div class="day-num">31</div><div><div class="day-focus">Portfolio Website Launch</div><div class="day-action"><strong>Carrd.co par 1-page portfolio banao.</strong> Name, what you do, clinic work samples, contact link. 2 hours max. Done &gt; Perfect.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d3233')"><div class="day-num">32–33</div><div><div class="day-focus">LinkedIn Profile Professional Banao</div><div class="day-action"><strong>Headline: "Marketing Specialist | Helping Local Businesses Grow Online".</strong> Add clinic work as project. Connect with 20 local business owners.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d3435')"><div class="day-num">34–35</div><div><div class="day-focus">Instagram Personal Brand Start</div><div class="day-action"><strong>Personal account mein bio update karo.</strong> Pehli "behind the scenes" story post karo. Ye tera public journey hai — document karo.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="week-card">
+    <div class="week-card-header" onclick="toggleWeek(this)"><span class="week-card-num">WEEK 06–08</span><span class="week-card-title">Cold Outreach + First Paid Client</span><span class="week-card-emoji">💼</span><span class="week-card-toggle">▾</span></div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-money">Money</span><span class="tag tag-skill">Skill</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d3640')"><div class="day-num">36–40</div><div><div class="day-focus">50 Cold Emails Send Karo</div><div class="day-action"><strong>10 emails/day for 5 days.</strong> Local businesses target karo — clinics, gyms, restaurants, salons. Personalized subject line. Short body. Clear CTA.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d4145')"><div class="day-num">41–45</div><div><div class="day-focus">First Meeting Book + Conduct</div><div class="day-action">Response aaye toh <strong>24 ghante mein reply karo.</strong> Meeting mein portfolio + clinic results show karo. Package present karo clearly.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d4660')"><div class="day-num">46–60</div><div><div class="day-focus">First Paid Client Close Karo</div><div class="day-action"><strong>Minimum ₹3,000–5,000 target.</strong> Free nahi karega — value know karo. Contract sign karo (even basic email confirmation). Onboard karo.</div></div></div>
+      </div>
+      <div class="milestone-row"><div class="milestone-icon">💰</div><div class="milestone-text">Phase 2 Target: <strong>2–3 paying clients, ₹15K–25K freelance income.</strong> Tu ab sirf receptionist nahi hai — tu ek entrepreneur hai.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3 — HUNNAR -->
+<div id="p3" class="phase-section">
+  <div class="phase-header">
+    <div class="phase-number">03</div>
+    <div class="phase-title">HUNNAR</div>
+    <div class="phase-days">// Days 61–120 — Skill to Service</div>
+    <p class="phase-desc">Ab sirf kaam nahi — <strong style="color:var(--text)">system banana hai.</strong> Teri skills ko scalable services mein convert karo. Agency banta hai yahan se.</p>
+  </div>
+  <div class="week-card open">
+    <div class="week-card-header" onclick="toggleWeek(this)"><span class="week-card-num">WEEK 09–12</span><span class="week-card-title">Service Packages + Agency Setup</span><span class="week-card-emoji">🚀</span><span class="week-card-toggle">▾</span></div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-money">Money</span><span class="tag tag-skill">Skill</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'d6180')"><div class="day-num">61–80</div><div><div class="day-focus">3 Service Packages Design Karo</div><div class="day-action"><strong>Starter: ₹5K/month | Growth: ₹12K/month | Premium: ₹25K/month.</strong> Each package has clear deliverables. No custom quotes — simplicity sells.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d8190')"><div class="day-num">81–90</div><div><div class="day-focus">5 Active Clients Target</div><div class="day-action"><strong>Pipeline track karo.</strong> Outreach → Proposal → Meeting → Close. Every week: 20 emails, 5 follow-ups, 2 meetings minimum.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'d91120')"><div class="day-num">91–120</div><div><div class="day-focus">Agency Register + Branding</div><div class="day-action">Agency naam finalize karo. <strong>Sole proprietorship register karo.</strong> Logo + basic brand kit banao. Ye ab serious hai.</div></div></div>
+      </div>
+      <div class="milestone-row"><div class="milestone-icon">🏢</div><div class="milestone-text">Phase 3 Target: <strong>5+ clients, ₹50K–70K monthly revenue, agency officially registered.</strong></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4 — PAISA -->
+<div id="p4" class="phase-section">
+  <div class="phase-header">
+    <div class="phase-number">04</div>
+    <div class="phase-title">PAISA</div>
+    <div class="phase-days">// Days 121–240 — Multiple Income Streams</div>
+    <p class="phase-desc">Sirf ek income stream se ₹1 Crore nahi hoga. <strong style="color:var(--text)">Multiple streams build karo</strong> — agency + content + consulting + digital products.</p>
+  </div>
+  <div class="week-card open">
+    <div class="week-card-header" onclick="toggleWeek(this)"><span class="week-card-num">MONTH 5–8</span><span class="week-card-title">Revenue Diversification</span><span class="week-card-emoji">💸</span><span class="week-card-toggle">▾</span></div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-money">Money</span><span class="tag tag-skill">Skill</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'p4-1')"><div class="day-num">5</div><div><div class="day-focus">Consulting Rate Set Karo — ₹500–1000/hr</div><div class="day-action"><strong>Existing clients ke liye strategy calls monetize karo.</strong> "Monthly strategy session: ₹2,000 extra." Simple upsell.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'p4-2')"><div class="day-num">6</div><div><div class="day-focus">Digital Product Launch — ₹499</div><div class="day-action"><strong>Pehla digital product:</strong> "Local Business Instagram Growth Playbook" — PDF guide. Gumroad par sell karo. Passive income shuru.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'p4-3')"><div class="day-num">7</div><div><div class="day-focus">YouTube Channel + AdSense</div><div class="day-action"><strong>Weekly 1 YouTube video:</strong> "How I Grew a Clinic's Instagram from 200 to 5K Followers." Real case studies. Authority build hoga.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'p4-4')"><div class="day-num">8</div><div><div class="day-focus">Workshop Launch — ₹2,999/seat</div><div class="day-action"><strong>"Local Business Marketing Masterclass"</strong> — 2 hour online workshop. 20 seats. ₹60K in one day. Announce on LinkedIn + Instagram.</div></div></div>
+      </div>
+      <div class="milestone-row"><div class="milestone-icon">💰</div><div class="milestone-text">Phase 4 Target: <strong>₹1L–2L monthly, 3+ income streams active, investments started.</strong></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5 — AAG -->
+<div id="p5" class="phase-section">
+  <div class="phase-header">
+    <div class="phase-number">05</div>
+    <div class="phase-title">AAG</div>
+    <div class="phase-days">// Days 241–365 — Final Sprint</div>
+    <p class="phase-desc">Last 4 mahine. Sab kuch is par depend karta hai. <strong style="color:var(--text)">Koi excuse nahi. Sirf results.</strong> ₹1 Crore ya uss ke aas paas hona chahiye by Day 365.</p>
+  </div>
+  <div class="quote-block">"The last 10% is the hardest. Most people quit at 90%. That's why most people fail." — Unknown</div>
+  <div class="week-card open">
+    <div class="week-card-header" onclick="toggleWeek(this)"><span class="week-card-num">MONTH 9–12</span><span class="week-card-title">The Final Push — ₹1 Crore or Bust</span><span class="week-card-emoji">🔥</span><span class="week-card-toggle">▾</span></div>
+    <div class="week-card-body">
+      <div class="tags"><span class="tag tag-money">Money</span><span class="tag tag-skill">Skill</span></div>
+      <div class="day-grid">
+        <div class="day-card" onclick="toggleDay(this,'p5-1')"><div class="day-num">9</div><div><div class="day-focus">₹2L+ Monthly — Consolidate</div><div class="day-action"><strong>15+ clients target. Team of 2–3.</strong> SOPs fully documented. Every process delegated. Tu sirf strategy aur sales karta hai.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'p5-2')"><div class="day-num">10</div><div><div class="day-focus">Media + Authority Building</div><div class="day-action"><strong>Local newspaper, startup blog, podcast — pitch karo.</strong> "19-year-old from Gurugram built ₹X agency in 10 months" — that's a story.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'p5-3')"><div class="day-num">11</div><div><div class="day-focus">High-Ticket Packages — ₹50K+</div><div class="day-action"><strong>Premium clients ke liye ₹50K/month package design karo.</strong> Full marketing management. 2 such clients = ₹1L/month extra.</div></div></div>
+        <div class="day-card" onclick="toggleDay(this,'p5-4')"><div class="day-num">12</div><div><div class="day-focus">🎂 Birthday — Mission Complete</div><div class="day-action"><strong>Bank statement kholo. Count karo.</strong> Agar ₹1 Crore nahi bhi hua — tu woh insaan ban gaya hai jo ₹1 Crore bana sakta hai. That's the real win.</div></div></div>
+      </div>
+      <div class="milestone-row" style="background:rgba(245,200,66,0.06);border-color:rgba(245,200,66,0.3);">
+        <div class="milestone-icon">👑</div>
+        <div class="milestone-text" style="color:var(--gold)"><strong style="color:var(--gold)">MISSION ACCOMPLISHED:</strong> Zero to ₹1 Crore. Receptionist to Agency Owner. 365 days. This is your story.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end bp-container -->
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem;text-align:center;margin-top:2rem;">
+  <div style="max-width:600px;margin:0 auto;">
+    <div style="font-family:var(--font-display);font-size:3rem;background:linear-gradient(135deg,var(--orange),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px;">KEEP GOING</div>
+    <p style="font-family:var(--font-mono);font-size:0.72rem;letter-spacing:2px;color:var(--text-muted);margin-top:0.75rem;">Day by day. Week by week. ₹1 Crore by next birthday.</p>
+  </div>
+</footer>
+
+<script src="shared/loader.js"></script>
+<script src="shared/navbar.js"></script>
+<script>
+function showPhase(id, btn) {
+  document.querySelectorAll('.phase-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleWeek(header) {
+  header.parentElement.classList.toggle('open');
+}
+function toggleDay(el, key) {
+  const done = localStorage.getItem('yaksh-day-' + key);
+  if (done) { localStorage.removeItem('yaksh-day-' + key); el.classList.remove('checked'); }
+  else { localStorage.setItem('yaksh-day-' + key, '1'); el.classList.add('checked'); }
+}
+function toggleRules() {
+  document.getElementById('rulesPanel').classList.toggle('open');
+}
+
+// Load day states
+document.querySelectorAll('.day-card').forEach(card => {
+  const onclick = card.getAttribute('onclick');
+  if (onclick) {
+    const match = onclick.match(/'([^']+)'\)/);
+    if (match) {
+      const key = match[1];
+      if (localStorage.getItem('yaksh-day-' + key)) card.classList.add('checked');
+    }
+  }
+});
+
+// Day tracker
+(function() {
+  const input = document.getElementById('start-date-input');
+  const saved = localStorage.getItem('yaksh-mission-start');
+  if (saved) input.value = saved;
+
+  function updateDayTracker(startStr) {
+    if (!startStr) return;
+    const start = new Date(startStr);
+    const diff  = new Date() - start;
+    const day   = Math.max(1, Math.min(365, Math.floor(diff / (1000*60*60*24)) + 1));
+    const pct   = ((day / 365) * 100).toFixed(1);
+    document.getElementById('bp-day-counter').textContent = `Day ${day}`;
+    document.getElementById('bp-progress').style.width = pct + '%';
+    document.getElementById('bp-day-pct').textContent = `${pct}% of 365 days`;
+
+    // Auto-highlight correct phase
+    if (day <= 30)       showPhaseAuto('p1');
+    else if (day <= 60)  showPhaseAuto('p2');
+    else if (day <= 120) showPhaseAuto('p3');
+    else if (day <= 240) showPhaseAuto('p4');
+    else                 showPhaseAuto('p5');
+  }
+
+  function showPhaseAuto(id) {
+    const btn = document.querySelector(`.phase-btn[onclick="showPhase('${id}',this)"]`);
+    if (btn && !document.querySelector('.phase-btn.user-selected')) {
+      document.querySelectorAll('.phase-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+  }
+
+  input.addEventListener('change', () => {
+    localStorage.setItem('yaksh-mission-start', input.value);
+    updateDayTracker(input.value);
+  });
+
+  document.querySelectorAll('.phase-btn').forEach(b => {
+    b.addEventListener('click', () => b.classList.add('user-selected'));
+  });
+
+  updateDayTracker(saved);
+})();
+</script>
+</body>
+</html>

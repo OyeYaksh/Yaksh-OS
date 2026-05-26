@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaksh OS — Agency Roadmap</title>
+<meta name="description" content="Receptionist to Agency Owner — 12 Month Master Plan. Revenue projections, KPI dashboard, live calculator.">
+<meta property="og:title" content="Yaksh OS — Agency Roadmap">
+<meta property="og:description" content="Zero to ₹1 Crore in 365 Days — Full Agency Blueprint">
+<meta property="og:image" content="shared/og-image.png">
+<link rel="stylesheet" href="shared/design-system.css">
+<link rel="stylesheet" href="shared/navbar.css">
+<link rel="stylesheet" href="shared/loader.css">
+<style>
+/* ===== HERO ===== */
+.page-hero { min-height: 60vh; padding-top: 8rem; padding-bottom: 3rem; }
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.93;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  position: relative; z-index: 1;
+}
+.page-hero h1 .accent { color: var(--gold); }
+.hero-desc {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 540px;
+  margin: 0 auto 2rem;
+  animation: fadeUp 0.6s 0.4s ease both;
+  line-height: 1.8;
+}
+
+/* ===== STATS STRIP ===== */
+.stats-strip {
+  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.stats-strip-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 1.5rem 2rem;
+  gap: 1px;
+}
+.strip-stat {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  position: relative;
+}
+.strip-stat:not(:last-child)::after {
+  content: '';
+  position: absolute; right: 0; top: 15%; bottom: 15%;
+  width: 1px; background: rgba(255,255,255,0.06);
+}
+.strip-val {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  display: block; line-height: 1;
+}
+.strip-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ===== UNFAIR ADVANTAGE ===== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.skill-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.skill-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--blue));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.skill-card:hover { transform: translateY(-3px); border-color: rgba(245,200,66,0.25); }
+.skill-card:hover::before { transform: scaleX(1); }
+.skill-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+.skill-name {
+  font-weight: 700; font-size: 0.88rem; color: var(--text);
+  margin-bottom: 0.3rem;
+}
+.skill-level {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ===== REVENUE CHART ===== */
+.chart-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.revenue-chart {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  overflow-x: auto;
+}
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  height: 200px;
+  padding-bottom: 2rem;
+  position: relative;
+  min-width: 600px;
+}
+.chart-bars::after {
+  content: '';
+  position: absolute;
+  bottom: 2rem; left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+.bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  justify-content: flex-end;
+}
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 1s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+  cursor: pointer;
+}
+.bar:hover::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -28px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.bar-month {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-bottom: 0.25rem;
+}
+
+/* ===== INCOME TRACKER (Sticky Sidebar) ===== */
+.tracker-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  align-items: start;
+}
+.income-tracker {
+  position: sticky;
+  top: 80px;
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+.tracker-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+}
+.tracker-row {
+  margin-bottom: 1rem;
+}
+.tracker-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+.tracker-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.tracker-input:focus { border-color: rgba(245,200,66,0.4); }
+.tracker-result {
+  background: var(--bg3);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+.tracker-result-val {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--green);
+  letter-spacing: 1px;
+  display: block;
+}
+.tracker-result-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 3px;
+  display: block;
+}
+.progress-bar-wrap {
+  margin-top: 0.75rem;
+  background: var(--bg3);
+  border-radius: 4px;
+  height: 6px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--green));
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+/* ===== CALCULATOR ===== */
+.calc-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.calc-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 1.75rem;
+}
+.calc-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.input-group { margin-bottom: 1rem; }
+.input-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+.calc-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.calc-input:focus { border-color: rgba(245,200,66,0.4); }
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.result-item {
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.result-val {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  display: block;
+  line-height: 1;
+}
+.result-val.green { color: var(--green); }
+.result-val.gold  { color: var(--gold); }
+.result-val.blue  { color: var(--blue); }
+.result-val.red   { color: var(--red); }
+.result-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ===== KPI DASHBOARD ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.kpi-cell {
+  background: var(--bg2);
+  padding: 1.25rem;
+  text-align: center;
+}
+.kpi-num {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+}
+.kpi-input {
+  width: 100%;
+  margin-top: 8px;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-align: center;
+  outline: none;
+}
+.rates-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.rate-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+}
+.rate-val {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  display: block;
+  line-height: 1;
+}
+
+/* ===== 4 PHASES ===== */
+.phases-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.phases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.phase-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.phase-card:hover { transform: translateY(-2px); }
+.phase-num-bg {
+  position: absolute;
+  right: -0.5rem; top: -0.5rem;
+  font-family: var(--font-display);
+  font-size: 8rem;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.phase-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.phase-name {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.25rem;
+}
+.phase-months {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+.phase-goals {
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.phase-goals li {
+  padding: 4px 0 4px 1.2rem;
+  position: relative;
+}
+.phase-goals li::before {
+  content: '→';
+  position: absolute; left: 0;
+}
+
+/* ===== 52 WEEK ACCORDION ===== */
+.weeks-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.week-accordion {
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.week-acc-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg2);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.week-acc-header:hover { background: var(--bg3); }
+.week-acc-num {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  min-width: 52px;
+}
+.week-acc-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex: 1;
+}
+.week-acc-toggle {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  transition: transform 0.3s;
+}
+.week-accordion.open .week-acc-toggle { transform: rotate(180deg); }
+.week-acc-body {
+  display: none;
+  background: var(--bg3);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 1.25rem;
+}
+.week-accordion.open .week-acc-body { display: block; }
+.week-tasks { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.week-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.week-task:last-child { border-bottom: none; }
+.week-task.done { opacity: 0.5; text-decoration: line-through; }
+.task-checkbox {
+  width: 16px; height: 16px;
+  border: 1px solid rgba(245,200,66,0.4);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+.week-task.done .task-checkbox {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+}
+
+/* ===== AI TOOLS ===== */
+.tools-section { border-top: 1px solid rgba(255,255,255,0.06); }
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.tool-card {
+  background: var(--bg2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+.tool-card:hover { border-color: rgba(124,106,247,0.3); transform: translateY(-2px); }
+.tool-icon { font-size: 1.5rem; margin-bottom: 0.6rem; display: block; }
+.tool-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.tool-use  { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.tool-tag  { display: inline-block; margin-top: 0.5rem; font-size: 0.6rem; background: rgba(124,106,247,0.12); color: var(--purple); border: 1px solid rgba(124,106,247,0.2); padding: 2px 8px; border-radius: 10px; font-family: var(--font-mono); letter-spacing: 0.5px; text-transform: uppercase; }
+
+/* ===== LIGHT MODE ===== */
+body.light-mode { --bg:#fafafa; --bg2:#fff; --bg3:#f3f3f7; --bg4:#ebebf3; --text:#111; --text-muted:#666; --text-dim:#aaa; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .tracker-layout { grid-template-columns: 1fr; }
+  .income-tracker { position: static; }
+  .calc-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .stats-strip-inner { grid-template-columns: 1fr 1fr; }
+  .strip-stat:nth-child(2)::after { display: none; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .phases-grid { grid-template-columns: 1fr; }
+  .rates-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .results-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="loader"><div class="loader-body"><span class="trail"></span><div class="base"><span></span><div class="face"></div></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div><div class="fazer"></div></div></div>
+  <p class="loader-label">Loading Agency Roadmap</p>
+</div>
+
+<!-- GLOBAL SEARCH -->
+<div id="global-search"><div class="search-modal"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search scripts, ideas, tasks..." autocomplete="off"></div><div class="search-results" id="search-results"><div class="search-result-item" onclick="location.href='index.html'"><span class="sr-page">Home</span><span class="sr-title">Mission Command — Zero to 8 Digit</span></div><div class="search-result-item" onclick="location.href='blueprint.html'"><span class="sr-page">Blueprint</span><span class="sr-title">365 Day Plan — Phase 1: Neev</span></div><div class="search-result-item" onclick="location.href='content-ideas.html'"><span class="sr-page">Ideas</span><span class="sr-title">365 Content Ideas Vault</span></div><div class="search-result-item" onclick="location.href='scripts.html'"><span class="sr-page">Scripts</span><span class="sr-title">30 Video Scripts</span></div><div class="search-result-item" onclick="location.href='crm.html'"><span class="sr-page">CRM</span><span class="sr-title">Outreach CRM Pro</span></div><div class="search-result-item" onclick="location.href='focus-os.html'"><span class="sr-page">Focus OS</span><span class="sr-title">Pomodoro + Habit Tracker</span></div></div><div class="search-hint"><span>↑↓ Navigate</span><span>↵ Open</span><span>Esc Close</span></div></div></div>
+
+<!-- NAVBAR -->
+<nav class="yaksh-nav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-logo">Y</div>
+    <span class="nav-name">YAKSH <span class="nav-tag">OS</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Mission</a>
+    <a href="roadmap.html">Roadmap</a>
+    <a href="blueprint.html">365 Plan</a>
+    <a href="content-ideas.html">Ideas</a>
+    <a href="scripts.html">Scripts</a>
+    <a href="crm.html">CRM</a>
+    <a href="focus-os.html">Focus OS</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-search-btn" title="Search (Ctrl+K)">🔍 <span>Ctrl+K</span></button>
+    <button class="theme-toggle" title="Toggle theme">🌙</button>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero" style="text-align:center;">
+  <div class="pastel-bg-layer-1"></div>
+  <div class="pastel-bg-layer-2"></div>
+  <div class="speed-lines"><span></span><span></span><span></span><span></span></div>
+  <div class="hero-glow"></div>
+  <span class="hero-tag" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;border:1px solid rgba(245,200,66,0.3);padding:6px 16px;border-radius:20px;display:inline-block;margin-bottom:1.5rem;animation:fadeUp 0.6s 0.1s ease both;">Receptionist → Agency Owner</span>
+  <h1 class="letter-animate">12 MAHINE KA MASTER PLAN</h1>
+  <p class="hero-desc">Har cheez planned hai — income targets, client acquisition, team building, investment. Sirf execute karna hai.</p>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stats-strip-inner">
+    <div class="strip-stat"><span class="strip-val">₹15K</span><span class="strip-label">Abhi / Month</span></div>
+    <div class="strip-stat"><span class="strip-val">₹1Cr</span><span class="strip-label">Target / Year</span></div>
+    <div class="strip-stat"><span class="strip-val">₹0</span><span class="strip-label">Capital Needed</span></div>
+    <div class="strip-stat"><span class="strip-val">12M</span><span class="strip-label">Timeline</span></div>
+  </div>
+</div>
+
+<!-- UNFAIR ADVANTAGE -->
+<section>
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Your Edge</span>
+      <h2>UNFAIR ADVANTAGES</h2>
+      <p>Ye skills + access tujhe 99% se alag karti hain. Use them fully.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card"><span class="skill-icon">🎬</span><div class="skill-name">Video Editing</div><div class="skill-level">● Advanced</div></div>
+      <div class="skill-card"><span class="skill-icon">🎨</span><div class="skill-name">Graphic Design</div><div class="skill-level">● Intermediate</div></div>
+      <div class="skill-card"><span class="skill-icon">📱</span><div class="skill-name">Meta Ads</div><div class="skill-level">● Learning</div></div>
+      <div class="skill-card"><span class="skill-icon">📍</span><div class="skill-name">GMB Optimization</div><div class="skill-level">● Intermediate</div></div>
+      <div class="skill-card"><span class="skill-icon">✍️</span><div class="skill-name">Content Creation</div><div class="skill-level">● Advanced</div></div>
+      <div class="skill-card"><span class="skill-icon">🏥</span><div class="skill-name">Clinic Access</div><div class="skill-level">● Exclusive</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE PROJECTION CHART -->
+<section class="chart-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Revenue Projection</span>
+      <h2>INCOME GROWTH CHART</h2>
+      <p>Month-by-month realistic income trajectory. Hover on bars for details.</p>
+    </div>
+    <div class="revenue-chart">
+      <div class="chart-bars" id="chart-bars"></div>
+    </div>
+  </div>
+</section>
+
+<!-- INCOME TRACKER + CALCULATOR -->
+<section class="calc-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Live Tools</span>
+      <h2>REVENUE CALCULATOR + INCOME TRACKER</h2>
+    </div>
+    <div class="tracker-layout">
+      <div class="calc-grid">
+        <!-- REVENUE CALCULATOR -->
+        <div class="calc-card">
+          <div class="calc-title">⚡ Revenue Calculator</div>
+          <div class="input-group">
+            <label class="input-label">Active Clients</label>
+            <input type="number" class="calc-input" id="calc-clients" value="5" min="0" oninput="calcRevenue()">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Avg Rate / Client (₹)</label>
+            <input type="number" class="calc-input" id="calc-rate" value="8000" min="0" oninput="calcRevenue()">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Monthly Expenses (₹)</label>
+            <input type="number" class="calc-input" id="calc-exp" value="5000" min="0" oninput="calcRevenue()">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Months Completed</label>
+            <input type="number" class="calc-input" id="calc-months" value="1" min="1" max="12" oninput="calcRevenue()">
+          </div>
+          <div class="results-grid">
+            <div class="result-item"><span class="result-val green" id="r-monthly">₹40K</span><span class="result-label">Monthly Rev</span></div>
+            <div class="result-item"><span class="result-val gold" id="r-annual">₹4.8L</span><span class="result-label">Annual Pace</span></div>
+            <div class="result-item"><span class="result-val blue" id="r-profit">₹35K</span><span class="result-label">Net Profit</span></div>
+            <div class="result-item"><span class="result-val" id="r-pct" style="color:var(--orange)">4.8%</span><span class="result-label">% to ₹1Cr Goal</span></div>
+          </div>
+        </div>
+        <!-- KPI DASHBOARD -->
+        <div class="calc-card">
+          <div class="calc-title">📊 KPI Dashboard</div>
+          <div class="kpi-grid">
+            <div class="kpi-cell">
+              <span class="kpi-label">Leads</span>
+              <input type="number" class="kpi-input" id="kpi-leads" value="20" min="0" oninput="calcKPI()">
+            </div>
+            <div class="kpi-cell">
+              <span class="kpi-label">Proposals</span>
+              <input type="number" class="kpi-input" id="kpi-proposals" value="8" min="0" oninput="calcKPI()">
+            </div>
+            <div class="kpi-cell">
+              <span class="kpi-label">Meetings</span>
+              <input type="number" class="kpi-input" id="kpi-meetings" value="5" min="0" oninput="calcKPI()">
+            </div>
+            <div class="kpi-cell">
+              <span class="kpi-label">Closed</span>
+              <input type="number" class="kpi-input" id="kpi-closed" value="2" min="0" oninput="calcKPI()">
+            </div>
+          </div>
+          <div class="rates-grid" style="margin-top:1rem;">
+            <div class="rate-card"><span class="rate-val green" id="kpi-lead-prop">40%</span><span class="result-label">Lead→Proposal</span></div>
+            <div class="rate-card"><span class="rate-val gold" id="kpi-prop-close">25%</span><span class="result-label">Proposal→Close</span></div>
+            <div class="rate-card"><span class="rate-val blue" id="kpi-overall">10%</span><span class="result-label">Overall Rate</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- INCOME TRACKER SIDEBAR -->
+      <div class="income-tracker">
+        <div class="tracker-title">💰 Income Tracker</div>
+        <div class="tracker-row">
+          <span class="tracker-label">Month Goal (₹)</span>
+          <input type="number" class="tracker-input" id="tr-goal" value="18000" oninput="updateTracker()">
+        </div>
+        <div class="tracker-row">
+          <span class="tracker-label">Actual Earned (₹)</span>
+          <input type="number" class="tracker-input" id="tr-actual" value="15000" oninput="updateTracker()">
+        </div>
+        <div class="tracker-result">
+          <span class="tracker-result-val" id="tr-gap">₹3,000 gap</span>
+          <span class="tracker-result-label">away from month goal</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="tr-bar" style="width:83%"></div>
+        </div>
+        <div style="text-align:center;margin-top:0.5rem;font-family:var(--font-mono);font-size:0.62rem;color:var(--text-muted);" id="tr-pct-label">83% of monthly goal</div>
+        <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1rem;">
+          <span class="tracker-label">Overall Progress to ₹1Cr</span>
+          <div class="progress-bar-wrap" style="margin-top:0.4rem;">
+            <div class="progress-bar-fill" id="tr-crore-bar" style="width:1.5%"></div>
+          </div>
+          <div style="text-align:center;margin-top:0.35rem;font-family:var(--font-mono);font-size:0.62rem;color:var(--gold);" id="tr-crore-pct">1.5% of ₹1 Crore</div>
+        </div>
+        <button onclick="saveTrackerData()" style="width:100%;margin-top:1rem;background:var(--gold);color:#000;border:none;border-radius:8px;padding:10px;font-weight:700;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;">💾 Save Progress</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 PHASE BLUEPRINT -->
+<section class="phases-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Execution Framework</span>
+      <h2>4 PHASE BLUEPRINT</h2>
+    </div>
+    <div class="phases-grid">
+      <div class="phase-card" style="border-color:rgba(79,142,247,0.2);">
+        <div class="phase-num-bg">01</div>
+        <span class="phase-tag" style="color:var(--blue)">Phase 1 · Month 1–3</span>
+        <div class="phase-name" style="color:var(--blue)">FOUNDATION</div>
+        <div class="phase-months">₹18K → ₹42K/month</div>
+        <ul class="phase-goals">
+          <li>Clinic ke liye complete social media setup</li>
+          <li>Pehle 3 freelance clients land karo</li>
+          <li>Portfolio + case studies build karo</li>
+          <li>Agency ka naam + service packages finalize karo</li>
+        </ul>
+      </div>
+      <div class="phase-card" style="border-color:rgba(57,217,138,0.2);">
+        <div class="phase-num-bg">02</div>
+        <span class="phase-tag" style="color:var(--green)">Phase 2 · Month 4–6</span>
+        <div class="phase-name" style="color:var(--green)">GROWTH</div>
+        <div class="phase-months">₹62K → ₹1.1L/month</div>
+        <ul class="phase-goals">
+          <li>8–12 active clients manage karo</li>
+          <li>Pehla intern ya contractor hire karo</li>
+          <li>YouTube channel start — personal brand build</li>
+          <li>SIP start karo — ₹5K/month invest karo</li>
+        </ul>
+      </div>
+      <div class="phase-card" style="border-color:rgba(255,140,66,0.2);">
+        <div class="phase-num-bg">03</div>
+        <span class="phase-tag" style="color:var(--orange)">Phase 3 · Month 7–9</span>
+        <div class="phase-name" style="color:var(--orange)">SCALE</div>
+        <div class="phase-months">₹1.4L → ₹2L/month</div>
+        <ul class="phase-goals">
+          <li>Full-time team: 1 contractor hire karo</li>
+          <li>Digital product launch karo (₹499–999)</li>
+          <li>Premium retainer packages ₹25K/month</li>
+          <li>Job se transition — agency full-time</li>
+        </ul>
+      </div>
+      <div class="phase-card" style="border-color:rgba(245,200,66,0.2);">
+        <div class="phase-num-bg">04</div>
+        <span class="phase-tag" style="color:var(--gold)">Phase 4 · Month 10–12</span>
+        <div class="phase-name" style="color:var(--gold)">SYSTEMS</div>
+        <div class="phase-months">₹2.5L → ₹4L+/month</div>
+        <ul class="phase-goals">
+          <li>Media features + authority content</li>
+          <li>₹5L+ investment + emergency fund</li>
+          <li>High-ticket packages ₹50K+/month</li>
+          <li>₹1 Crore milestone — mission accomplished</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 52 WEEK TASK LIST -->
+<section class="weeks-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Weekly Execution</span>
+      <h2>52 WEEK TASK LIST</h2>
+      <p>Har hafte ke specific kaam. Check off karte jao — localStorage mein save hoga.</p>
+    </div>
+    <div id="weeks-container"></div>
+  </div>
+</section>
+
+<!-- AI TOOLS -->
+<section class="tools-section">
+  <div class="section-wrap">
+    <div class="section-header">
+      <span class="section-tag">Toolkit</span>
+      <h2>AI TOOLS + PLATFORMS</h2>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card"><span class="tool-icon">🤖</span><div class="tool-name">ChatGPT / Claude</div><div class="tool-use">Proposals, email drafts, content scripts, client communication</div><span class="tool-tag">AI</span></div>
+      <div class="tool-card"><span class="tool-icon">🎨</span><div class="tool-name">Canva Pro</div><div class="tool-use">Posts, carousels, presentations, brand kits for clients</div><span class="tool-tag">Design</span></div>
+      <div class="tool-card"><span class="tool-icon">📹</span><div class="tool-name">CapCut / DaVinci</div><div class="tool-use">Reels editing, YouTube videos, client content production</div><span class="tool-tag">Video</span></div>
+      <div class="tool-card"><span class="tool-icon">📊</span><div class="tool-name">Meta Ads Manager</div><div class="tool-use">Clinic patient acquisition campaigns, ROI tracking</div><span class="tool-tag">Ads</span></div>
+      <div class="tool-card"><span class="tool-icon">📍</span><div class="tool-name">Google My Business</div><div class="tool-use">Clinic local SEO, reviews management, posts</div><span class="tool-tag">Local SEO</span></div>
+      <div class="tool-card"><span class="tool-icon">📧</span><div class="tool-name">Gmail + Apollo.io</div><div class="tool-use">Cold outreach, sequences, prospect research</div><span class="tool-tag">Outreach</span></div>
+      <div class="tool-card"><span class="tool-icon">💼</span><div class="tool-name">LinkedIn</div><div class="tool-use">B2B authority content, corporate client acquisition</div><span class="tool-tag">B2B</span></div>
+      <div class="tool-card"><span class="tool-icon">📈</span><div class="tool-name">Notion / Sheets</div><div class="tool-use">Project management, client reporting, SOPs</div><span class="tool-tag">Ops</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer" style="border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem;text-align:center;">
+  <div style="max-width:600px;margin:0 auto;">
+    <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:3px;color:var(--gold);margin-bottom:0.75rem;">EXECUTE THE PLAN</div>
+    <p style="color:var(--text-muted);font-size:0.82rem;">Every week counts. Every client counts. Every rupee counts.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;">
+      <a href="index.html" style="color:var(--text-dim);font-size:0.78rem;text-decoration:none;">Home</a>
+      <a href="blueprint.html" style="color:var(--text-dim);font-size:0.78rem;text-decoration:none;">365 Plan</a>
+      <a href="crm.html" style="color:var(--text-dim);font-size:0.78rem;text-decoration:none;">CRM</a>
+      <a href="focus-os.html" style="color:var(--text-dim);font-size:0.78rem;text-decoration:none;">Focus OS</a>
+    </div>
+  </div>
+</footer>
+
+<script src="shared/loader.js"></script>
+<script src="shared/navbar.js"></script>
+<script>
+// ===== REVENUE CHART =====
+const revenueData = [
+  {month:'Jan', amount:18000, label:'₹18K'},
+  {month:'Feb', amount:28000, label:'₹28K'},
+  {month:'Mar', amount:42000, label:'₹42K'},
+  {month:'Apr', amount:62000, label:'₹62K'},
+  {month:'May', amount:85000, label:'₹85K'},
+  {month:'Jun', amount:110000, label:'₹1.1L'},
+  {month:'Jul', amount:140000, label:'₹1.4L'},
+  {month:'Aug', amount:170000, label:'₹1.7L'},
+  {month:'Sep', amount:200000, label:'₹2L'},
+  {month:'Oct', amount:250000, label:'₹2.5L'},
+  {month:'Nov', amount:300000, label:'₹3L'},
+  {month:'Dec', amount:400000, label:'₹4L'},
+];
+const maxRev = Math.max(...revenueData.map(d => d.amount));
+const colors = ['#4F8EF7','#4F8EF7','#4F8EF7','#39D98A','#39D98A','#39D98A','#FF8C42','#FF8C42','#FF8C42','#F5C842','#F5C842','#F5C842'];
+
+const chartBars = document.getElementById('chart-bars');
+revenueData.forEach((d, i) => {
+  const pct = (d.amount / maxRev) * 100;
+  const wrap = document.createElement('div');
+  wrap.className = 'bar-wrap';
+  wrap.innerHTML = `
+    <div class="bar" style="height:0%;background:${colors[i]};opacity:0.8;" data-label="${d.label}" data-target="${pct}"></div>
+    <span class="bar-month">${d.month}</span>
+  `;
+  chartBars.appendChild(wrap);
+});
+
+// Animate bars on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.bar').forEach(b => {
+        b.style.height = b.dataset.target + '%';
+      });
+      observer.disconnect();
+    }
+  });
+}, {threshold: 0.3});
+observer.observe(chartBars);
+
+// ===== REVENUE CALCULATOR =====
+function calcRevenue() {
+  const clients = parseFloat(document.getElementById('calc-clients').value) || 0;
+  const rate    = parseFloat(document.getElementById('calc-rate').value) || 0;
+  const exp     = parseFloat(document.getElementById('calc-exp').value) || 0;
+  const monthly = clients * rate;
+  const annual  = monthly * 12;
+  const profit  = monthly - exp;
+  const pct     = ((annual / 10000000) * 100).toFixed(1);
+  document.getElementById('r-monthly').textContent = fmtINR(monthly);
+  document.getElementById('r-annual').textContent  = fmtINR(annual);
+  document.getElementById('r-profit').textContent  = fmtINR(profit);
+  document.getElementById('r-pct').textContent     = pct + '%';
+}
+calcRevenue();
+
+// ===== KPI DASHBOARD =====
+function calcKPI() {
+  const leads     = parseFloat(document.getElementById('kpi-leads').value) || 0;
+  const proposals = parseFloat(document.getElementById('kpi-proposals').value) || 0;
+  const closed    = parseFloat(document.getElementById('kpi-closed').value) || 0;
+  const lp = leads > 0 ? ((proposals/leads)*100).toFixed(0)+'%' : '0%';
+  const pc = proposals > 0 ? ((closed/proposals)*100).toFixed(0)+'%' : '0%';
+  const ov = leads > 0 ? ((closed/leads)*100).toFixed(0)+'%' : '0%';
+  document.getElementById('kpi-lead-prop').textContent = lp;
+  document.getElementById('kpi-prop-close').textContent = pc;
+  document.getElementById('kpi-overall').textContent = ov;
+}
+calcKPI();
+
+// ===== INCOME TRACKER =====
+function updateTracker() {
+  const goal   = parseFloat(document.getElementById('tr-goal').value) || 0;
+  const actual = parseFloat(document.getElementById('tr-actual').value) || 0;
+  const gap    = goal - actual;
+  const pct    = goal > 0 ? Math.min(100,(actual/goal*100)).toFixed(0) : 0;
+  const crPct  = ((actual / 10000000)*100).toFixed(2);
+  document.getElementById('tr-gap').textContent = gap > 0 ? `₹${fmtNum(gap)} gap` : '✅ Goal met!';
+  document.getElementById('tr-gap').style.color = gap > 0 ? 'var(--red)' : 'var(--green)';
+  document.getElementById('tr-bar').style.width = pct + '%';
+  document.getElementById('tr-pct-label').textContent = pct + '% of monthly goal';
+  document.getElementById('tr-crore-bar').style.width = Math.min(100, crPct) + '%';
+  document.getElementById('tr-crore-pct').textContent = crPct + '% of ₹1 Crore';
+}
+updateTracker();
+
+function saveTrackerData() {
+  const data = { goal: document.getElementById('tr-goal').value, actual: document.getElementById('tr-actual').value, date: new Date().toDateString() };
+  localStorage.setItem('yaksh-income-tracker', JSON.stringify(data));
+  alert('✅ Income tracker data saved!');
+}
+
+// Load saved tracker
+(function() {
+  const saved = JSON.parse(localStorage.getItem('yaksh-income-tracker') || 'null');
+  if (saved) {
+    document.getElementById('tr-goal').value = saved.goal;
+    document.getElementById('tr-actual').value = saved.actual;
+    updateTracker();
+  }
+})();
+
+// ===== HELPERS =====
+function fmtINR(n) {
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(1) + 'Cr';
+  if (n >= 100000)  return '₹' + (n/100000).toFixed(1) + 'L';
+  if (n >= 1000)    return '₹' + (n/1000).toFixed(0) + 'K';
+  return '₹' + n;
+}
+function fmtNum(n) { return n.toLocaleString('en-IN'); }
+
+// ===== 52 WEEK TASKS =====
+const weeksData = [
+  { week:1,  title:'Clinic Social Audit',     tasks:['Instagram account audit karo — gaps identify karo','GMB listing claim + optimize karo','Competitors ke 5 accounts analyse karo','Content calendar template banao (Notion/Sheets)'] },
+  { week:2,  title:'First Content Week',       tasks:['Clinic ke liye 7 posts create karo (batch)','Pehla reel shoot + edit karo','GMB ka description + photos update karo','5 local Facebook groups join karo'] },
+  { week:3,  title:'Cold Outreach Launch',     tasks:['Outreach CRM setup karo','Pehle 50 prospects identify karo (local businesses)','Cold email template likhna (3 versions)','10 emails send karo — track responses'] },
+  { week:4,  title:'First Client Hunt',        tasks:['30 cold emails send karo total','2 follow-ups send karo pehle prospects ko','Pehli meeting book karo (in-person ya call)','Portfolio page Carrd.co par live karo'] },
+  { week:5,  title:'Month 2 — Momentum',       tasks:['Clinic ka pehla viral reel attempt karo','Instagram engagement rate track karo','Pehle freelance client ka kaam start karo','GMB reviews 10+ karwao (ask clinic staff + patients)'] },
+  { week:6,  title:'Referral Network',         tasks:['3 local businesses mein personally jao (walk-in pitch)','Referral system design karo — existing contacts se','LinkedIn profile professional banao','2 cold calls karo (fearless ho)'] },
+  { week:7,  title:'Case Study Creation',      tasks:['Clinic GMB results screenshot lo + document karo','Before/after reel performance compile karo','Pehla case study PDF banao','Case study share karo LinkedIn par'] },
+  { week:8,  title:'2nd Client Confirm',       tasks:['Paid client 2 close karo (minimum ₹3K-5K)','Package pricing finalize karo','Contract template banao (even if basic)','Client onboarding process design karo'] },
+  { week:9,  title:'Content System',           tasks:['Batch content creation: 2 weeks ka ek baar','Reel performance review: kya kaam kar raha hai','3rd client pitch meetings set karo','Personal Instagram par posting shuru karo'] },
+  { week:10, title:'Month 3 Milestone',        tasks:['5 active clients target — kahan ho track karo','Corporate wellness pitch email draft karo','Agency name finalize karo','Logo + basic branding banao (Canva)'] },
+  { week:11, title:'Agency Foundations',       tasks:['Agency name finalize + domain buy karo','Services + pricing page design karo','3 testimonials collect karo existing clients se','Pricing: ₹5K / ₹10K / ₹20K packages design'] },
+  { week:12, title:'Quarter 1 Review',         tasks:['Q1 income vs target compare karo','Top 3 wins + top 3 failures document karo','Q2 aggressive targets set karo','Celebrate — but immediately refocus'] },
+  { week:13, title:'Scale Phase Begins',       tasks:['Intern search start karo (Internshala)','8 active clients target set karo','Referral bonus program launch karo','YouTube channel create karo (no videos yet, just setup)'] },
+  { week:14, title:'Content + Outreach 2.0',   tasks:['20+ cold emails per week routine banao','LinkedIn par 3 posts publish karo','Client reporting template design karo','Automate: Canva templates for clients'] },
+  { week:15, title:'First Intern',             tasks:['Intern interview + select karo','Training process document karo','First delegated task — content creation','Weekly standup routine establish karo'] },
+  { week:16, title:'Premium Packages',         tasks:['Premium package ₹15K-20K design karo','Existing clients ko upsell pitch karo','Month 4 review + income reality check','Personal brand — 500 followers target Instagram'] },
+  { week:17, title:'Month 5 — Agency Mode',    tasks:['Agency register karo (sole proprietorship)','GST registration check karo (required?)',
+'Consulting rate: ₹500/hr minimum set karo','First consulting inquiry handle karo'] },
+  { week:18, title:'Digital Product Outline',  tasks:['Digital product topic decide karo (based on expertise)','Outline likhna — 10 key points','Gumroad / Razorpay account setup karo','Landing page rough draft banao'] },
+  { week:19, title:'10 Active Clients',        tasks:['10 client target — track progress','Client satisfaction survey conduct karo','Case studies update karo (new results)','Referral from existing clients ask karo'] },
+  { week:20, title:'Content Economy Start',    tasks:['YouTube ka pehla video plan + script karo','Instagram 1K followers target set karo','Brand sponsorship research karo (tools/SaaS)','Month 5 income document karo'] },
+  { week:21, title:'SIP + Investments',        tasks:['SIP setup karo — ₹5K/month (Zerodha/Groww)','Emergency fund start karo — ₹10K minimum','Zerodha/Groww account open karo (if not done)','Investment goal set karo — ₹1L by month 9'] },
+  { week:22, title:'Job Transition Plan',      tasks:['Job se part-time ya exit plan banao','Boss ke saath honest conversation plan karo','Agency income — replace job income timeline?','Side: 2nd corporate clinic client pitch karo'] },
+  { week:23, title:'Month 6 — Compound',       tasks:['₹1L+ monthly income target — track exactly','5K Instagram followers check karo','Workshop idea finalize karo (topic + price)','Q2 review complete karo'] },
+  { week:24, title:'Half Year Review',         tasks:['6 month full review — income, skills, network','Recalibrate Q3 targets realistically','₹1 Crore pace: are you on track? Calculate.','Plan the next 6 months specifically'] },
+  { week:25, title:'Full Agency — Month 7',    tasks:['Full-time contractor interview karo (part-time creative)','Premium package ₹25K/month launch karo','Retainer model: 3 month minimum contracts introduce','Speaking opportunity research karo — startup/college events'] },
+  { week:26, title:'Systems + SOPs',           tasks:['SOP document karo: client onboarding process','SOP: content creation workflow','SOP: reporting + billing process','Delegate 30% tasks to contractor'] },
+  { week:27, title:'Content Economy Month 8',  tasks:['Digital product ₹499 launch karo','YouTube AdSense enable check karo','Instagram monetization explore karo','Workshop promo content create karo'] },
+  { week:28, title:'Authority Building',       tasks:['Pehla workshop announce karo (2999/seat)','LinkedIn article publish karo (industry insight)','Local business groups mein speak karo','Press release ya local news pitch karo'] },
+];
+
+const container = document.getElementById('weeks-container');
+weeksData.forEach((w, i) => {
+  const saved = JSON.parse(localStorage.getItem('yaksh-week-' + w.week) || '[]');
+  const div = document.createElement('div');
+  div.className = 'week-accordion';
+  div.innerHTML = `
+    <div class="week-acc-header" onclick="toggleWeek(this)">
+      <span class="week-acc-num">WEEK ${String(w.week).padStart(2,'0')}</span>
+      <span class="week-acc-title">${w.title}</span>
+      <span style="font-size:0.7rem;color:var(--text-muted);margin-right:0.5rem;">${saved.length}/${w.tasks.length} done</span>
+      <span class="week-acc-toggle">▾</span>
+    </div>
+    <div class="week-acc-body">
+      <ul class="week-tasks">
+        ${w.tasks.map((t, ti) => `
+          <li class="week-task ${saved.includes(ti) ? 'done' : ''}" onclick="toggleTask(this, ${w.week}, ${ti})">
+            <div class="task-checkbox">${saved.includes(ti) ? '✓' : ''}</div>
+            <span>${t}</span>
+          </li>`).join('')}
+      </ul>
+    </div>
+  `;
+  container.appendChild(div);
+});
+
+function toggleWeek(header) {
+  header.parentElement.classList.toggle('open');
+}
+function toggleTask(el, week, taskIdx) {
+  const saved = JSON.parse(localStorage.getItem('yaksh-week-' + week) || '[]');
+  if (saved.includes(taskIdx)) {
+    saved.splice(saved.indexOf(taskIdx), 1);
+    el.classList.remove('done');
+    el.querySelector('.task-checkbox').textContent = '';
+  } else {
+    saved.push(taskIdx);
+    el.classList.add('done');
+    el.querySelector('.task-checkbox').textContent = '✓';
+  }
+  localStorage.setItem('yaksh-week-' + week, JSON.stringify(saved));
+  const header = el.closest('.week-accordion').querySelector('.week-acc-header span:nth-child(3)');
+  const wData = weeksData.find(w => w.week === week);
+  if (header && wData) header.textContent = `${saved.length}/${wData.tasks.length} done`;
+}
+</script>
+</body>
+</html>
